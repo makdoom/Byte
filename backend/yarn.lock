@@ -192,6 +192,11 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
+"@prisma/client@5.16.2":
+  version "5.16.2"
+  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-5.16.2.tgz#21df4c092eac29dcc4431ebed8c92579ffc9d8bd"
+  integrity sha512-+1lmkhR9gHWcTC5oghm2ZKpWljyWdzfazCVlLKUWXVmwHSf52g81aZ8qb6Km5Bs025yBi7puLp3qSLEvktoUtw==
+
 "@prisma/debug@5.16.2":
   version "5.16.2"
   resolved "https://registry.yarnpkg.com/@prisma/debug/-/debug-5.16.2.tgz#bf774f4768a3d1634887e6964fcfe04576dc7496"
@@ -211,6 +216,11 @@
     "@prisma/engines-version" "5.16.0-24.34ace0eb2704183d2c05b60b52fba5c43c13f303"
     "@prisma/fetch-engine" "5.16.2"
     "@prisma/get-platform" "5.16.2"
+
+"@prisma/extension-accelerate@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@prisma/extension-accelerate/-/extension-accelerate-1.1.0.tgz#c82bb5c82185630912a5272e01f4c7b76c8a9d87"
+  integrity sha512-sESjhBZ4ywQjAVpKzsfhxyNu+9txIM5I6M1MPBaJBq/xDlqmniIAhlwIEt9KLtO80zqPxqbZYes18zrkgYqNiQ==
 
 "@prisma/fetch-engine@5.16.2":
   version "5.16.2"
