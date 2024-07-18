@@ -192,6 +192,13 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
+"@makdoom/medium-common@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@makdoom/medium-common/-/medium-common-1.0.1.tgz#2370bfd7d04eead04c2c345df4c25f37ce6becc1"
+  integrity sha512-d5sa8r9KhqAG9kJVI+BLY6VjuLvk+LuOOSeRG25Cj3uNP69so9j37r0xxgXK+qzzZLNOQOfANRG1AC8Uoel/fA==
+  dependencies:
+    zod "^3.23.8"
+
 "@prisma/client@5.16.2":
   version "5.16.2"
   resolved "https://registry.yarnpkg.com/@prisma/client/-/client-5.16.2.tgz#21df4c092eac29dcc4431ebed8c92579ffc9d8bd"
@@ -741,7 +748,7 @@ youch@^3.2.2:
     mustache "^4.2.0"
     stacktracey "^2.1.8"
 
-zod@^3.22.3:
+zod@^3.22.3, zod@^3.23.8:
   version "3.23.8"
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.23.8.tgz#e37b957b5d52079769fb8097099b592f0ef4067d"
   integrity sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==

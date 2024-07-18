@@ -1,0 +1,11 @@
+{
+  "name": "@makdoom/medium-common",
+  "version": "1.0.1",
+  "description": "Common utility modules ",
+  "main": "dist/index.js",
+  "author": "Makdoom Shaikh",
+  "license": "MIT",
+  "dependencies": {
+    "zod": "^3.23.8"
+  }
+}

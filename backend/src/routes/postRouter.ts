@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { Bindings, Variables } from "../types";
 import { verify } from "hono/jwt";
 import { getPrisma } from "../config";
+import { createPostInput, updatePostInput } from "@makdoom/medium-common";
 
 const postRouter = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
@@ -24,6 +25,13 @@ postRouter.use("/*", async (c, next) => {
 postRouter.post("/create-post", async (c) => {
   const body = await c.req.json();
   const authorId = c.get("userId");
+
+  const { success } = createPostInput.safeParse(body);
+  if (!success) {
+    c.status(411);
+    return c.json({ error: "Invalid payload provided" });
+  }
+
   try {
     const prisma = getPrisma(c.env.DATABASE_URL);
     let createdPost = await prisma.post.create({
@@ -43,6 +51,13 @@ postRouter.post("/create-post", async (c) => {
 // Update Post
 postRouter.put("/update-post", async (c) => {
   const body = await c.req.json();
+
+  const { success } = updatePostInput.safeParse(body);
+  if (!success) {
+    c.status(411);
+    return c.json({ error: "Invalid payload provided" });
+  }
+
   try {
     const prisma = getPrisma(c.env.DATABASE_URL);
     let updatedPost = await prisma.post.update({

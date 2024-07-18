@@ -2,14 +2,21 @@ import { Hono } from "hono";
 import { Bindings } from "../types";
 import { getPrisma } from "../config";
 import { sign } from "hono/jwt";
+import { signinInput, signupInput } from "@makdoom/medium-common";
 
 const authRouter = new Hono<{ Bindings: Bindings }>();
 
 authRouter.post("/signup", async (c) => {
   const body = await c.req.json();
+  const { success } = signupInput.safeParse(body);
+  if (!success) {
+    c.status(411);
+    return c.json({ error: "Invaid payload provided" });
+  }
 
   if (!body.email) return c.json({ error: "Please enter a valid email" });
   if (!body.password) return c.json({ error: "Please enter a valid password" });
+
   try {
     const prisma = getPrisma(c.env.DATABASE_URL);
     let user = await prisma.user.create({
@@ -33,6 +40,11 @@ authRouter.post("/signup", async (c) => {
 
 authRouter.post("/signin", async (c) => {
   const body = await c.req.json();
+  const { success } = signinInput.safeParse(body);
+  if (!success) {
+    c.status(411);
+    return c.json({ error: "Invalid payload provided" });
+  }
 
   if (!body.email) return c.json({ error: "Please enter a valid email" });
   if (!body.password) return c.json({ error: "Please enter a valid password" });
