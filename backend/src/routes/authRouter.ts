@@ -1,8 +1,12 @@
 import { Hono } from "hono";
+import { signinInput, signupInput } from "@makdoom/medium-common";
+import { sign } from "hono/jwt";
+
 import { Bindings } from "../types";
 import { getPrisma } from "../config";
-import { sign } from "hono/jwt";
-import { signinInput, signupInput } from "@makdoom/medium-common";
+import { HTTPException } from "hono/http-exception";
+import { ApiResponse, ErrorResponse } from "../utils/customResponse";
+import { checkIsPasswordMatched, encryptPassword } from "../utils";
 
 const authRouter = new Hono<{ Bindings: Bindings }>();
 
@@ -11,30 +15,37 @@ authRouter.post("/signup", async (c) => {
   const { success } = signupInput.safeParse(body);
   if (!success) {
     c.status(411);
-    return c.json({ error: "Invaid payload provided" });
+    throw new HTTPException(411, { message: "Invalid payload provided" });
   }
 
-  if (!body.email) return c.json({ error: "Please enter a valid email" });
-  if (!body.password) return c.json({ error: "Please enter a valid password" });
+  if (!body.email)
+    throw new HTTPException(411, { message: "Please enter a valid email" });
+  if (!body.password)
+    throw new HTTPException(411, { message: "Please enter a valid password" });
 
   try {
     const prisma = getPrisma(c.env.DATABASE_URL);
+    let hashedPassword = await encryptPassword(body.password);
     let user = await prisma.user.create({
       data: {
         email: body.email,
         name: body.name ? body.name : "",
-        password: body.password,
+        password: hashedPassword,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
       },
     });
 
     const token = await sign({ id: user.id }, c.env.JWT_SECRET);
-    return c.json({ message: "User created successfully", token });
+    return c.json({
+      token,
+      ...ApiResponse(200, "User created successfully", user),
+    });
   } catch (error) {
-    if (error instanceof Error) {
-      console.log(error);
-      c.status(411);
-      return c.json({ error: error.message });
-    }
+    return c.json(ErrorResponse(error));
   }
 });
 
@@ -43,35 +54,43 @@ authRouter.post("/signin", async (c) => {
   const { success } = signinInput.safeParse(body);
   if (!success) {
     c.status(411);
-    return c.json({ error: "Invalid payload provided" });
+    throw new HTTPException(411, { message: "Invalid payload provided" });
   }
 
-  if (!body.email) return c.json({ error: "Please enter a valid email" });
-  if (!body.password) return c.json({ error: "Please enter a valid password" });
+  if (!body.email)
+    throw new HTTPException(411, { message: "Please enter a valid email" });
+  if (!body.password)
+    throw new HTTPException(411, { message: "Please enter a valid password" });
 
+  // const dcryptedPassword = await decryptPassword()
   const prisma = getPrisma(c.env.DATABASE_URL);
   let user = await prisma.user.findUnique({
     where: {
       email: body.email,
-      password: body.password,
     },
   });
 
   if (!user) {
-    c.status(403);
-    return c.json({ error: "Invalid credential provided" });
+    throw new HTTPException(411, {
+      message: "No user found with the email id provided",
+    });
   }
+
+  const isPasswordMatched = await checkIsPasswordMatched(
+    body.password,
+    user.password
+  );
+  if (!isPasswordMatched)
+    throw new HTTPException(411, {
+      message: "Invalid password provided",
+    });
 
   const token = await sign({ id: user.id }, c.env.JWT_SECRET);
 
-  return c.json({ msg: "User signin successfully ", token });
-});
-
-authRouter.get("/", async (c) => {
-  const prisma = getPrisma(c.env.DATABASE_URL);
-  const response = await prisma.user.findMany({});
-  console.log(response);
-  return c.json({ data: response });
+  return c.json({
+    token,
+    ...ApiResponse(200, "User login successfully", null),
+  });
 });
 
 export default authRouter;
