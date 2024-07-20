@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from "react";
@@ -20,6 +20,7 @@ export const Header = () => {
   const [open, setOpen] = useState(false);
 
   const navigat = useNavigate();
+  const { pathname } = useLocation();
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const navigateToHome = () => {
@@ -29,7 +30,8 @@ export const Header = () => {
   return (
     <div
       className={cn(
-        `w-full px-3 md:max-w-screen-xl m-auto flex justify-between items-center py-3`
+        `w-full px-3 fixed top-0  z-10  flex justify-between items-center py-3 backdrop-blur-sm bg-white/30`,
+        pathname !== "/" ? "md:max-w-screen" : "md:max-w-screen-xl m-auto"
       )}
     >
       <h3
