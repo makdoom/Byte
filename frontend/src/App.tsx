@@ -1,13 +1,15 @@
-import { Button } from "@/components/ui/button";
 import "./App.css";
+import { Route, Routes } from "react-router";
+import { Feeds } from "@/pages/Feeds";
+import { Landing } from "@/pages/Landing";
 
-function App() {
+const App = () => {
   return (
-    <>
-      <h1 className="text-red-600">Medium</h1>
-      <Button>Click me</Button>
-    </>
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      <Route path="/feeds" element={<Feeds />} />
+    </Routes>
   );
-}
+};
 
 export default App;
