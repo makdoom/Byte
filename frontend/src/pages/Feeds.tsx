@@ -1,3 +1,3 @@
 export const Feeds = () => {
-  return <div>Feeds</div>;
+  return <div className="flex-1">Feeds</div>;
 };
