@@ -1,6 +1,6 @@
 {
   "name": "@makdoom/medium-common",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "Common utility modules ",
   "main": "dist/index.js",
   "author": "Makdoom Shaikh",

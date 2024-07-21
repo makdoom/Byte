@@ -5,16 +5,18 @@ export const signupInput = z
     name: z.string().optional(),
     email: z.string().min(1, "Email is required").email("Email is invalid"),
     password: z.string().min(8, "Password must be at least 8 characters long"),
-    confirmPassword: z.string().min(8).optional(),
+    confirmPassword: z
+      .string()
+      .min(8, "Confirm Password must be at least 8 characters long"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
-    message: "Password does not match",
+    message: "Passwords does not match",
   });
 
 export const signinInput = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
+  email: z.string().min(1, "Email is required").email("Email is invalid"),
+  password: z.string().min(8, "Password must be at least 8 characters long"),
 });
 
 export const createPostInput = z.object({
