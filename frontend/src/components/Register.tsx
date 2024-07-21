@@ -76,6 +76,7 @@ export const Register = ({ handleRenderComp }: RegisterPropTypes) => {
               type="password"
               placeholder="Enter password"
               className="h-[40px]"
+              passwordControl
               {...register("password")}
             />
             {errors.password && (
@@ -92,6 +93,7 @@ export const Register = ({ handleRenderComp }: RegisterPropTypes) => {
               type="password"
               placeholder="Re-enter Password"
               className="h-[40px]"
+              passwordControl
               {...register("confirmPassword")}
             />
             {errors.confirmPassword && (
