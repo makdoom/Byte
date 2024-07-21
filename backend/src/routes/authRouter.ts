@@ -38,7 +38,6 @@ authRouter.post("/signup", async (c) => {
         email: true,
       },
     });
-
     const token = await sign({ id: user.id }, c.env.JWT_SECRET);
     return c.json({
       token,
@@ -86,10 +85,13 @@ authRouter.post("/signin", async (c) => {
     });
 
   const token = await sign({ id: user.id }, c.env.JWT_SECRET);
-
   return c.json({
     token,
-    ...ApiResponse(200, "User login successfully", null),
+    ...ApiResponse(200, "User login successfully", {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    }),
   });
 });
 

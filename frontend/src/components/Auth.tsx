@@ -3,7 +3,11 @@ import { Register } from "@/components/Register";
 import { DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
 
-export const Auth = () => {
+type AuthPropTypes = {
+  closeAuthDialog: () => void;
+};
+
+export const Auth = ({ closeAuthDialog }: AuthPropTypes) => {
   const [isLoginRender, setIsLoginRender] = useState(true);
 
   const handleRenderComp = () => setIsLoginRender((prev) => !prev);
@@ -11,9 +15,15 @@ export const Auth = () => {
   return (
     <DialogContent showCloseBtn={false} className="sm:max-w-[450px]">
       {isLoginRender ? (
-        <Login handleRenderComp={handleRenderComp} />
+        <Login
+          handleRenderComp={handleRenderComp}
+          closeAuthDialog={closeAuthDialog}
+        />
       ) : (
-        <Register handleRenderComp={handleRenderComp} />
+        <Register
+          handleRenderComp={handleRenderComp}
+          closeAuthDialog={closeAuthDialog}
+        />
       )}
     </DialogContent>
   );

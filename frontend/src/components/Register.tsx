@@ -14,27 +14,40 @@ import { SignupInputType, signupInput } from "@makdoom/medium-common";
 import { Loader } from "lucide-react";
 // import { toast } from "sonner";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 type RegisterPropTypes = {
   handleRenderComp: () => void;
+  closeAuthDialog: () => void;
 };
 
-export const Register = ({ handleRenderComp }: RegisterPropTypes) => {
+export const Register = ({
+  handleRenderComp,
+  closeAuthDialog,
+}: RegisterPropTypes) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<SignupInputType>({ resolver: zodResolver(signupInput) });
 
+  const navigate = useNavigate();
+
   const registerUserHandler: SubmitHandler<SignupInputType> = async (data) => {
     try {
       const response = await axiosInstance.post("/auth/signup", data);
-      console.log(response.data);
+      const { statusCode, message, token = "" } = response.data;
+      if (statusCode !== 200) return toast.error(message);
+
+      // If user created successfully
+      localStorage.setItem("token", token);
+      closeAuthDialog();
+      navigate("/feeds");
     } catch (error) {
       console.log(error);
+      toast.error("Something went wrong while resgistering user");
     }
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
-    // console.log(data);
   };
 
   return (

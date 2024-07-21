@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { useLocation, useNavigate } from "react-router";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import {
   Drawer,
   DrawerClose,
@@ -15,17 +15,36 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Auth } from "@/components/Auth";
+import { useAuthStore } from "@/store";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { SquarePen } from "lucide-react";
+import { Menubar, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
+import { ProfileMenu } from "@/components/ProfileMenu";
 
 export const Header = () => {
-  const [open, setOpen] = useState(false);
+  const { isLoggedIn, logoutUser } = useAuthStore((state) => state);
+  const [authDialog, setAuthDialog] = useState(false);
 
-  const navigat = useNavigate();
+  const navigate = useNavigate();
   const { pathname } = useLocation();
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
-  const navigateToHome = () => {
-    navigat("/");
+  const navigateToHome = () => navigate("/");
+
+  const closeAuthDialog = () => setAuthDialog(false);
+
+  const logoutHandler = () => {
+    logoutUser();
+    navigate("/");
   };
+
+  useLayoutEffect(() => {
+    if (isLoggedIn) {
+      console.log("from uselayout effect");
+      console.log("need to call api to get user infomation");
+      navigate("/feeds");
+    }
+  }, [isLoggedIn, navigate]);
 
   return (
     <div
@@ -41,59 +60,79 @@ export const Header = () => {
         Byte
       </h3>
 
-      <div className={cn(`flex gap-5 items-center`)}>
-        {isDesktop ? (
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button variant="ghost" className="text-muted-foreground">
-                Signin
-              </Button>
-            </DialogTrigger>
-            <DialogTrigger asChild>
-              <Button variant="default" className="text-xs">
-                Get Started
-              </Button>
-            </DialogTrigger>
-            {/* <Login /> */}
-            <Auth />
-          </Dialog>
-        ) : (
-          <Drawer open={open} onOpenChange={setOpen}>
-            <DrawerTrigger asChild>
-              <Button variant="ghost" className="text-muted-foreground">
-                Signin
-              </Button>
-            </DrawerTrigger>
-            <DrawerTrigger asChild>
-              <Button variant="default" className="text-xs">
-                Get Started
-              </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-              <DrawerHeader className="text-left">
-                <DrawerTitle>Edit profile</DrawerTitle>
-                <DrawerDescription>
-                  Make changes to your profile here. Click save when you're
-                  done.
-                </DrawerDescription>
-              </DrawerHeader>
-              <h1>Login</h1>
-              {/* <ProfileForm className="px-4" /> */}
-              <DrawerFooter className="pt-2">
-                <DrawerClose asChild>
-                  <Button variant="outline">Cancel</Button>
-                </DrawerClose>
-              </DrawerFooter>
-            </DrawerContent>
-          </Drawer>
-        )}
-        {/* <Button variant="ghost" className="text-muted-foreground">
+      {isLoggedIn ? (
+        <div className="flex gap-2 items-center">
+          <Button variant="ghost">
+            <SquarePen size="19" />
+            <p className="ml-2 font-normal">Write</p>
+          </Button>
+
+          <Menubar className="border-0 bg-transparent outline-none shadow-none">
+            <MenubarMenu>
+              <MenubarTrigger className="cursor-pointer p-0">
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </MenubarTrigger>
+              <ProfileMenu logoutHandler={logoutHandler} />
+            </MenubarMenu>
+          </Menubar>
+        </div>
+      ) : (
+        <div className={cn(`flex gap-5 items-center`)}>
+          {isDesktop ? (
+            <Dialog open={authDialog} onOpenChange={setAuthDialog}>
+              <DialogTrigger asChild>
+                <Button variant="ghost" className="text-muted-foreground">
+                  Signin
+                </Button>
+              </DialogTrigger>
+              <DialogTrigger asChild>
+                <Button variant="default" className="text-xs">
+                  Get Started
+                </Button>
+              </DialogTrigger>
+              <Auth closeAuthDialog={closeAuthDialog} />
+            </Dialog>
+          ) : (
+            <Drawer open={authDialog} onOpenChange={setAuthDialog}>
+              <DrawerTrigger asChild>
+                <Button variant="ghost" className="text-muted-foreground">
+                  Signin
+                </Button>
+              </DrawerTrigger>
+              <DrawerTrigger asChild>
+                <Button variant="default" className="text-xs">
+                  Get Started
+                </Button>
+              </DrawerTrigger>
+              <DrawerContent>
+                <DrawerHeader className="text-left">
+                  <DrawerTitle>Edit profile</DrawerTitle>
+                  <DrawerDescription>
+                    Make changes to your profile here. Click save when you're
+                    done.
+                  </DrawerDescription>
+                </DrawerHeader>
+                <h1>Login</h1>
+                {/* <ProfileForm className="px-4" /> */}
+                <DrawerFooter className="pt-2">
+                  <DrawerClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DrawerClose>
+                </DrawerFooter>
+              </DrawerContent>
+            </Drawer>
+          )}
+          {/* <Button variant="ghost" className="text-muted-foreground">
           Signin
         </Button>
             <Button variant="default" className="text-xs">
               Get Started
             </Button> */}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

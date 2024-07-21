@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
 export const Landing = () => {
@@ -7,6 +8,12 @@ export const Landing = () => {
   const handleNavigateToFeeds = () => {
     navigate("/feeds");
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/feeds");
+    }
+  }, [navigate]);
 
   return (
     <div className="flex-1 mx-3 text-center">
