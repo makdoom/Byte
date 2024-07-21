@@ -4,10 +4,14 @@ import authRouter from "./routes/authRouter";
 import postRouter from "./routes/postRouter";
 import { HTTPException } from "hono/http-exception";
 import { ErrorResponse } from "./utils/customResponse";
+import { cors } from "hono/cors";
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().basePath(
   "/api/v1"
 );
+
+// Middlewares
+app.use("/*", cors());
 
 // Router
 app.route("/auth", authRouter);

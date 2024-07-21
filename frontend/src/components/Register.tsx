@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import axiosInstance from "@/config/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupInputType, signupInput } from "@makdoom/medium-common";
 import { Loader } from "lucide-react";
@@ -26,8 +27,14 @@ export const Register = ({ handleRenderComp }: RegisterPropTypes) => {
   } = useForm<SignupInputType>({ resolver: zodResolver(signupInput) });
 
   const registerUserHandler: SubmitHandler<SignupInputType> = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log(data);
+    try {
+      const response = await axiosInstance.post("/auth/signup", data);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
+    // console.log(data);
   };
 
   return (

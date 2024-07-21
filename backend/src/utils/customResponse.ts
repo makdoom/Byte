@@ -1,19 +1,34 @@
+import { Prisma } from "@prisma/client";
 import { HTTPException } from "hono/http-exception";
 
-export const ErrorResponse = (error: unknown) => {
-  let statusCode = 500;
-  let message = "";
+const getPrismaErrorMessage = (err: any) => {
+  switch (err.code) {
+    case "P2002":
+      // handling duplicate key errors
+      return `The ${err.meta.target} is already in use`;
+    case "P2014":
+      // handling invalid id errors
+      return `Invalid ID: ${err.meta.target}`;
+    case "P2003":
+      // handling invalid data errors
+      return `Invalid input data: ${err.meta.target}`;
+    default:
+      // handling all other errors
+      return `Something went wrong: ${err.message}`;
+  }
+};
+
+export const ErrorResponse = (error: any) => {
+  let statusCode = 400;
+  let message = getPrismaErrorMessage(error);
   let stack = "";
 
-  if (error instanceof Error) {
-    statusCode = 411;
-    message = error.message;
-    stack = error.stack || "";
-  } else if (error instanceof HTTPException) {
+  if (error instanceof HTTPException) {
     statusCode = error.status;
     message = error.message;
     stack = error.stack || "";
   }
+
   return { statusCode, message, stack };
 };
 
