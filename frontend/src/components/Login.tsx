@@ -35,11 +35,11 @@ export const Login = ({
   const loginUserHandler: SubmitHandler<SignupInputType> = async (data) => {
     try {
       const response = await axiosInstance.post("/auth/signin", data);
-      const { statusCode, message, token = "" } = response.data;
+      const { statusCode, message, accessToken = "" } = response.data;
       if (statusCode !== 200) return toast.error(message);
 
       // If user created successfully
-      localStorage.setItem("token", token);
+      localStorage.setItem("accessToken", accessToken);
 
       setUserInfo({
         firstname: response.data.data.name,

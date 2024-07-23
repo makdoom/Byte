@@ -3,16 +3,20 @@ import { Bindings, Variables } from "../types";
 import { getPrisma } from "../config";
 import { createPostInput, updatePostInput } from "@makdoom/medium-common";
 import { HTTPException } from "hono/http-exception";
-import { getCookie } from "hono/cookie";
 import { verify } from "hono/jwt";
+import { getTokensFromCookie } from "../utils";
 
 const postRouter = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
 // Middlewares
 postRouter.use("/*", async (c, next) => {
-  const accessToken = getCookie(c, "accessToken"); //c.req.header("Authorization") || "";
-  const refreshToken = getCookie(c, "refreshToken"); //c.req.header("refreshToken") || "";
+  let cookie = c.req.header("cookie");
+  if (!cookie) {
+    c.status(405);
+    return c.json({ error: "Unauthorized user", statusCode: 405 });
+  }
 
+  const { accessToken, refreshToken } = getTokensFromCookie(cookie);
   if (!accessToken || !refreshToken) {
     c.status(405);
     return c.json({ error: "Unauthorized user", statusCode: 405 });

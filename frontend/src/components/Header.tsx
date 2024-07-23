@@ -20,6 +20,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SquarePen } from "lucide-react";
 import { Menubar, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
 import { ProfileMenu } from "@/components/ProfileMenu";
+import axiosInstance from "@/config/api";
 
 export const Header = () => {
   const { isLoggedIn, logoutUser } = useAuthStore((state) => state);
@@ -36,6 +37,11 @@ export const Header = () => {
   const logoutHandler = () => {
     logoutUser();
     navigate("/");
+  };
+
+  const testPost = async () => {
+    const response = await axiosInstance.get("/post/get-all-post");
+    console.log(response);
   };
 
   useLayoutEffect(() => {
@@ -62,7 +68,7 @@ export const Header = () => {
 
       {isLoggedIn ? (
         <div className="flex gap-2 items-center">
-          <Button variant="ghost">
+          <Button variant="ghost" onClick={testPost}>
             <SquarePen size="19" />
             <p className="ml-2 font-normal">Write</p>
           </Button>

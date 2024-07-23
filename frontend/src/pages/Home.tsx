@@ -15,6 +15,7 @@ export const Home = () => {
       <div className="flex justify-center items-center">
         <Header />
       </div>
+
       <Outlet />
     </div>
   );

@@ -11,7 +11,13 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().basePath(
 );
 
 // Middlewares
-app.use("/*", cors());
+app.use(
+  "*",
+  cors({
+    origin: ["http://localhost:5173"],
+    credentials: true,
+  })
+);
 
 // Router
 app.route("/auth", authRouter);

@@ -5,8 +5,13 @@ import { Bindings } from "../types";
 import { getPrisma } from "../config";
 import { HTTPException } from "hono/http-exception";
 import { ApiResponse, ErrorResponse } from "../utils/customResponse";
-import { checkIsPasswordMatched, encryptPassword, getTokens } from "../utils";
-import { getCookie, setCookie } from "hono/cookie";
+import {
+  checkIsPasswordMatched,
+  encryptPassword,
+  getTokens,
+  getTokensFromCookie,
+} from "../utils";
+import { deleteCookie, setCookie } from "hono/cookie";
 import { verify } from "hono/jwt";
 import { ONE_DAY, SEVEN_DAYS } from "../constants";
 
@@ -125,7 +130,7 @@ authRouter.post("/signin", async (c) => {
     maxAge: ONE_DAY,
   });
 
-  // Setting refresh token in cookie for 7 days
+  // // Setting refresh token in cookie for 7 days
   setCookie(c, "refreshToken", refreshToken, {
     httpOnly: true,
     sameSite: "Strict",
@@ -144,7 +149,12 @@ authRouter.post("/signin", async (c) => {
 });
 
 authRouter.post("/token", async (c) => {
-  const refreshToken = getCookie(c, "refreshToken");
+  let cookie = c.req.header("cookie");
+  if (!cookie) {
+    c.status(401);
+    return c.json({ error: "Unauthorized user", statusCode: 401 });
+  }
+  const { refreshToken } = getTokensFromCookie(cookie);
 
   if (!refreshToken) {
     c.status(401);
@@ -162,9 +172,27 @@ authRouter.post("/token", async (c) => {
         refreshTokenSecret: REFRESH_TOKEN_SECRET,
       });
 
+      deleteCookie(c, "accessToken");
+      deleteCookie(c, "refreshToken");
+
+      // Setting access token in cookie for 1 day
+      setCookie(c, "accessToken", tokens.accessToken, {
+        httpOnly: true,
+        sameSite: "Strict",
+        secure: true,
+        maxAge: ONE_DAY,
+      });
+
+      //Setting refresh token in cookie for 7 days
+      setCookie(c, "refreshToken", tokens.refreshToken, {
+        httpOnly: true,
+        sameSite: "Strict",
+        secure: true,
+        maxAge: SEVEN_DAYS,
+      });
+      c.status(200);
       return c.json({
         newAccessToken: tokens.accessToken,
-        newRefreshToken: tokens.refreshToken,
       });
     }
   } catch (error) {
