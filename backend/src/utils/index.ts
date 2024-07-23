@@ -1,5 +1,7 @@
 import { HTTPException } from "hono/http-exception";
 import bcrypt from "bcryptjs";
+import { JWTDataType } from "../types";
+import { sign } from "hono/jwt";
 
 export const encryptPassword = async (password: string) => {
   try {
@@ -27,4 +29,28 @@ export const checkIsPasswordMatched = async (
       message: "Something went wrong while user verification",
     });
   }
+};
+
+export const getJWTtokenTime = (days: 1 | 7) =>
+  Math.floor(
+    (days == 1
+      ? Date.now() + 24 * 60 * 60 * 1000 //
+      : Date.now() + 7 * 24 * 60 * 60 * 1000) / 1000
+  );
+
+export const getTokens = async ({
+  id,
+  accessTokenSecret,
+  refreshTokenSecret,
+}: JWTDataType) => {
+  const accessToken = await sign(
+    { id: id, exp: getJWTtokenTime(1) },
+    accessTokenSecret
+  );
+  const refreshToken = await sign(
+    { id: id, exp: getJWTtokenTime(7) },
+    refreshTokenSecret
+  );
+
+  return { accessToken, refreshToken };
 };

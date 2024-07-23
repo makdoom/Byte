@@ -1,23 +1,34 @@
 import { Hono } from "hono";
 import { Bindings, Variables } from "../types";
-import { verify } from "hono/jwt";
 import { getPrisma } from "../config";
 import { createPostInput, updatePostInput } from "@makdoom/medium-common";
+import { HTTPException } from "hono/http-exception";
+import { getCookie } from "hono/cookie";
+import { verify } from "hono/jwt";
 
 const postRouter = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
 // Middlewares
 postRouter.use("/*", async (c, next) => {
-  const header = c.req.header("Authorization") || "";
-  if (!header) return c.json({ error: "Unauthorized user" });
+  const accessToken = getCookie(c, "accessToken"); //c.req.header("Authorization") || "";
+  const refreshToken = getCookie(c, "refreshToken"); //c.req.header("refreshToken") || "";
 
-  const user = await verify(header, c.env.JWT_SECRET);
-  if (user.id) {
-    c.set("userId", user.id.toString());
-    await next();
-  } else {
+  if (!accessToken || !refreshToken) {
+    c.status(405);
+    return c.json({ error: "Unauthorized user", statusCode: 405 });
+  }
+
+  // Check access token is valid or not
+  try {
+    let { id } = await verify(accessToken, c.env.ACCESS_TOKEN_SECRET);
+    if (typeof id == "string") {
+      c.set("userId", id);
+      await next();
+    }
+  } catch (error) {
+    console.log(error);
     c.status(401);
-    return c.json({ error: "Unauthorized user" });
+    throw new HTTPException(401, { message: "Unauthorized user" });
   }
 });
 
