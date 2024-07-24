@@ -1,16 +1,13 @@
 import "./App.css";
 import { Route, Routes } from "react-router";
-import { Feeds } from "@/pages/Feeds";
-import { Landing } from "@/pages/Landing";
 import { Home } from "@/pages/Home";
+import { DraftBlog } from "@/pages/DraftBlog";
 
 const App = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home />}>
-        <Route index element={<Landing />} />
-        <Route path="/feeds" element={<Feeds />} />
-      </Route>
+      <Route path="/" element={<Home />} />
+      <Route path="/draft" element={<DraftBlog />} />
     </Routes>
   );
 };

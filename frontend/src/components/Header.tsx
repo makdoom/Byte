@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useMediaQuery } from "@uidotdev/usehooks";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { useLayoutEffect, useState } from "react";
+import { useState } from "react";
 import {
   Drawer,
   DrawerClose,
@@ -25,38 +25,32 @@ import axiosInstance from "@/config/api";
 export const Header = () => {
   const { isLoggedIn, logoutUser } = useAuthStore((state) => state);
   const [authDialog, setAuthDialog] = useState(false);
+  console.log(isLoggedIn);
 
   const navigate = useNavigate();
-  const { pathname } = useLocation();
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const navigateToHome = () => navigate("/");
 
   const closeAuthDialog = () => setAuthDialog(false);
 
-  const logoutHandler = () => {
-    logoutUser();
-    navigate("/");
-  };
-
-  const testPost = async () => {
-    const response = await axiosInstance.get("/post/get-all-post");
-    console.log(response);
-  };
-
-  useLayoutEffect(() => {
-    if (isLoggedIn) {
-      console.log("from uselayout effect");
-      console.log("need to call api to get user infomation");
-      navigate("/feeds");
+  const logoutHandler = async () => {
+    try {
+      const response = await axiosInstance.get("/auth/logout");
+      if (response.data.statusCode == 200) {
+        logoutUser();
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
     }
-  }, [isLoggedIn, navigate]);
+  };
 
   return (
     <div
       className={cn(
         `w-full px-3 fixed top-0  z-10  flex justify-between items-center py-3 backdrop-blur-sm bg-white/30`,
-        pathname !== "/" ? "md:max-w-screen" : "md:max-w-screen-xl m-auto"
+        isLoggedIn ? "md:max-w-screen" : "md:max-w-screen-xl m-auto"
       )}
     >
       <h3
@@ -68,7 +62,7 @@ export const Header = () => {
 
       {isLoggedIn ? (
         <div className="flex gap-2 items-center">
-          <Button variant="ghost" onClick={testPost}>
+          <Button variant="ghost">
             <SquarePen size="19" />
             <p className="ml-2 font-normal">Write</p>
           </Button>

@@ -148,6 +148,62 @@ authRouter.post("/signin", async (c) => {
   });
 });
 
+authRouter.get("/logout", async (c) => {
+  deleteCookie(c, "accessToken");
+  deleteCookie(c, "refreshToken");
+
+  c.status(200);
+  return c.json(ApiResponse(200, "User logout successfully", null));
+});
+
+authRouter.get("/get-user", async (c) => {
+  let cookie = c.req.header("cookie");
+  if (!cookie) {
+    c.status(200);
+    return c.json({
+      error: "Unauthorized user",
+      isAuthorized: false,
+      statusCode: 200,
+      user: null,
+    });
+  }
+
+  const { accessToken } = getTokensFromCookie(cookie);
+  if (!accessToken) {
+    c.status(200);
+    return c.json({
+      error: "Unauthorized user",
+      isAuthorized: false,
+      statusCode: 200,
+      user: null,
+    });
+  }
+
+  // Check access token is valid or not
+  try {
+    let { id } = await verify(accessToken, c.env.ACCESS_TOKEN_SECRET);
+    if (typeof id == "string") {
+      const prisma = getPrisma(c.env.DATABASE_URL);
+      let user = await prisma.user.findUnique({
+        where: { id },
+        select: { id: true, email: true, name: true },
+      });
+      return c.json({
+        ...ApiResponse(200, "User fetched successfully", user),
+        isAuthorized: true,
+      });
+    } else {
+      return c.json({
+        ...ApiResponse(400, "User details not found", null),
+        isAuthorized: false,
+      });
+    }
+  } catch (error) {
+    c.status(401);
+    throw new HTTPException(401, { message: "Unauthorized user" });
+  }
+});
+
 authRouter.post("/token", async (c) => {
   let cookie = c.req.header("cookie");
   if (!cookie) {

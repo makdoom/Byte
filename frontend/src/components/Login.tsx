@@ -12,7 +12,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signinInput, SignupInputType } from "@makdoom/medium-common";
 import { Loader } from "lucide-react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
 type LoginPropTypes = {
@@ -30,7 +29,6 @@ export const Login = ({
     formState: { errors, isSubmitting },
   } = useForm<SignupInputType>({ resolver: zodResolver(signinInput) });
   const { setUserInfo } = useAuthStore((state) => state);
-  const navigate = useNavigate();
 
   const loginUserHandler: SubmitHandler<SignupInputType> = async (data) => {
     try {
@@ -40,13 +38,9 @@ export const Login = ({
 
       // If user created successfully
       localStorage.setItem("accessToken", accessToken);
-
-      setUserInfo({
-        firstname: response.data.data.name,
-        email: response.data.data.email,
-      });
+      const { name, email, id } = response.data.data;
+      setUserInfo({ name, email, id });
       closeAuthDialog();
-      navigate("/feeds");
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong while resgistering user");

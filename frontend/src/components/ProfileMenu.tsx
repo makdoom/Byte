@@ -4,6 +4,7 @@ import {
   MenubarItem,
   MenubarSeparator,
 } from "@/components/ui/menubar";
+import { useAuthStore } from "@/store";
 import {
   BadgeHelp,
   BookmarkCheck,
@@ -17,19 +18,20 @@ type ProfileMenuProps = {
   logoutHandler: () => void;
 };
 export const ProfileMenu = ({ logoutHandler }: ProfileMenuProps) => {
+  const { user } = useAuthStore();
   return (
-    <MenubarContent className="flex flex-col gap-1">
+    <MenubarContent align="start" className="flex flex-col gap-1 mr-4">
       <MenubarItem>
         <div className="flex gap-3 items-center">
           <Avatar className="h-12 w-12">
             <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>MS</AvatarFallback>
           </Avatar>
 
           <div>
-            <h5 className="text-[14px] font-medium">Makdoom Shaikh</h5>
+            <h5 className="text-[14px] font-medium">{user?.name}</h5>
             <p className=" text-[12px] font-normal text-muted-foreground">
-              @makdoom
+              @{user?.email.split("@")?.at(0)}
             </p>
           </div>
         </div>

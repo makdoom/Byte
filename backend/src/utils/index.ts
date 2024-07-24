@@ -57,9 +57,12 @@ export const getTokens = async ({
 
 export const getTokensFromCookie = (cookie: string) => {
   try {
+    let accessToken = "";
+    let refreshToken = "";
+
     let splitedCookie = cookie.split(";").map((item) => item.trim());
-    let accessToken = splitedCookie[0].split("=").at(-1);
-    let refreshToken = splitedCookie[1].split("=").at(-1);
+    accessToken = splitedCookie[0].split("=").at(-1) || "";
+    refreshToken = splitedCookie[1].split("=").at(-1) || "";
     return { accessToken, refreshToken };
   } catch (error) {
     throw error;
