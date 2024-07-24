@@ -9,12 +9,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axiosInstance from "@/config/api";
+import { useAuthStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupInputType, signupInput } from "@makdoom/medium-common";
 import { Loader } from "lucide-react";
 // import { toast } from "sonner";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
 type RegisterPropTypes = {
@@ -32,7 +32,7 @@ export const Register = ({
     formState: { errors, isSubmitting },
   } = useForm<SignupInputType>({ resolver: zodResolver(signupInput) });
 
-  const navigate = useNavigate();
+  const { setUserInfo } = useAuthStore();
 
   const registerUserHandler: SubmitHandler<SignupInputType> = async (data) => {
     try {
@@ -42,8 +42,9 @@ export const Register = ({
 
       // If user created successfully
       localStorage.setItem("token", token);
+      const { name, email, id } = response.data.data;
+      setUserInfo({ name, email, id });
       closeAuthDialog();
-      navigate("/feeds");
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong while resgistering user");
