@@ -1,10 +1,13 @@
 import { Hono } from "hono";
-import { signinInput, signupInput } from "@makdoom/medium-common";
-
 import { Bindings } from "../types";
 import { getPrisma } from "../config";
 import { HTTPException } from "hono/http-exception";
-import { ApiResponse, ErrorResponse } from "../utils/customResponse";
+import {
+  ApiResponse,
+  ErrorResponse,
+  extendContext,
+  ExtendedContext,
+} from "../utils/customResponses";
 import {
   checkIsPasswordMatched,
   encryptPassword,
@@ -14,14 +17,17 @@ import {
 import { deleteCookie, setCookie } from "hono/cookie";
 import { verify } from "hono/jwt";
 import { ONE_DAY, SEVEN_DAYS } from "../constants";
+import { signinPayload, signupPayload } from "@makdoom/medium-common";
 
 const authRouter = new Hono<{ Bindings: Bindings }>();
 
 authRouter.post("/signup", async (c) => {
-  const body = await c.req.json();
-  const { success } = signupInput.safeParse(body);
+  const { sendSuccess, req, status } = extendContext(c) as ExtendedContext;
+
+  const body = await req.json();
+  const { success } = signupPayload.safeParse(body);
   if (!success) {
-    c.status(411);
+    status(411);
     throw new HTTPException(411, { message: "Invalid payload provided" });
   }
 
@@ -69,20 +75,25 @@ authRouter.post("/signup", async (c) => {
       maxAge: SEVEN_DAYS,
     });
 
-    return c.json({
+    let userResponse = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
       accessToken,
-      ...ApiResponse(200, "User created successfully", user),
-    });
+    };
+    return sendSuccess(200, userResponse, "User signup successfully");
   } catch (error) {
     return c.json(ErrorResponse(error));
   }
 });
 
 authRouter.post("/signin", async (c) => {
-  const body = await c.req.json();
-  const { success } = signinInput.safeParse(body);
+  const { sendSuccess, req, status } = extendContext(c) as ExtendedContext;
+
+  const body = await req.json();
+  const { success } = signinPayload.safeParse(body);
   if (!success) {
-    c.status(411);
+    status(411);
     throw new HTTPException(411, { message: "Invalid payload provided" });
   }
 
@@ -91,7 +102,6 @@ authRouter.post("/signin", async (c) => {
   if (!body.password)
     throw new HTTPException(411, { message: "Please enter a valid password" });
 
-  // const dcryptedPassword = await decryptPassword()
   const prisma = getPrisma(c.env.DATABASE_URL);
   let user = await prisma.user.findUnique({
     where: {
@@ -130,7 +140,7 @@ authRouter.post("/signin", async (c) => {
     maxAge: ONE_DAY,
   });
 
-  // // Setting refresh token in cookie for 7 days
+  // Setting refresh token in cookie for 7 days
   setCookie(c, "refreshToken", refreshToken, {
     httpOnly: true,
     sameSite: "Strict",
@@ -138,22 +148,23 @@ authRouter.post("/signin", async (c) => {
     maxAge: SEVEN_DAYS,
   });
 
-  return c.json({
+  let userResponse = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
     accessToken,
-    ...ApiResponse(200, "User login successfully", {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-    }),
-  });
+  };
+  return sendSuccess(200, userResponse, "User login successfully");
 });
 
 authRouter.get("/logout", async (c) => {
+  const { sendSuccess, status } = extendContext(c) as ExtendedContext;
+
   deleteCookie(c, "accessToken");
   deleteCookie(c, "refreshToken");
 
-  c.status(200);
-  return c.json(ApiResponse(200, "User logout successfully", null));
+  status(200);
+  return sendSuccess(200, null, "User logout successfully");
 });
 
 authRouter.get("/get-user", async (c) => {

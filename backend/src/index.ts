@@ -3,14 +3,16 @@ import { Bindings, Variables } from "./types";
 import authRouter from "./routes/authRouter";
 import postRouter from "./routes/postRouter";
 import { HTTPException } from "hono/http-exception";
-import { ErrorResponse } from "./utils/customResponse";
+import { commonResponseHandler, ErrorResponse } from "./utils/customResponses";
 import { cors } from "hono/cors";
 
-const app = new Hono<{ Bindings: Bindings; Variables: Variables }>().basePath(
-  "/api/v1"
-);
+const app = new Hono<{
+  Bindings: Bindings;
+  Variables: Variables;
+}>().basePath("/api/v1");
 
 // Middlewares
+app.use("*", commonResponseHandler);
 app.use(
   "*",
   cors({

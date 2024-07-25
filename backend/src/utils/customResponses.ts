@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Context } from "hono";
 import { HTTPException } from "hono/http-exception";
 
 const getPrismaErrorMessage = (err: any) => {
@@ -37,3 +37,29 @@ export const ApiResponse = (
   message: string,
   data: unknown
 ) => ({ statusCode, message, data });
+
+export interface ExtendedContext extends Context {
+  sendSuccess: (statusCode: number, data: any, message?: string) => Response;
+}
+
+export const extendContext = (c: Context): ExtendedContext => {
+  const extendedContext = c as ExtendedContext;
+  extendedContext.sendSuccess = (
+    statusCode: number,
+    data: any,
+    message: string = "Operation successful"
+  ) => {
+    return c.json({
+      statusCode,
+      success: statusCode === 200,
+      message,
+      data,
+    });
+  };
+  return extendedContext;
+};
+
+export const commonResponseHandler = async (c: Context, next: Function) => {
+  const extendedContext = extendContext(c);
+  await next(extendedContext);
+};

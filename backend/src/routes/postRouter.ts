@@ -1,10 +1,10 @@
 import { Hono } from "hono";
 import { Bindings, Variables } from "../types";
 import { getPrisma } from "../config";
-import { createPostInput, updatePostInput } from "@makdoom/medium-common";
 import { HTTPException } from "hono/http-exception";
 import { verify } from "hono/jwt";
 import { getTokensFromCookie } from "../utils";
+import { createBlogPayload } from "@makdoom/medium-common";
 
 const postRouter = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
@@ -41,7 +41,7 @@ postRouter.post("/create-post", async (c) => {
   const body = await c.req.json();
   const authorId = c.get("userId");
 
-  const { success } = createPostInput.safeParse(body);
+  const { success } = createBlogPayload.safeParse(body);
   if (!success) {
     c.status(411);
     return c.json({ error: "Invalid payload provided" });
@@ -67,7 +67,8 @@ postRouter.post("/create-post", async (c) => {
 postRouter.put("/update-post", async (c) => {
   const body = await c.req.json();
 
-  const { success } = updatePostInput.safeParse(body);
+  let success = true;
+  // const { success } = updatePostInput.safeParse(body);
   if (!success) {
     c.status(411);
     return c.json({ error: "Invalid payload provided" });
