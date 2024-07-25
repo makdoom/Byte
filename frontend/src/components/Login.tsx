@@ -6,13 +6,49 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import axiosInstance from "@/config/api";
+import { postRequest } from "@/config/api";
 import { useAuthStore } from "@/store";
+// import axiosInstance from "@/config/api";
+// import { useAuthStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signinInput, SignupInputType } from "@makdoom/medium-common";
+import {
+  SiginResSchema,
+  SiginResType,
+  SigninReqSchema,
+  SigninReqType,
+} from "@makdoom/medium-common";
+// import { signinPayload, SigninPayloadType } from "@makdoom/medium-common";
+// import { signinInput, SignupInputType } from "@makdoom/medium-common";
 import { Loader } from "lucide-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
+// import { toast } from "sonner";
+// import { z, ZodType } from "zod";
+
+// const ResponseCreator = <T extends ZodType<unknown>>(ResponseDataSchema: T) => {
+//   return z.object({
+//     message: z.string(),
+//     statusCode: z.number(),
+//     data: ResponseDataSchema,
+//   });
+// };
+
+// // Authentication payload / response types
+// export const SigninReqSchema = z.object({
+//   email: z.string().min(1, "Email is required").email("Email is invalid"),
+//   password: z.string().min(8, "Password must be at least 8 characters long"),
+// });
+
+// export const SiginResData = z.object({
+//   id: z.string(),
+//   name: z.string(),
+//   email: z.string(),
+//   accessToken: z.string().optional(),
+// });
+
+// export const SiginResSchema = ResponseCreator(SiginResData);
+// export type SigninReqType = z.infer<typeof SigninReqSchema>;
+// export type SiginResType = z.infer<typeof SiginResSchema>;
 
 type LoginPropTypes = {
   handleRenderComp: () => void;
@@ -27,24 +63,45 @@ export const Login = ({
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<SignupInputType>({ resolver: zodResolver(signinInput) });
+  } = useForm<SigninReqType>({ resolver: zodResolver(SigninReqSchema) });
   const { setUserInfo } = useAuthStore((state) => state);
 
-  const loginUserHandler: SubmitHandler<SignupInputType> = async (data) => {
+  const loginUserHandler: SubmitHandler<SigninReqType> = async (
+    payloadData
+  ) => {
     try {
-      const response = await axiosInstance.post("/auth/signin", data);
-      const { statusCode, message, accessToken = "" } = response.data;
-      if (statusCode !== 200) return toast.error(message);
-
-      // If user created successfully
-      localStorage.setItem("accessToken", accessToken);
-      const { name, email, id } = response.data.data;
-      setUserInfo({ name, email, id });
-      closeAuthDialog();
+      const response = await postRequest<SigninReqType, SiginResType>(
+        "/auth/signin",
+        payloadData,
+        SigninReqSchema,
+        SiginResSchema
+      );
+      const { data, statusCode, message } = response;
+      if (statusCode === 200) {
+        localStorage.setItem("accessToken", data.accessToken);
+        const { name, email, id } = data;
+        setUserInfo({ name, email, id });
+        closeAuthDialog();
+      } else {
+        toast.error(message || "Something went wrong while signin user");
+      }
     } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong while resgistering user");
+      toast.error('"Something went wrong while signin user"');
     }
+    // try {
+    //   const response = await axiosInstance.post("/auth/signin", data);
+    //   const { statusCode, message, accessToken = "" } = response.data;
+    //   if (statusCode !== 200) return toast.error(message);
+
+    //   // If user created successfully
+    //   localStorage.setItem("accessToken", accessToken);
+    //   const { name, email, id } = response.data.data;
+    //   setUserInfo({ name, email, id });
+    //   closeAuthDialog();
+    // } catch (error) {
+    //   console.log(error);
+    //   toast.error("Something went wrong while resgistering user");
+    // }
   };
   return (
     <DialogHeader>

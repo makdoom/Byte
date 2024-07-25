@@ -459,10 +459,10 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@makdoom/medium-common@^1.0.10":
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/@makdoom/medium-common/-/medium-common-1.0.10.tgz#b0cbc1467de4ae2537917b160ea665fe79478785"
-  integrity sha512-YrvnSJcPCMXnA/iwLBQ9MgXXldbIexHNMjzQ2k29H2O3hAh3R9Se4LAS8zJHcMdIa8Z9JX8aQNytUEEE1Oiwvw==
+"@makdoom/medium-common@^1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@makdoom/medium-common/-/medium-common-1.1.5.tgz#194be37680428c8d004f876d918575c8d84134c6"
+  integrity sha512-hfwOyXC+mgXyih3C2EkrcB7nU6t2VWwaHGEfJMNQySIBQ9jEWmnXjprhNvlZ6pU1rf7TZ+cQIbmisZmKCqoK1g==
   dependencies:
     zod "^3.23.8"
 

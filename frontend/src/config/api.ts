@@ -1,4 +1,5 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { z, ZodError } from "zod";
 
 axios.defaults.withCredentials = true;
 
@@ -55,4 +56,56 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// Generic get request with zod validation
+export const getRequest = async <T>(
+  url: string,
+  schema: z.ZodSchema<T>,
+  config?: AxiosRequestConfig
+): Promise<T> => {
+  try {
+    const response: AxiosResponse<unknown> = await axiosInstance.get(
+      url,
+      config
+    );
+    return schema.parse(response.data);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      // Handle validation errors
+      console.error("Validation Error:", error.errors);
+    } else {
+      console.error("Request Error:", error);
+    }
+    throw error;
+  }
+};
+
+// Generic post request with zod validation
+export const postRequest = async <T, D>(
+  url: string,
+  data: T,
+  dataSchema: z.ZodSchema<T>,
+  responseSchema: z.ZodSchema<D>,
+  config?: AxiosRequestConfig
+): Promise<D> => {
+  try {
+    dataSchema.parse(data); // Validate request payload
+    const response: AxiosResponse<unknown> = await axiosInstance.post(
+      url,
+      data,
+      config
+    );
+    console.log(response.data);
+    return responseSchema.parse(response.data); // Validate response data
+  } catch (error) {
+    if (error instanceof ZodError) {
+      // Handle validation errors
+      console.error("Validation Error:", error.errors);
+    } else {
+      console.error("Request Error:", error);
+    }
+    throw error;
+  }
+};
+
 export default axiosInstance;
