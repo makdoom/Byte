@@ -25,7 +25,6 @@ import axiosInstance from "@/config/api";
 export const Header = () => {
   const { isLoggedIn, logoutUser } = useAuthStore((state) => state);
   const [authDialog, setAuthDialog] = useState(false);
-  console.log(isLoggedIn);
 
   const navigate = useNavigate();
   const isDesktop = useMediaQuery("(min-width: 768px)");

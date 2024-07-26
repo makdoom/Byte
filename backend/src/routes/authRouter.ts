@@ -216,22 +216,24 @@ authRouter.get("/get-user", async (c) => {
 });
 
 authRouter.post("/token", async (c) => {
-  let cookie = c.req.header("cookie");
+  const { sendSuccess, status, req, env } = extendContext(c) as ExtendedContext;
+
+  let cookie = req.header("cookie");
   if (!cookie) {
-    c.status(401);
-    return c.json({ error: "Unauthorized user", statusCode: 401 });
+    status(401);
+    return sendSuccess(410, null, "Unauthorized user");
   }
   const { refreshToken } = getTokensFromCookie(cookie);
 
   if (!refreshToken) {
-    c.status(401);
-    return c.json({ error: "Refresh token is required" });
+    status(401);
+    return sendSuccess(401, null, "Refresh token is required");
   }
 
   try {
     const { id } = await verify(refreshToken, c.env.REFRESH_TOKEN_SECRET);
     if (typeof id == "string") {
-      const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = c.env;
+      const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = env;
       // Generate both new access and refresh token
       const tokens = await getTokens({
         id,
@@ -257,10 +259,14 @@ authRouter.post("/token", async (c) => {
         secure: true,
         maxAge: SEVEN_DAYS,
       });
-      c.status(200);
-      return c.json({
-        newAccessToken: tokens.accessToken,
-      });
+      status(200);
+      return sendSuccess(
+        200,
+        {
+          newAccessToken: tokens.accessToken,
+        },
+        "New token generated"
+      );
     }
   } catch (error) {
     console.log(error);
