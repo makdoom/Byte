@@ -5,12 +5,16 @@ import { BlockNoteView } from "@blocknote/mantine";
 import "@/styles/custom-editor.css";
 
 import { Button } from "@/components/ui/button";
-import { Captions, Image } from "lucide-react";
+import { Captions, Image, X } from "lucide-react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { CoverImageDialog } from "@/components/CoverImageDialog";
 // import { Block } from "@blocknote/core";
 
 export const BlockEditor = () => {
   const [blogTitle, setBlogTitle] = useState("");
+  const [coverImage, setCoverImage] = useState("");
+  const [openCoverImgDialog, setOpenCoverImgDialog] = useState(false);
   // const [blocks, setBlocks] = useState<Block[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -28,6 +32,8 @@ export const BlockEditor = () => {
     }
   };
 
+  const handleRemoveCover = () => setCoverImage("");
+
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -40,16 +46,47 @@ export const BlockEditor = () => {
       <div className=" h-[calc(100vh-90px)] overflow-scroll max-w-screen-xl m-auto no-scrollbar mt-5">
         <div className="max-w-[900px] m-auto mt-4">
           <div className="flex gap-3 items-center">
-            <Button variant="ghost" className="text-muted-foreground">
-              <Image size={17} />
-              <p className="ml-1">Add Cover</p>
-            </Button>
+            {!coverImage && (
+              <Dialog
+                open={openCoverImgDialog}
+                onOpenChange={setOpenCoverImgDialog}
+              >
+                <DialogTrigger asChild>
+                  <Button variant="ghost" className="text-muted-foreground">
+                    <Image size={17} />
+                    <p className="ml-1">Add Cover</p>
+                  </Button>
+                </DialogTrigger>
+                <CoverImageDialog
+                  setCoverImage={setCoverImage}
+                  setOpenCoverImgDialog={setOpenCoverImgDialog}
+                />
+              </Dialog>
+            )}
 
             <Button variant="ghost" className="text-muted-foreground">
               <Captions size={17} />
               <p className="ml-1">Add Subtitle</p>
             </Button>
           </div>
+
+          {coverImage && (
+            <div className="mt-3 relative">
+              <Button
+                variant="destructive"
+                className="rounded-full absolute top-3 right-3 h-10 w-10 p-0"
+                onClick={handleRemoveCover}
+              >
+                <X size={19} />
+              </Button>
+
+              <img
+                src={coverImage}
+                alt="cover"
+                className="w-full h-80 rounded-md"
+              />
+            </div>
+          )}
 
           <textarea
             ref={textareaRef}
