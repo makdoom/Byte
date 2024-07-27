@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@blocknote/core": "^0.15.3",
+    "@blocknote/mantine": "^0.15.3",
+    "@blocknote/react": "^0.15.3",
     "@hookform/resolvers": "^3.9.0",
     "@makdoom/medium-common": "^1.1.5",
     "@radix-ui/react-accordion": "^1.2.0",

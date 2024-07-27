@@ -1,0 +1,12 @@
+.ProseMirror .bn-editor {
+    margin-left: -40px !important;
+}
+
+.bn-container .bn-editor * {
+    color: #000;
+  }
+
+.bn-inline-content:has(>.ProseMirror-trailingBreak:only-child):before {
+    font-style: normal !important;
+    color: #64748b;
+}
