@@ -3,26 +3,48 @@ import { Home } from "@/pages/Home";
 import { DraftBlog } from "@/pages/DraftBlog";
 import { useAuthStore } from "@/store";
 import { useLayoutEffect } from "react";
-import axiosInstance from "@/config/api";
+import { getRequest } from "@/config/api";
+import { GetUserResSchema, GetUserResType } from "@makdoom/byte-common";
+import { toast } from "sonner";
 
 const App = () => {
-  const { isLoading, setUserInfo, setLoading } = useAuthStore();
+  const { isLoading, setUserInfo, setLoading, setDefaultPage } = useAuthStore();
 
   useLayoutEffect(() => {
     (async () => {
       try {
         setLoading(true);
-        const response = await axiosInstance.get("/auth/get-user");
-        if (response.data?.isAuthorized) {
-          setUserInfo(response.data?.data);
+        const response = await getRequest<GetUserResType>(
+          "/auth/get-user",
+          GetUserResSchema
+        );
+        const { data, statusCode, message } = response;
+        if (statusCode === 200) {
+          setUserInfo({
+            id: data.id,
+            email: data.email,
+            name: data.name,
+          });
+          setDefaultPage("feeds");
+        } else {
+          toast.error(message);
         }
+        // if (response.data?.isAuthorized) {
+        //   setUserInfo({
+        //     id: response.data?.id,
+        //     name: response.data.name,
+        //     email: response.data?.email,
+        //   });
+        // } else {
+
+        // }
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        console.log(error);
+        // console.log(error);
       }
     })();
-  }, [setUserInfo, setLoading]);
+  }, [setUserInfo, setLoading, setDefaultPage]);
 
   if (isLoading) {
     return (

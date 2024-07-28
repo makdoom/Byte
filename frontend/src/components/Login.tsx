@@ -64,7 +64,7 @@ export const Login = ({
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<SigninReqType>({ resolver: zodResolver(SigninReqSchema) });
-  const { setUserInfo } = useAuthStore((state) => state);
+  const { setUserInfo, setDefaultPage } = useAuthStore((state) => state);
 
   const loginUserHandler: SubmitHandler<SigninReqType> = async (
     payloadData
@@ -81,6 +81,7 @@ export const Login = ({
         localStorage.setItem("accessToken", data.accessToken);
         const { name, email, id } = data;
         setUserInfo({ name, email, id });
+        setDefaultPage("feeds");
         closeAuthDialog();
       } else {
         toast.error(message || "Something went wrong while signin user");

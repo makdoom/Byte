@@ -39,6 +39,6 @@ export const useAuthStore = create<authStore>((set) => ({
     if (localStorage.getItem("accessToken")) {
       localStorage.removeItem("accessToken");
     }
-    set({ isLoggedIn: false, user: null });
+    set({ isLoggedIn: false, user: null, defaultPage: "home" });
   },
 }));

@@ -168,26 +168,17 @@ authRouter.get("/logout", async (c) => {
 });
 
 authRouter.get("/get-user", async (c) => {
-  let cookie = c.req.header("cookie");
-  if (!cookie) {
-    c.status(200);
-    return c.json({
-      error: "Unauthorized user",
-      isAuthorized: false,
-      statusCode: 200,
-      user: null,
-    });
-  }
+  const { sendSuccess, status, req } = extendContext(c) as ExtendedContext;
 
+  let cookie = req.header("cookie");
+  if (!cookie) {
+    status(400);
+    throw new HTTPException(400, { message: "Unauthorized user" });
+  }
   const { accessToken } = getTokensFromCookie(cookie);
   if (!accessToken) {
-    c.status(200);
-    return c.json({
-      error: "Unauthorized user",
-      isAuthorized: false,
-      statusCode: 200,
-      user: null,
-    });
+    status(400);
+    throw new HTTPException(400, { message: "Unauthorized user" });
   }
 
   // Check access token is valid or not
@@ -199,19 +190,19 @@ authRouter.get("/get-user", async (c) => {
         where: { id },
         select: { id: true, email: true, name: true },
       });
-      return c.json({
-        ...ApiResponse(200, "User fetched successfully", user),
-        isAuthorized: true,
-      });
+      status(200);
+      return sendSuccess(
+        200,
+        { ...user, isAuthorized: true },
+        "User fetched successfully"
+      );
     } else {
-      return c.json({
-        ...ApiResponse(400, "User details not found", null),
-        isAuthorized: false,
-      });
+      status(400);
+      throw new HTTPException(400, { message: "Unauthorized user" });
     }
   } catch (error) {
-    c.status(401);
-    throw new HTTPException(401, { message: "Unauthorized user" });
+    c.status(400);
+    throw new HTTPException(400, { message: "Unauthorized user" });
   }
 });
 

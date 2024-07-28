@@ -1,4 +1,4 @@
-import { z, ZodType } from "zod";
+import { boolean, z, ZodType } from "zod";
 
 const ResponseCreator = <T extends ZodType<unknown>>(ResponseDataSchema: T) => {
   return z.object({
@@ -34,6 +34,20 @@ export const SiginResData = z.object({
   accessToken: z.string(),
 });
 
+export const GetUserResData = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+  isAuthorized: z.boolean(),
+});
+
+export const LogoutUserResSchema = z.object({
+  data: z.null(),
+  message: z.string(),
+  statusCode: z.number(),
+  success: z.boolean(),
+});
+
 export const SignupResSchema = ResponseCreator(SiginResData);
 export type SignupReqType = z.infer<typeof SignupReqSchema>;
 export type SignupResType = z.infer<typeof SignupResSchema>;
@@ -41,6 +55,11 @@ export type SignupResType = z.infer<typeof SignupResSchema>;
 export const SiginResSchema = ResponseCreator(SiginResData);
 export type SigninReqType = z.infer<typeof SigninReqSchema>;
 export type SiginResType = z.infer<typeof SiginResSchema>;
+
+export const GetUserResSchema = ResponseCreator(GetUserResData);
+export type GetUserResType = z.infer<typeof GetUserResSchema>;
+
+export type LogoutUserResType = z.infer<typeof LogoutUserResSchema>;
 
 // Blogs schema and types
 // const ResponseCreator = <T extends ZodType<unknown>>(ResponseDataSchema: T) => {

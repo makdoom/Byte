@@ -37,7 +37,7 @@ export const Register = ({
     formState: { errors, isSubmitting },
   } = useForm<SignupReqType>({ resolver: zodResolver(SignupReqSchema) });
 
-  const { setUserInfo } = useAuthStore();
+  const { setUserInfo, setDefaultPage } = useAuthStore();
 
   const registerUserHandler: SubmitHandler<SignupReqType> = async (
     payloadData
@@ -54,6 +54,7 @@ export const Register = ({
         localStorage.setItem("token", data.accessToken);
         const { name, email, id } = data;
         setUserInfo({ name, email, id });
+        setDefaultPage("feeds");
         closeAuthDialog();
       } else {
         toast.error(

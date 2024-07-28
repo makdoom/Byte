@@ -71,12 +71,10 @@ export const getRequest = async <T>(
     return schema.parse(response.data);
   } catch (error) {
     if (error instanceof ZodError) {
-      // Handle validation errors
-      console.error("Validation Error:", error.errors);
+      throw new Error("validation error");
     } else {
-      console.error("Request Error:", error);
+      throw error;
     }
-    throw error;
   }
 };
 
@@ -95,16 +93,13 @@ export const postRequest = async <T, D>(
       data,
       config
     );
-    console.log(response.data);
     return responseSchema.parse(response.data); // Validate response data
   } catch (error) {
     if (error instanceof ZodError) {
-      // Handle validation errors
-      console.error("Validation Error:", error.errors);
+      throw new Error("Validation error");
     } else {
-      console.error("Request Error:", error);
+      throw error;
     }
-    throw error;
   }
 };
 

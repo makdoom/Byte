@@ -21,6 +21,7 @@ import { SquarePen } from "lucide-react";
 import { Menubar, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
 import { ProfileMenu } from "@/components/ProfileMenu";
 import axiosInstance from "@/config/api";
+import { toast } from "sonner";
 
 export const Header = () => {
   const { defaultPage, isLoggedIn, logoutUser } = useAuthStore(
@@ -38,12 +39,14 @@ export const Header = () => {
   const logoutHandler = async () => {
     try {
       const response = await axiosInstance.get("/auth/logout");
+      // const { statusCode, message } = response;
       if (response.data.statusCode == 200) {
         logoutUser();
-        navigate("/");
+      } else {
+        toast.error(response.data.message);
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Something went wrong while logging out user");
     }
   };
 
