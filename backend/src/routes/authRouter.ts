@@ -17,7 +17,7 @@ import {
 import { deleteCookie, setCookie } from "hono/cookie";
 import { verify } from "hono/jwt";
 import { ONE_DAY, SEVEN_DAYS } from "../constants";
-import { signinPayload, signupPayload } from "@makdoom/medium-common";
+import { SigninReqSchema } from "@makdoom/byte-common";
 
 const authRouter = new Hono<{ Bindings: Bindings }>();
 
@@ -25,7 +25,7 @@ authRouter.post("/signup", async (c) => {
   const { sendSuccess, req, status } = extendContext(c) as ExtendedContext;
 
   const body = await req.json();
-  const { success } = signupPayload.safeParse(body);
+  const { success } = SigninReqSchema.safeParse(body);
   if (!success) {
     status(411);
     throw new HTTPException(411, { message: "Invalid payload provided" });
@@ -91,7 +91,7 @@ authRouter.post("/signin", async (c) => {
   const { sendSuccess, req, status } = extendContext(c) as ExtendedContext;
 
   const body = await req.json();
-  const { success } = signinPayload.safeParse(body);
+  const { success } = SigninReqSchema.safeParse(body);
   if (!success) {
     status(411);
     throw new HTTPException(411, { message: "Invalid payload provided" });

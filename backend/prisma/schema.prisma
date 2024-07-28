@@ -18,7 +18,7 @@ model User {
   email      String   @unique
   name       String
   password   String
-  profileURL String
+  profileURL String   @default("")
   createdAt  DateTime @default(now())
   posts      Blogs[]
 }
@@ -26,9 +26,9 @@ model User {
 model Blogs {
   id          String  @id @default(uuid())
   title       String
-  subtitle    String
-  coverImage  String
+  subtitle    String  @default("")
   content     String
+  coverImage  String  @default("")
   isDraft     Boolean @default(true)
   isPublished Boolean @default(false)
   authorId    String

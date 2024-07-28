@@ -16,7 +16,7 @@ import {
   SiginResType,
   SigninReqSchema,
   SigninReqType,
-} from "@makdoom/medium-common";
+} from "@makdoom/byte-common";
 // import { signinPayload, SigninPayloadType } from "@makdoom/medium-common";
 // import { signinInput, SignupInputType } from "@makdoom/medium-common";
 import { Loader } from "lucide-react";

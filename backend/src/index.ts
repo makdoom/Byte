@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { Bindings, Variables } from "./types";
 import authRouter from "./routes/authRouter";
-import postRouter from "./routes/postRouter";
+import blogRouter from "./routes/blogRouter";
 import { HTTPException } from "hono/http-exception";
 import { commonResponseHandler, ErrorResponse } from "./utils/customResponses";
 import { cors } from "hono/cors";
@@ -23,7 +23,7 @@ app.use(
 
 // Router
 app.route("/auth", authRouter);
-app.route("/post", postRouter);
+app.route("/blogs", blogRouter);
 
 // Custom HTTP Exception handler
 app.onError((error, c) => {

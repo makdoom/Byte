@@ -5,19 +5,19 @@ import { Landing } from "@/pages/Landing";
 import { useAuthStore } from "@/store";
 
 export const Home = () => {
-  const { isLoggedIn } = useAuthStore();
+  const { defaultPage } = useAuthStore();
 
   return (
     <div
       className={cn(
         "bg-[#f5f5f5] w-screen flex flex-col",
-        !isLoggedIn && "h-screen"
+        defaultPage === "home" && "h-screen"
       )}
     >
       <div className="flex justify-center items-center">
         <Header />
       </div>
-      {isLoggedIn ? <Feeds /> : <Landing />}
+      {defaultPage === "feeds" ? <Feeds /> : <Landing />}
     </div>
   );
 };

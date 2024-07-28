@@ -13,6 +13,19 @@ export const SigninReqSchema = z.object({
   email: z.string().min(1, "Email is required").email("Email is invalid"),
   password: z.string().min(8, "Password must be at least 8 characters long"),
 });
+export const SignupReqSchema = z
+  .object({
+    name: z.string().optional(),
+    email: z.string().min(1, "Email is required").email("Email is invalid"),
+    password: z.string().min(8, "Password must be at least 8 characters long"),
+    confirmPassword: z
+      .string()
+      .min(8, "Confirm Password must be at least 8 characters long"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Passwords does not match",
+  });
 
 export const SiginResData = z.object({
   id: z.string(),
@@ -21,10 +34,15 @@ export const SiginResData = z.object({
   accessToken: z.string(),
 });
 
+export const SignupResSchema = ResponseCreator(SiginResData);
+export type SignupReqType = z.infer<typeof SignupReqSchema>;
+export type SignupResType = z.infer<typeof SignupResSchema>;
+
 export const SiginResSchema = ResponseCreator(SiginResData);
 export type SigninReqType = z.infer<typeof SigninReqSchema>;
 export type SiginResType = z.infer<typeof SiginResSchema>;
 
+// Blogs schema and types
 // const ResponseCreator = <T extends ZodType<unknown>>(ResponseDataSchema: T) => {
 //   return z.object({
 //     success: z.boolean(),

@@ -6,23 +6,31 @@ type User = {
   name: string;
 };
 
+type DefaultPage = "home" | "feeds";
+
 type authStore = {
   isLoading: boolean;
   isLoggedIn: boolean;
+  defaultPage: DefaultPage;
   user: User | null;
 
   setLoading: (loading: boolean) => void;
+  setDefaultPage: (page: DefaultPage) => void;
   setUserInfo: (user: User) => void;
   logoutUser: () => void;
 };
 
 export const useAuthStore = create<authStore>((set) => ({
   isLoading: false,
+  defaultPage: "home",
   isLoggedIn: localStorage.getItem("accessToken") !== null,
   user: null,
 
   setLoading: (payload: boolean) => {
     set({ isLoading: payload });
+  },
+  setDefaultPage: (page: DefaultPage) => {
+    set({ defaultPage: page });
   },
   setUserInfo: (userPayload: User) => {
     set({ user: userPayload, isLoggedIn: true });

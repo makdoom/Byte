@@ -23,7 +23,9 @@ import { ProfileMenu } from "@/components/ProfileMenu";
 import axiosInstance from "@/config/api";
 
 export const Header = () => {
-  const { isLoggedIn, logoutUser } = useAuthStore((state) => state);
+  const { defaultPage, isLoggedIn, logoutUser } = useAuthStore(
+    (state) => state
+  );
   const [authDialog, setAuthDialog] = useState(false);
 
   const navigate = useNavigate();
@@ -49,7 +51,9 @@ export const Header = () => {
     <div
       className={cn(
         `w-full px-3 fixed top-0  z-10  flex justify-between items-center py-3 backdrop-blur-sm bg-white/30`,
-        isLoggedIn ? "md:max-w-screen" : "md:max-w-screen-xl m-auto"
+        defaultPage === "feeds"
+          ? "md:max-w-screen"
+          : "md:max-w-screen-xl m-auto"
       )}
     >
       <h3

@@ -8,10 +8,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import axiosInstance from "@/config/api";
+import { postRequest } from "@/config/api";
 import { useAuthStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SignupInputType, signupInput } from "@makdoom/medium-common";
+import {
+  SignupReqType,
+  SignupReqSchema,
+  SignupResType,
+  SignupResSchema,
+} from "@makdoom/byte-common";
 import { Loader } from "lucide-react";
 // import { toast } from "sonner";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -30,25 +35,48 @@ export const Register = ({
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<SignupInputType>({ resolver: zodResolver(signupInput) });
+  } = useForm<SignupReqType>({ resolver: zodResolver(SignupReqSchema) });
 
   const { setUserInfo } = useAuthStore();
 
-  const registerUserHandler: SubmitHandler<SignupInputType> = async (data) => {
+  const registerUserHandler: SubmitHandler<SignupReqType> = async (
+    payloadData
+  ) => {
     try {
-      const response = await axiosInstance.post("/auth/signup", data);
-      const { statusCode, message, token = "" } = response.data;
-      if (statusCode !== 200) return toast.error(message);
-
-      // If user created successfully
-      localStorage.setItem("token", token);
-      const { name, email, id } = response.data.data;
-      setUserInfo({ name, email, id });
-      closeAuthDialog();
+      const response = await postRequest<SignupReqType, SignupResType>(
+        "/auth/signup",
+        payloadData,
+        SignupReqSchema,
+        SignupResSchema
+      );
+      const { data, statusCode, message } = response;
+      if (statusCode === 200) {
+        localStorage.setItem("token", data.accessToken);
+        const { name, email, id } = data;
+        setUserInfo({ name, email, id });
+        closeAuthDialog();
+      } else {
+        toast.error(
+          message || "Something went wrong while registering the user"
+        );
+      }
     } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong while resgistering user");
+      toast.error('"Something went wrong while resgistering the user"');
     }
+    // try {
+    //   const response = await axiosInstance.post("/auth/signup", data);
+    //   const { statusCode, message, token = "" } = response.data;
+    //   if (statusCode !== 200) return toast.error(message);
+
+    //   // If user created successfully
+    //   localStorage.setItem("token", token);
+    //   const { name, email, id } = response.data.data;
+    //   setUserInfo({ name, email, id });
+    //   closeAuthDialog();
+    // } catch (error) {
+    //   console.log(error);
+    //   toast.error("Something went wrong while resgistering user");
+    // }
   };
 
   return (

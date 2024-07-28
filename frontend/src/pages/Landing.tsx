@@ -1,19 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
-import { useNavigate } from "react-router";
+import { useAuthStore } from "@/store";
 
 export const Landing = () => {
-  const navigate = useNavigate();
+  const { setDefaultPage } = useAuthStore();
 
   const handleNavigateToFeeds = () => {
-    navigate("/feeds");
+    setDefaultPage("feeds");
   };
-
-  useEffect(() => {
-    if (localStorage.getItem("token")) {
-      navigate("/feeds");
-    }
-  }, [navigate]);
 
   return (
     <div className="flex-1 mx-3 text-center">
