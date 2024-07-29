@@ -68,9 +68,9 @@ export const Header = () => {
         BlogResSchema
       );
       setCreateDraftLoading(false);
-      const { statusCode, message } = response;
+      const { data, statusCode, message } = response;
       if (statusCode === 200) {
-        navigate("/draft");
+        navigate(`/draft/${data.id}`);
       } else {
         toast.error(message);
       }

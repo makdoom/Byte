@@ -1,3 +1,4 @@
+import { BlogItem } from "@/components/BlogItem";
 import {
   Accordion,
   AccordionContent,
@@ -64,8 +65,8 @@ export const Sidebar = () => {
             value={openAccordion}
             onValueChange={setOpenAccordion}
           >
-            <AccordionItem className="border-0 mb-4" value="item-1">
-              <AccordionTrigger className="text-secondary-foreground hover:no-underline text-xs hover:text-primary">
+            <AccordionItem className="border-0 mb-2" value="item-1">
+              <AccordionTrigger className="text-muted-foreground hover:no-underline text-xs hover:text-primary">
                 PINNED
               </AccordionTrigger>
               <AccordionContent className="text-center text-muted-foreground text-sm font-normal">
@@ -73,17 +74,26 @@ export const Sidebar = () => {
               </AccordionContent>
             </AccordionItem>
 
-            <AccordionItem className="border-0 mb-4" value="item-2">
-              <AccordionTrigger className="text-secondary-foreground hover:no-underline text-xs hover:text-primary">
+            <AccordionItem className="border-0 mb-2" value="item-2">
+              <AccordionTrigger className="text-muted-foreground hover:no-underline text-xs hover:text-primary">
                 MY DRAFTS {drafts.length ? `(${drafts.length})` : ""}
               </AccordionTrigger>
-              <AccordionContent className="text-center text-muted-foreground text-sm font-normal">
-                You dont have any drafts
-              </AccordionContent>
+
+              {drafts.length > 0 ? (
+                <AccordionContent>
+                  {drafts.map((blog) => (
+                    <BlogItem key={blog.id} blog={blog} />
+                  ))}
+                </AccordionContent>
+              ) : (
+                <AccordionContent className="text-center text-muted-foreground text-sm font-normal">
+                  You dont have any drafts{" "}
+                </AccordionContent>
+              )}
             </AccordionItem>
 
             <AccordionItem className="border-0" value="item-3">
-              <AccordionTrigger className="text-secondary-foreground hover:no-underline text-xs hover:text-primary">
+              <AccordionTrigger className="text-muted-foreground hover:no-underline text-xs hover:text-primary">
                 PUBLISHED
               </AccordionTrigger>
               <AccordionContent className="text-center text-muted-foreground text-sm font-normal">

@@ -47,7 +47,7 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/draft" element={<DraftBlog />} />
+      <Route path="/draft/:blogId" element={<DraftBlog />} />
     </Routes>
   );
 };
