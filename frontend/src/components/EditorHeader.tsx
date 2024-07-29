@@ -3,11 +3,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Menubar, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
 import { cn } from "@/lib/utils";
-import { useEditorStore } from "@/store";
+import { useBlogStore } from "@/store";
 import { PanelLeftOpen } from "lucide-react";
 
 export const EditorHeader = () => {
-  const { isSidebarOpen, toggleSidebar } = useEditorStore();
+  const { isSidebarOpen, toggleSidebar } = useBlogStore();
 
   return (
     <div className={cn("flex items-center justify-between")}>

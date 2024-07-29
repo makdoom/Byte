@@ -7,14 +7,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useAuthStore, useEditorStore } from "@/store";
+import { useAuthStore, useBlogStore } from "@/store";
 import { FilePlus2, MoveLeft, PanelLeftClose } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
 export const Sidebar = () => {
   const { user } = useAuthStore();
-  const { isSidebarOpen, toggleSidebar } = useEditorStore();
+  const { drafts } = useBlogStore();
+  const { isSidebarOpen, toggleSidebar } = useBlogStore();
   const [openAccordion, setOpenAccordion] = useState("item-2");
 
   const navigate = useNavigate();
@@ -74,7 +75,7 @@ export const Sidebar = () => {
 
             <AccordionItem className="border-0 mb-4" value="item-2">
               <AccordionTrigger className="text-secondary-foreground hover:no-underline text-xs hover:text-primary">
-                MY DRAFTS
+                MY DRAFTS {drafts.length ? `(${drafts.length})` : ""}
               </AccordionTrigger>
               <AccordionContent className="text-center text-muted-foreground text-sm font-normal">
                 You dont have any drafts

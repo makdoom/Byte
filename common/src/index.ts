@@ -1,4 +1,4 @@
-import { boolean, z, ZodType } from "zod";
+import { z, ZodType } from "zod";
 
 const ResponseCreator = <T extends ZodType<unknown>>(ResponseDataSchema: T) => {
   return z.object({
@@ -65,6 +65,7 @@ export const BlogResData = z.object({
   content: z.string().optional(),
   coverImage: z.string().optional(),
   isDraft: z.boolean(),
+  isPinned: z.boolean(),
   isPublished: z.boolean(),
   authorId: z.string(),
 });
@@ -78,3 +79,13 @@ export const EmptyDraftSchema = z.object({
 });
 
 export type EmptyDraftType = z.infer<typeof EmptyDraftSchema>;
+
+export const AllBlogsResData = z.object({
+  drafts: z.array(BlogResData).optional(),
+  pinned: z.array(BlogResData).optional(),
+  published: z.array(BlogResData).optional(),
+});
+
+export const AllBlogResSchema = ResponseCreator(AllBlogsResData);
+export type AllBlogResType = z.infer<typeof AllBlogResSchema>;
+export type BlogListType = z.infer<typeof AllBlogsResData>;

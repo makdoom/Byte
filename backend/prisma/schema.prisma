@@ -31,6 +31,7 @@ model Blogs {
   coverImage  String  @default("")
   isDraft     Boolean @default(true)
   isPublished Boolean @default(false)
+  isPinned    Boolean @default(false)
   authorId    String
   author      User    @relation(fields: [authorId], references: [id])
 }

@@ -78,10 +78,35 @@ blogRouter.post("/create-draft", async (c) => {
     }
   } catch (error) {
     status(411);
-    return c.json({ error: "Something went wrong while creating draft blog" });
+    throw new HTTPException(411, {
+      message: "Something went wrong while creating draft blog",
+    });
   }
 });
 
+blogRouter.get("/all-blogs", async (c) => {
+  const { sendSuccess, status, get } = extendContext(c) as ExtendedContext;
+  const userId = get("userId");
+
+  try {
+    const prisma = getPrisma(c.env.DATABASE_URL);
+    const allBlogs = await prisma.blogs.findMany({
+      where: { authorId: userId },
+    });
+    const blogList = {
+      drafts: allBlogs.filter((blog) => blog.isDraft),
+      pinned: allBlogs.filter((blog) => blog.isPinned),
+      published: allBlogs.filter((blog) => blog.isPublished),
+    };
+
+    return sendSuccess(200, blogList, "Blogs fetched successfully");
+  } catch (error) {
+    status(411);
+    throw new HTTPException(411, {
+      message: "Something went wrong while fetching all blogs",
+    });
+  }
+});
 // // Create Post
 // blogRouter.post("/create-post", async (c) => {
 //   const body = await c.req.json();

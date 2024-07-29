@@ -12,6 +12,7 @@ const App = () => {
 
   useLayoutEffect(() => {
     (async () => {
+      console.log("from app");
       try {
         setLoading(true);
         const response = await getRequest<GetUserResType>(
@@ -29,15 +30,6 @@ const App = () => {
         } else {
           toast.error(message);
         }
-        // if (response.data?.isAuthorized) {
-        //   setUserInfo({
-        //     id: response.data?.id,
-        //     name: response.data.name,
-        //     email: response.data?.email,
-        //   });
-        // } else {
-
-        // }
         setLoading(false);
       } catch (error) {
         setLoading(false);

@@ -1,4 +1,4 @@
 import { useAuthStore } from "@/store/authStore";
-import { useEditorStore } from "@/store/editorStore";
+import { useBlogStore } from "@/store/blogStore";
 
-export { useAuthStore, useEditorStore };
+export { useAuthStore, useBlogStore };
