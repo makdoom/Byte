@@ -10,12 +10,16 @@ import { cn } from "@/lib/utils";
 import { useAuthStore, useEditorStore } from "@/store";
 import { FilePlus2, MoveLeft, PanelLeftClose } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 export const Sidebar = () => {
   const { user } = useAuthStore();
   const { isSidebarOpen, toggleSidebar } = useEditorStore();
-
   const [openAccordion, setOpenAccordion] = useState("item-2");
+
+  const navigate = useNavigate();
+
+  const navigateToHome = () => navigate("/");
 
   return (
     <div
@@ -89,7 +93,7 @@ export const Sidebar = () => {
         </div>
 
         <div className="p-4">
-          <Button size="lg" className="w-full py-6">
+          <Button size="lg" className="w-full py-6" onClick={navigateToHome}>
             <MoveLeft />
             <p className="ml-2">Back to Byte</p>
           </Button>

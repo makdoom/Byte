@@ -192,10 +192,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@makdoom/byte-common@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@makdoom/byte-common/-/byte-common-1.0.1.tgz#f89c96cdfaa05a7ae9241a198b22bfff57f8e156"
-  integrity sha512-D4oaRnu8KpmC9ur5MTZXclOwHwpsMz/o2JG4q2LexoFLCnkS/wb8fWfRGMKm4qwda1KJusMaF8kSey64Q50R6A==
+"@makdoom/byte-common@^1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@makdoom/byte-common/-/byte-common-1.0.12.tgz#3437a4937a805c5e05210ebd3d70ee5c6c32c36a"
+  integrity sha512-G8ypb+iMDR4nOX91oaG7N/12z0acb7p3NtOHEfn88trJSp7hX7htKZNFBUobIifS4lBCLdtrzDzu+BdqGCpoxA==
   dependencies:
     zod "^3.23.8"
 

@@ -17,16 +17,23 @@ import {
 import { Auth } from "@/components/Auth";
 import { useAuthStore } from "@/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { SquarePen } from "lucide-react";
+import { Loader, SquarePen } from "lucide-react";
 import { Menubar, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
 import { ProfileMenu } from "@/components/ProfileMenu";
-import axiosInstance from "@/config/api";
+import axiosInstance, { postRequest } from "@/config/api";
 import { toast } from "sonner";
+import {
+  BlogResSchema,
+  BlogResType,
+  EmptyDraftSchema,
+  EmptyDraftType,
+} from "@makdoom/byte-common";
 
 export const Header = () => {
-  const { defaultPage, isLoggedIn, logoutUser } = useAuthStore(
+  const { defaultPage, isLoggedIn, logoutUser, user } = useAuthStore(
     (state) => state
   );
+  const [createDraftLoading, setCreateDraftLoading] = useState(false);
   const [authDialog, setAuthDialog] = useState(false);
 
   const navigate = useNavigate();
@@ -50,6 +57,29 @@ export const Header = () => {
     }
   };
 
+  const createDraftHandler = async () => {
+    try {
+      setCreateDraftLoading(true);
+      const payload = { userId: user?.id ?? "" };
+      const response = await postRequest<EmptyDraftType, BlogResType>(
+        "/blogs/create-draft",
+        payload,
+        EmptyDraftSchema,
+        BlogResSchema
+      );
+      setCreateDraftLoading(false);
+      const { statusCode, message } = response;
+      if (statusCode === 200) {
+        navigate("/draft");
+      } else {
+        toast.error(message);
+      }
+      console.log(response);
+    } catch (error) {
+      toast.error("Something went wrong while creating draft");
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -68,9 +98,12 @@ export const Header = () => {
 
       {isLoggedIn ? (
         <div className="flex gap-2 items-center">
-          <Button variant="ghost">
+          <Button variant="ghost" onClick={createDraftHandler}>
             <SquarePen size="19" />
             <p className="ml-2 font-normal">Write</p>
+            {createDraftLoading && (
+              <Loader size={20} className="animate-spin ml-2" />
+            )}
           </Button>
 
           <Menubar className="border-0 bg-transparent outline-none shadow-none">

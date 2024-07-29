@@ -6,6 +6,7 @@ import { verify } from "hono/jwt";
 import { getTokensFromCookie } from "../utils";
 import { extendContext, ExtendedContext } from "../utils/customResponses";
 import { getPrisma } from "../config";
+import { EmptyDraftSchema } from "@makdoom/byte-common";
 // import { createBlogPayload } from "@makdoom/medium-common";
 
 const blogRouter = new Hono<{ Bindings: Bindings; Variables: Variables }>();
@@ -40,15 +41,13 @@ blogRouter.use("/*", async (c, next) => {
 
 // Create draft blog
 blogRouter.post("/create-draft", async (c) => {
-  const { sendSuccess, req, status, get } = extendContext(c) as ExtendedContext;
-  const userId = get("userId");
-  const { mode } = await req.json();
+  const { sendSuccess, status, req } = extendContext(c) as ExtendedContext;
+  const body = await req.json();
 
-  if (!mode) {
+  const { success } = EmptyDraftSchema.safeParse(body);
+  if (!success) {
     status(411);
-    throw new HTTPException(411, {
-      message: "Invalid mode provided to create draft blog",
-    });
+    throw new HTTPException(411, { message: "Invalid payload provided" });
   }
 
   try {
@@ -57,18 +56,18 @@ blogRouter.post("/create-draft", async (c) => {
       where: { isDraft: true },
     });
 
-    if (mode == "new" || draftBlogCount == 0) {
+    if (draftBlogCount === 0) {
       const draftBlog = await prisma.blogs.create({
         data: {
           title: `Untitled-${draftBlogCount + 1}`,
           content: "",
-          authorId: userId,
+          authorId: body.userId,
         },
       });
 
       return sendSuccess(200, draftBlog, "Draft blog created successfully");
     } else {
-      const existingDraftBlog = await prisma.blogs.findMany({
+      const existingDraftBlog = await prisma.blogs.findFirst({
         where: { isDraft: true },
       });
       return sendSuccess(
