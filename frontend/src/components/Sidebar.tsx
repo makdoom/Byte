@@ -7,21 +7,101 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { postRequest } from "@/config/api";
 import { cn } from "@/lib/utils";
 import { useAuthStore, useBlogStore } from "@/store";
+import {
+  BlogResSchema,
+  BlogResType,
+  DeleteBlogPayload,
+  DeleteBlogResSchema,
+  DeleteBlogResType,
+  DeleteBlogType,
+  EmptyDraftSchema,
+  EmptyDraftType,
+  PinBlogPayload,
+  PinBlogResSchema,
+  PinBlogResType,
+  PinBlogType,
+} from "@makdoom/byte-common";
 import { FilePlus2, MoveLeft, PanelLeftClose } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 export const Sidebar = () => {
-  const { user } = useAuthStore();
-  const { drafts } = useBlogStore();
   const { isSidebarOpen, toggleSidebar } = useBlogStore();
   const [openAccordion, setOpenAccordion] = useState("item-2");
+  const { user } = useAuthStore();
+  const { drafts, pinned, updateDraftBlogs, deleteDraft, addIntoPinnedBlogs } =
+    useBlogStore();
 
   const navigate = useNavigate();
 
   const navigateToHome = () => navigate("/");
+
+  const createNewBlogHandler = async () => {
+    try {
+      const payload = { userId: user?.id ?? "" };
+      const response = await postRequest<EmptyDraftType, BlogResType>(
+        "/blogs/new",
+        payload,
+        EmptyDraftSchema,
+        BlogResSchema
+      );
+      const { data, statusCode, message } = response;
+      if (statusCode === 200 && data) {
+        updateDraftBlogs(data);
+        toast.success("New empty draft added");
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error("Something went wrong while creating draft");
+    }
+  };
+
+  const deleteBlogHandler = async (id: string) => {
+    try {
+      const response = await postRequest<DeleteBlogType, DeleteBlogResType>(
+        "/blogs/delete-blog",
+        { blogId: id },
+        DeleteBlogPayload,
+        DeleteBlogResSchema
+      );
+      const { statusCode, message } = response;
+      if (statusCode === 200) {
+        deleteDraft(id);
+        toast.success("Blog deleted successfully");
+      } else {
+        toast.error(message);
+      }
+      console.log(response);
+    } catch (error) {
+      toast.error("Something went wrong while deleting blog");
+    }
+  };
+
+  const pinBlogHandler = async (id: string, isPinned: boolean) => {
+    try {
+      const response = await postRequest<PinBlogType, PinBlogResType>(
+        "/blogs/pin-blog",
+        { blogId: id, isPinned },
+        PinBlogPayload,
+        PinBlogResSchema
+      );
+      const { statusCode, message, data } = response;
+      if (statusCode === 200 && data) {
+        addIntoPinnedBlogs(data);
+        toast.success("Blog pinned successfully");
+      } else {
+        toast.error(message);
+      }
+      console.log(response);
+    } catch (error) {
+      toast.error("Something went wrong while deleting blog");
+    }
+  };
 
   return (
     <div
@@ -37,7 +117,7 @@ export const Sidebar = () => {
         )}
       >
         <div className="p-4 flex gap-4 items-center">
-          <h5 className="text-xl font-bold">B</h5>
+          <h5 className="text-2xl font-extrabold">B</h5>
           <p className="flex-1 text-sm font-medium">{user?.name}</p>
           <Button variant="ghost" className="h-8 p-2" onClick={toggleSidebar}>
             <PanelLeftClose size="18" />
@@ -52,6 +132,7 @@ export const Sidebar = () => {
           <Button
             variant="ghost"
             className="w-full justify-start px-2 gap-2 font-medium"
+            onClick={createNewBlogHandler}
           >
             <FilePlus2 size={17} />
             <p className="font-medium text-muted-foreground">New Draft</p>
@@ -67,7 +148,7 @@ export const Sidebar = () => {
           >
             <AccordionItem className="border-0 mb-2" value="item-1">
               <AccordionTrigger className="text-muted-foreground hover:no-underline text-xs hover:text-primary">
-                PINNED
+                PINNED {pinned.length ? `(${pinned.length})` : ""}
               </AccordionTrigger>
               <AccordionContent className="text-center text-muted-foreground text-sm font-normal">
                 Your pinned drafts from blog would appear here
@@ -80,9 +161,14 @@ export const Sidebar = () => {
               </AccordionTrigger>
 
               {drafts.length > 0 ? (
-                <AccordionContent>
+                <AccordionContent className="max-h-80 overflow-scroll no-scrollbar">
                   {drafts.map((blog) => (
-                    <BlogItem key={blog.id} blog={blog} />
+                    <BlogItem
+                      key={blog.id}
+                      blog={blog}
+                      deleteBlogHandler={deleteBlogHandler}
+                      pinBlogHandler={pinBlogHandler}
+                    />
                   ))}
                 </AccordionContent>
               ) : (

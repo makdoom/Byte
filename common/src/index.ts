@@ -1,10 +1,12 @@
 import { z, ZodType } from "zod";
 
-const ResponseCreator = <T extends ZodType<unknown>>(ResponseDataSchema: T) => {
+const ResponseCreator = <T extends ZodType<unknown> | null>(
+  ResponseDataSchema: T
+) => {
   return z.object({
     message: z.string(),
     statusCode: z.number(),
-    data: ResponseDataSchema,
+    data: ResponseDataSchema ? ResponseDataSchema : z.null(),
   });
 };
 
@@ -60,6 +62,7 @@ export type LogoutUserResType = z.infer<typeof LogoutUserResSchema>;
 // Blogs schema and types
 export const BlogResData = z.object({
   id: z.string(),
+  authorId: z.string(),
   title: z.string().min(1, "Please provide some title"),
   subtitle: z.string().optional(),
   content: z.string().optional(),
@@ -67,7 +70,7 @@ export const BlogResData = z.object({
   isDraft: z.boolean(),
   isPinned: z.boolean(),
   isPublished: z.boolean(),
-  authorId: z.string(),
+  createdAt: z.string(),
 });
 
 export const BlogResSchema = ResponseCreator(BlogResData);
@@ -89,3 +92,18 @@ export const AllBlogsResData = z.object({
 export const AllBlogResSchema = ResponseCreator(AllBlogsResData);
 export type AllBlogResType = z.infer<typeof AllBlogResSchema>;
 export type BlogListType = z.infer<typeof AllBlogsResData>;
+
+export const DeleteBlogPayload = z.object({
+  blogId: z.string().min(1, "Blog id is required"),
+});
+
+export const DeleteBlogResSchema = ResponseCreator(null);
+export type DeleteBlogResType = z.infer<typeof DeleteBlogResSchema>;
+export type DeleteBlogType = z.infer<typeof DeleteBlogPayload>;
+
+export const PinBlogPayload = DeleteBlogPayload.extend({
+  isPinned: z.boolean(),
+});
+export const PinBlogResSchema = ResponseCreator(BlogResData);
+export type PinBlogResType = z.infer<typeof PinBlogResSchema>;
+export type PinBlogType = z.infer<typeof PinBlogPayload>;

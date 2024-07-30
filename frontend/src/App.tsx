@@ -20,9 +20,9 @@ const App = () => {
           GetUserResSchema
         );
         const { data, statusCode, message } = response;
-        if (statusCode === 200) {
+        if (statusCode === 200 && data) {
           setUserInfo({
-            id: data.id,
+            id: data?.id,
             email: data.email,
             name: data.name,
           });

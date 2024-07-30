@@ -70,11 +70,10 @@ export const Header = () => {
       setCreateDraftLoading(false);
       const { data, statusCode, message } = response;
       if (statusCode === 200) {
-        navigate(`/draft/${data.id}`);
+        navigate(`/draft/${data?.id}`);
       } else {
         toast.error(message);
       }
-      console.log(response);
     } catch (error) {
       toast.error("Something went wrong while creating draft");
     }

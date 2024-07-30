@@ -6,7 +6,12 @@ import { verify } from "hono/jwt";
 import { getTokensFromCookie } from "../utils";
 import { extendContext, ExtendedContext } from "../utils/customResponses";
 import { getPrisma } from "../config";
-import { EmptyDraftSchema } from "@makdoom/byte-common";
+import {
+  DeleteBlogPayload,
+  DeleteBlogType,
+  EmptyDraftSchema,
+  PinBlogType,
+} from "@makdoom/byte-common";
 // import { createBlogPayload } from "@makdoom/medium-common";
 
 const blogRouter = new Hono<{ Bindings: Bindings; Variables: Variables }>();
@@ -21,6 +26,7 @@ blogRouter.use("/*", async (c, next) => {
 
   const { accessToken, refreshToken } = getTokensFromCookie(cookie);
   if (!accessToken || !refreshToken) {
+    console.log("inside");
     c.status(405);
     return c.json({ error: "Unauthorized user", statusCode: 405 });
   }
@@ -84,6 +90,87 @@ blogRouter.post("/create-draft", async (c) => {
   }
 });
 
+// Create new blog as empty blog
+blogRouter.post("/new", async (c) => {
+  const { sendSuccess, status, req } = extendContext(c) as ExtendedContext;
+  const body = await req.json();
+
+  const { success } = EmptyDraftSchema.safeParse(body);
+  if (!success) {
+    status(411);
+    throw new HTTPException(411, { message: "Invalid payload provided" });
+  }
+
+  try {
+    const prisma = getPrisma(c.env.DATABASE_URL);
+    const draftBlogCount = await prisma.blogs.count({
+      where: { isDraft: true },
+    });
+
+    const draftBlog = await prisma.blogs.create({
+      data: {
+        title: `Untitled-${draftBlogCount + 1}`,
+        content: "",
+        authorId: body.userId,
+      },
+    });
+
+    return sendSuccess(200, draftBlog, "Draft blog created successfully");
+  } catch (error) {
+    status(411);
+    throw new HTTPException(411, {
+      message: "Something went wrong while creating draft blog",
+    });
+  }
+});
+
+blogRouter.post("/delete-blog", async (c) => {
+  const { sendSuccess, status, req } = extendContext(c) as ExtendedContext;
+  const body: DeleteBlogType = await req.json();
+
+  const { success } = DeleteBlogPayload.safeParse(body);
+  if (!success) {
+    status(411);
+    throw new HTTPException(411, { message: "Invalid payload provided" });
+  }
+
+  try {
+    const prisma = getPrisma(c.env.DATABASE_URL);
+    await prisma.blogs.delete({ where: { id: body.blogId } });
+    return sendSuccess(200, null, "Blog deleted successfully");
+  } catch (error) {
+    status(411);
+    throw new HTTPException(411, {
+      message: "Something went wrong while deleting blog",
+    });
+  }
+});
+
+blogRouter.post("/pin-blog", async (c) => {
+  const { sendSuccess, status, req } = extendContext(c) as ExtendedContext;
+  const body: PinBlogType = await req.json();
+
+  const { success } = DeleteBlogPayload.safeParse(body);
+  if (!success) {
+    status(411);
+    throw new HTTPException(411, { message: "Invalid payload provided" });
+  }
+
+  try {
+    const prisma = getPrisma(c.env.DATABASE_URL);
+    const updatedBlog = await prisma.blogs.update({
+      where: { id: body.blogId },
+      data: { isPinned: body.isPinned },
+    });
+    return sendSuccess(200, updatedBlog, "Blog updated successfully");
+  } catch (error) {
+    status(411);
+    throw new HTTPException(411, {
+      message: "Something went wrong while updating blog",
+    });
+  }
+});
+
 blogRouter.get("/all-blogs", async (c) => {
   const { sendSuccess, status, get } = extendContext(c) as ExtendedContext;
   const userId = get("userId");
@@ -107,6 +194,7 @@ blogRouter.get("/all-blogs", async (c) => {
     });
   }
 });
+
 // // Create Post
 // blogRouter.post("/create-post", async (c) => {
 //   const body = await c.req.json();
