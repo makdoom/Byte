@@ -33,8 +33,14 @@ export const Sidebar = () => {
   const { isSidebarOpen, toggleSidebar } = useBlogStore();
   const [openAccordion, setOpenAccordion] = useState("item-2");
   const { user } = useAuthStore();
-  const { drafts, pinned, updateDraftBlogs, deleteDraft, addIntoPinnedBlogs } =
-    useBlogStore();
+  const {
+    blogList,
+    pinnedCount,
+    draftsCount,
+    updateDraftBlogs,
+    deleteDraft,
+    addIntoPinnedBlogs,
+  } = useBlogStore();
 
   const navigate = useNavigate();
 
@@ -92,7 +98,7 @@ export const Sidebar = () => {
       );
       const { statusCode, message, data } = response;
       if (statusCode === 200 && data) {
-        addIntoPinnedBlogs(data);
+        addIntoPinnedBlogs(data.id);
         toast.success("Blog pinned successfully");
       } else {
         toast.error(message);
@@ -102,6 +108,8 @@ export const Sidebar = () => {
       toast.error("Something went wrong while deleting blog");
     }
   };
+
+  const navigateToBlog = (id: string) => navigate(`/draft/${id}`);
 
   return (
     <div
@@ -148,28 +156,47 @@ export const Sidebar = () => {
           >
             <AccordionItem className="border-0 mb-2" value="item-1">
               <AccordionTrigger className="text-muted-foreground hover:no-underline text-xs hover:text-primary">
-                PINNED {pinned.length ? `(${pinned.length})` : ""}
+                PINNED {pinnedCount ? `(${pinnedCount})` : ""}
               </AccordionTrigger>
-              <AccordionContent className="text-center text-muted-foreground text-sm font-normal">
-                Your pinned drafts from blog would appear here
-              </AccordionContent>
+              {blogList.length > 0 ? (
+                <AccordionContent className="max-h-80 overflow-scroll no-scrollbar">
+                  {blogList
+                    .filter((blog) => blog.isPinned)
+                    .map((blog) => (
+                      <BlogItem
+                        key={blog.id}
+                        blog={blog}
+                        deleteBlogHandler={deleteBlogHandler}
+                        pinBlogHandler={pinBlogHandler}
+                        navigateToBlog={navigateToBlog}
+                      />
+                    ))}
+                </AccordionContent>
+              ) : (
+                <AccordionContent className="text-center text-muted-foreground text-sm font-normal">
+                  Your pinned drafts from blog would appear here
+                </AccordionContent>
+              )}
             </AccordionItem>
 
             <AccordionItem className="border-0 mb-2" value="item-2">
               <AccordionTrigger className="text-muted-foreground hover:no-underline text-xs hover:text-primary">
-                MY DRAFTS {drafts.length ? `(${drafts.length})` : ""}
+                MY DRAFTS {draftsCount ? `(${draftsCount})` : ""}
               </AccordionTrigger>
 
-              {drafts.length > 0 ? (
+              {blogList.length > 0 ? (
                 <AccordionContent className="max-h-80 overflow-scroll no-scrollbar">
-                  {drafts.map((blog) => (
-                    <BlogItem
-                      key={blog.id}
-                      blog={blog}
-                      deleteBlogHandler={deleteBlogHandler}
-                      pinBlogHandler={pinBlogHandler}
-                    />
-                  ))}
+                  {blogList
+                    .filter((blog) => blog.isDraft)
+                    .map((blog) => (
+                      <BlogItem
+                        key={blog.id}
+                        blog={blog}
+                        deleteBlogHandler={deleteBlogHandler}
+                        pinBlogHandler={pinBlogHandler}
+                        navigateToBlog={navigateToBlog}
+                      />
+                    ))}
                 </AccordionContent>
               ) : (
                 <AccordionContent className="text-center text-muted-foreground text-sm font-normal">

@@ -68,6 +68,9 @@ export const getRequest = async <T>(
       url,
       config
     );
+
+    console.log(schema);
+    console.log(response.data);
     return schema.parse(response.data);
   } catch (error) {
     if (error instanceof ZodError) {

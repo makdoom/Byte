@@ -50,7 +50,7 @@ export const Register = ({
         SignupResSchema
       );
       const { data, statusCode, message } = response;
-      if (statusCode === 200) {
+      if (statusCode === 200 && data) {
         localStorage.setItem("token", data.accessToken);
         const { name, email, id } = data;
         setUserInfo({ name, email, id });

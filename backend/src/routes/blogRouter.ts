@@ -180,13 +180,13 @@ blogRouter.get("/all-blogs", async (c) => {
     const allBlogs = await prisma.blogs.findMany({
       where: { authorId: userId },
     });
-    const blogList = {
-      drafts: allBlogs.filter((blog) => blog.isDraft),
-      pinned: allBlogs.filter((blog) => blog.isPinned),
-      published: allBlogs.filter((blog) => blog.isPublished),
-    };
+    // const blogList = {
+    //   drafts: allBlogs.filter((blog) => blog.isDraft),
+    //   pinned: allBlogs.filter((blog) => blog.isPinned),
+    //   published: allBlogs.filter((blog) => blog.isPublished),
+    // };
 
-    return sendSuccess(200, blogList, "Blogs fetched successfully");
+    return sendSuccess(200, allBlogs, "Blogs fetched successfully");
   } catch (error) {
     status(411);
     throw new HTTPException(411, {

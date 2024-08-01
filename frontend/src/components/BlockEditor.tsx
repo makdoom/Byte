@@ -6,17 +6,33 @@ import "@/styles/custom-editor.css";
 
 import { Button } from "@/components/ui/button";
 import { Captions, Image, X } from "lucide-react";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { CoverImageDialog } from "@/components/CoverImageDialog";
+import { useParams } from "react-router";
+import { useBlogStore } from "@/store";
+import { BlogType } from "@makdoom/byte-common";
 // import { Block } from "@blocknote/core";
 
 export const BlockEditor = () => {
+  const params = useParams();
+  const { blogList, updateEditorHandler } = useBlogStore();
+
+  const [blog, setBlog] = useState<BlogType | null>(null);
+
   const [blogTitle, setBlogTitle] = useState("");
   const [coverImage, setCoverImage] = useState("");
   const [openCoverImgDialog, setOpenCoverImgDialog] = useState(false);
   // const [blocks, setBlocks] = useState<Block[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // const blog = drafts.find((blog) => blog.id === blogId);
 
   const editor = useCreateBlockNote({
     initialContent: undefined,
@@ -29,6 +45,11 @@ export const BlockEditor = () => {
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length <= 100) {
       setBlogTitle(e.target.value);
+      if (blog)
+        updateEditorHandler(blog?.id, {
+          type: "title",
+          payload: e.target.value,
+        });
     }
   };
 
@@ -40,6 +61,15 @@ export const BlockEditor = () => {
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [blogTitle]);
+
+  useLayoutEffect(() => {
+    if (params.blogId) {
+      const currentBlog = blogList.find(
+        (singleBlog) => singleBlog.id === params.blogId
+      );
+      setBlog(currentBlog ? currentBlog : null);
+    }
+  }, [params, setBlog, blogList]);
 
   return (
     <div className="">
@@ -90,7 +120,7 @@ export const BlockEditor = () => {
 
           <textarea
             ref={textareaRef}
-            value={blogTitle}
+            value={blog?.title}
             onChange={handleChange}
             placeholder="Blog Title..."
             rows={1}

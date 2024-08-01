@@ -1,51 +1,77 @@
-import { BlogListType, BlogType } from "@makdoom/byte-common";
+import { BlogType } from "@makdoom/byte-common";
 import { create } from "zustand";
+
+type EditorChangeType = "title" | "subtitle" | "coverImage" | "content";
+type EditorPayloadType = {
+  type: EditorChangeType;
+  payload: string;
+};
 
 type BlogStore = {
   isSidebarOpen: boolean;
-  drafts: BlogType[];
-  pinned: BlogType[];
-  published: BlogType[];
+  blogList: BlogType[];
+
+  draftsCount: number;
+  pinnedCount: number;
+  publishedCount: number;
 
   toggleSidebar: () => void;
-  setBlogs: (payload: BlogListType) => void;
+  setBlogs: (payload: BlogType[]) => void;
   updateDraftBlogs: (payload: BlogType) => void;
   deleteDraft: (id: string) => void;
-  addIntoPinnedBlogs: (blog: BlogType) => void;
+  addIntoPinnedBlogs: (blog: string) => void;
+  updateEditorHandler: (id: string, payload: EditorPayloadType) => void;
 };
 
 export const useBlogStore = create<BlogStore>((set, get) => ({
   isSidebarOpen: true,
-  drafts: [],
-  pinned: [],
-  published: [],
+  blogList: [],
+  draftsCount: 0,
+  pinnedCount: 0,
+  publishedCount: 0,
 
   toggleSidebar: () => {
     set({ isSidebarOpen: !get().isSidebarOpen });
   },
-  updateDraftBlogs: (payload: BlogType) => {
+  updateDraftBlogs: (payload) => {
     set({
-      drafts: [...get().drafts, payload],
+      blogList: [...get().blogList, payload],
     });
   },
-  setBlogs: (payload: BlogListType) => {
+  setBlogs: (payload) => {
     set({
-      drafts: payload.drafts,
-      pinned: payload.pinned,
-      published: payload.published,
+      blogList: payload,
     });
   },
-  deleteDraft: (id: string) => {
-    set({ drafts: get().drafts.filter((blog) => blog.id !== id) });
+  deleteDraft: (id) => {
+    const blogList = get().blogList.filter((blog) => blog.id !== id);
+    const draftsCount = blogList.filter((blog) => blog.isDraft).length;
+    const pinnedCount = blogList.filter((blog) => blog.isPinned).length;
+    const publishedCount = blogList.filter((blog) => blog.isPublished).length;
+
+    set({
+      blogList: blogList,
+      draftsCount,
+      pinnedCount,
+      publishedCount,
+    });
   },
-  addIntoPinnedBlogs: (blog: BlogType) => {
-    const localDrafts = get().drafts;
-    const blogIdx = localDrafts.findIndex(
-      (singleBlog) => singleBlog.id === blog.id
-    );
-    if (blogIdx > -1) {
-      localDrafts[blogIdx] = blog;
+  addIntoPinnedBlogs: (id) => {
+    const blogList = get().blogList;
+    const blogIndex = blogList.findIndex((blog) => blog.id === id);
+    if (blogIndex > -1) {
+      blogList[blogIndex] = {
+        ...blogList[blogIndex],
+        isPinned: !blogList[blogIndex].isPinned,
+      };
     }
-    set({ drafts: localDrafts, pinned: [...get().pinned, blog] });
+
+    set({
+      blogList,
+      pinnedCount: blogList.filter((blog) => blog.isPinned).length,
+    });
+  },
+  updateEditorHandler: (type, payload) => {
+    console.log(type, payload);
   },
 }));

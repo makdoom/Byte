@@ -19,7 +19,7 @@ export const DraftBlog = () => {
             AllBlogResSchema
           );
           const { statusCode, message, data } = response;
-          if (statusCode === 200) {
+          if (statusCode === 200 && data) {
             setBlogs(data);
           } else {
             toast.error(message);

@@ -190,10 +190,11 @@ authRouter.get("/get-user", async (c) => {
         where: { id },
         select: { id: true, email: true, name: true },
       });
+
       status(200);
       return sendSuccess(
         200,
-        { ...user, isAuthorized: true },
+        user ? { ...user, isAuthorized: true } : { isAuthorized: true },
         "User fetched successfully"
       );
     } else {

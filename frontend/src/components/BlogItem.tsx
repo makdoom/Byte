@@ -12,8 +12,8 @@ import { BlogType } from "@makdoom/byte-common";
 import {
   EllipsisVertical,
   FileText,
-  PenOff,
   Pin,
+  PinOff,
   SquareArrowOutUpRight,
   Trash2,
 } from "lucide-react";
@@ -23,11 +23,13 @@ type BlogItemProps = {
   blog: BlogType;
   deleteBlogHandler: (id: string) => void;
   pinBlogHandler: (id: string, isPinned: boolean) => void;
+  navigateToBlog: (id: string) => void;
 };
 export const BlogItem = ({
   blog,
   deleteBlogHandler,
   pinBlogHandler,
+  navigateToBlog,
 }: BlogItemProps) => {
   const params = useParams();
 
@@ -37,6 +39,7 @@ export const BlogItem = ({
         "relative px-1 rounded-sm cursor-pointer hover:bg-secondary flex items-center justify-between mb-1",
         params.blogId === blog.id ? "bg-secondary" : "bg-transparent"
       )}
+      onClick={() => navigateToBlog(blog.id)}
     >
       <div className="flex gap-2 items-center flex-1 h-8">
         <FileText size={17} />
@@ -55,8 +58,10 @@ export const BlogItem = ({
                 className="cursor-pointer"
                 onClick={() => pinBlogHandler(blog.id, !blog.isPinned)}
               >
-                {blog.isPinned ? <PenOff size={16} /> : <Pin size={16} />}
-                <span className="ml-2 ">Pin</span>
+                {blog.isPinned ? <PinOff size={16} /> : <Pin size={16} />}
+                <span className="ml-2 ">
+                  {blog.isPinned ? "Unpin" : "Pin"}{" "}
+                </span>
               </MenubarItem>
               <MenubarItem className="cursor-pointer">
                 <SquareArrowOutUpRight size={16} />

@@ -15,6 +15,14 @@ export const SigninReqSchema = z.object({
   email: z.string().min(1, "Email is required").email("Email is invalid"),
   password: z.string().min(8, "Password must be at least 8 characters long"),
 });
+
+export const SignupResData = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+  accessToken: z.string(),
+});
+
 export const SignupReqSchema = z
   .object({
     name: z.string().optional(),
@@ -29,12 +37,11 @@ export const SignupReqSchema = z
     message: "Passwords does not match",
   });
 
-export const SiginResData = z.object({
-  id: z.string(),
-  name: z.string(),
-  email: z.string(),
-  accessToken: z.string(),
-});
+export const SignupResSchema = ResponseCreator(SignupResData);
+export type SignupReqType = z.infer<typeof SignupReqSchema>;
+export type SignupResType = z.infer<typeof SignupResSchema>;
+
+export const SiginResData = SignupResData;
 
 export const GetUserResData = z.object({
   id: z.string(),
@@ -71,6 +78,7 @@ export const BlogResData = z.object({
   isPinned: z.boolean(),
   isPublished: z.boolean(),
   createdAt: z.string(),
+  updatedAt: z.string(),
 });
 
 export const BlogResSchema = ResponseCreator(BlogResData);
@@ -83,11 +91,17 @@ export const EmptyDraftSchema = z.object({
 
 export type EmptyDraftType = z.infer<typeof EmptyDraftSchema>;
 
-export const AllBlogsResData = z.object({
-  drafts: z.array(BlogResData).optional(),
-  pinned: z.array(BlogResData).optional(),
-  published: z.array(BlogResData).optional(),
-});
+// export const AllBlogsResData = z.object({
+//   drafts: z.array(BlogResData).optional(),
+//   pinned: z.array(BlogResData).optional(),
+//   published: z.array(BlogResData).optional(),
+// });
+
+// export const AllBlogsResData = z.object({
+//   blogList: z.array(BlogResData).optional(),
+// });
+
+export const AllBlogsResData = z.array(BlogResData).optional();
 
 export const AllBlogResSchema = ResponseCreator(AllBlogsResData);
 export type AllBlogResType = z.infer<typeof AllBlogResSchema>;
