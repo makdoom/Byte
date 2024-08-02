@@ -11,7 +11,7 @@ import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 type coverImageDialog = {
-  setCoverImage: Dispatch<SetStateAction<string>>;
+  setCoverImage: (base64: string) => void;
   setOpenCoverImgDialog: Dispatch<SetStateAction<boolean>>;
 };
 

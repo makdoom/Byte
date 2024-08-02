@@ -1,4 +1,4 @@
-import { Editor } from "@/components/Editor/Editor";
+import { Editor } from "@/components/Editor";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
 import { getRequest } from "@/config/api";
 import { useAuthStore, useBlogStore } from "@/store";
