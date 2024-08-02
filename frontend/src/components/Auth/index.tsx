@@ -1,5 +1,5 @@
-import { Login } from "@/components/Login";
-import { Register } from "@/components/Register";
+import { Login } from "@/components/Auth/Login";
+import { Register } from "@/components/Auth/Register";
 import { DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
 

@@ -1,5 +1,3 @@
-// import { ChangeEvent, useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import {
   DialogDescription,
@@ -10,67 +8,94 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { postRequest } from "@/config/api";
 import { useAuthStore } from "@/store";
+// import axiosInstance from "@/config/api";
+// import { useAuthStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  SignupReqType,
-  SignupReqSchema,
-  SignupResType,
-  SignupResSchema,
+  SiginResSchema,
+  SiginResType,
+  SigninReqSchema,
+  SigninReqType,
 } from "@makdoom/byte-common";
+// import { signinPayload, SigninPayloadType } from "@makdoom/medium-common";
+// import { signinInput, SignupInputType } from "@makdoom/medium-common";
 import { Loader } from "lucide-react";
-// import { toast } from "sonner";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
+// import { toast } from "sonner";
+// import { z, ZodType } from "zod";
 
-type RegisterPropTypes = {
+// const ResponseCreator = <T extends ZodType<unknown>>(ResponseDataSchema: T) => {
+//   return z.object({
+//     message: z.string(),
+//     statusCode: z.number(),
+//     data: ResponseDataSchema,
+//   });
+// };
+
+// // Authentication payload / response types
+// export const SigninReqSchema = z.object({
+//   email: z.string().min(1, "Email is required").email("Email is invalid"),
+//   password: z.string().min(8, "Password must be at least 8 characters long"),
+// });
+
+// export const SiginResData = z.object({
+//   id: z.string(),
+//   name: z.string(),
+//   email: z.string(),
+//   accessToken: z.string().optional(),
+// });
+
+// export const SiginResSchema = ResponseCreator(SiginResData);
+// export type SigninReqType = z.infer<typeof SigninReqSchema>;
+// export type SiginResType = z.infer<typeof SiginResSchema>;
+
+type LoginPropTypes = {
   handleRenderComp: () => void;
   closeAuthDialog: () => void;
 };
 
-export const Register = ({
+export const Login = ({
   handleRenderComp,
   closeAuthDialog,
-}: RegisterPropTypes) => {
+}: LoginPropTypes) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<SignupReqType>({ resolver: zodResolver(SignupReqSchema) });
+  } = useForm<SigninReqType>({ resolver: zodResolver(SigninReqSchema) });
+  const { setUserInfo, setDefaultPage } = useAuthStore((state) => state);
 
-  const { setUserInfo, setDefaultPage } = useAuthStore();
-
-  const registerUserHandler: SubmitHandler<SignupReqType> = async (
+  const loginUserHandler: SubmitHandler<SigninReqType> = async (
     payloadData
   ) => {
     try {
-      const response = await postRequest<SignupReqType, SignupResType>(
-        "/auth/signup",
+      const response = await postRequest<SigninReqType, SiginResType>(
+        "/auth/signin",
         payloadData,
-        SignupReqSchema,
-        SignupResSchema
+        SigninReqSchema,
+        SiginResSchema
       );
       const { data, statusCode, message } = response;
       if (statusCode === 200 && data) {
-        localStorage.setItem("token", data.accessToken);
+        localStorage.setItem("accessToken", data.accessToken);
         const { name, email, id } = data;
         setUserInfo({ name, email, id });
         setDefaultPage("feeds");
         closeAuthDialog();
       } else {
-        toast.error(
-          message || "Something went wrong while registering the user"
-        );
+        toast.error(message || "Something went wrong while signin user");
       }
     } catch (error) {
-      toast.error('"Something went wrong while resgistering the user"');
+      toast.error('"Something went wrong while signin user"');
     }
     // try {
-    //   const response = await axiosInstance.post("/auth/signup", data);
-    //   const { statusCode, message, token = "" } = response.data;
+    //   const response = await axiosInstance.post("/auth/signin", data);
+    //   const { statusCode, message, accessToken = "" } = response.data;
     //   if (statusCode !== 200) return toast.error(message);
 
     //   // If user created successfully
-    //   localStorage.setItem("token", token);
+    //   localStorage.setItem("accessToken", accessToken);
     //   const { name, email, id } = response.data.data;
     //   setUserInfo({ name, email, id });
     //   closeAuthDialog();
@@ -79,31 +104,18 @@ export const Register = ({
     //   toast.error("Something went wrong while resgistering user");
     // }
   };
-
   return (
     <DialogHeader>
-      <DialogTitle className="text-center text-xl">
-        Create Account 🚀
-      </DialogTitle>
+      <DialogTitle className="text-center text-xl">Welcome Home 👋</DialogTitle>
       <DialogDescription className="text-center mt-1">
-        Join Our Community Today
+        Your Gateway to Development Resources
       </DialogDescription>
 
       <div className="!mt-8 w-[80%] mx-auto ">
         <form
           className="flex flex-col gap-4"
-          onSubmit={handleSubmit(registerUserHandler)}
+          onSubmit={handleSubmit(loginUserHandler)}
         >
-          <div>
-            <Label htmlFor="name">Full Name</Label>
-            <Input
-              id="name"
-              placeholder="Enter full name"
-              className="h-[40px]"
-              autoFocus
-              {...register("name")}
-            />
-          </div>
           <div>
             <Label htmlFor="email">Email</Label>
             <Input
@@ -136,35 +148,18 @@ export const Register = ({
             )}
           </div>
 
-          <div>
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              placeholder="Re-enter Password"
-              className="h-[40px]"
-              passwordControl
-              {...register("confirmPassword")}
-            />
-            {errors.confirmPassword && (
-              <span className="text-xs text-destructive">
-                {errors.confirmPassword.message}
-              </span>
-            )}
-          </div>
-
           <Button disabled={isSubmitting} className="h-[45px] mt-4">
-            Signup{" "}
+            Signin{" "}
             {isSubmitting && <Loader size={20} className="animate-spin ml-2" />}
           </Button>
         </form>
         <p className="text-sm mt-4 text-center text-muted-foreground">
-          Already have an account ?{" "}
+          Don't have an account ?{" "}
           <span
             className="text-accent-foreground cursor-pointer"
             onClick={handleRenderComp}
           >
-            Signin
+            Create One
           </span>
         </p>
       </div>

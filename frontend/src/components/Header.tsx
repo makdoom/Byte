@@ -14,7 +14,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Auth } from "@/components/Auth";
 import { useAuthStore } from "@/store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loader, SquarePen } from "lucide-react";
@@ -28,6 +27,7 @@ import {
   EmptyDraftSchema,
   EmptyDraftType,
 } from "@makdoom/byte-common";
+import { Auth } from "@/components/Auth";
 
 export const Header = () => {
   const { defaultPage, isLoggedIn, logoutUser, user } = useAuthStore(

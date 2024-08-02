@@ -15,7 +15,7 @@ import {
   useState,
 } from "react";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { CoverImageDialog } from "@/components/CoverImageDialog";
+import { CoverImageDialog } from "@/components/Editor/CoverImageDialog";
 import { useParams } from "react-router";
 import { useBlogStore } from "@/store";
 import { BlogType } from "@makdoom/byte-common";
@@ -27,7 +27,6 @@ export const BlockEditor = () => {
   const [coverImage, setCoverImage] = useState("");
   const [openCoverImgDialog, setOpenCoverImgDialog] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-
 
   const editor = useCreateBlockNote(
     {
