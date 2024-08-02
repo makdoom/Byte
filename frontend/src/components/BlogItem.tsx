@@ -43,7 +43,11 @@ export const BlogItem = ({
     >
       <div className="flex gap-2 items-center flex-1 h-8">
         <FileText size={17} />
-        <p className="text-sm">{blog.title}</p>
+        <p className="text-sm">
+          {blog.title?.length > 20
+            ? `${blog.title.slice(0, 20)}...`
+            : blog.title}
+        </p>
       </div>
       <div className="">
         <Menubar className="border-0 bg-transparent outline-none shadow-none h-8 p-0">

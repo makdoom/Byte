@@ -58,6 +58,7 @@ export const Sidebar = () => {
       const { data, statusCode, message } = response;
       if (statusCode === 200 && data) {
         updateDraftBlogs(data);
+        navigate(`/draft/${data.id}`);
         toast.success("New empty draft added");
       } else {
         toast.error(message);

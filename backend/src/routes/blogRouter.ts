@@ -179,12 +179,8 @@ blogRouter.get("/all-blogs", async (c) => {
     const prisma = getPrisma(c.env.DATABASE_URL);
     const allBlogs = await prisma.blogs.findMany({
       where: { authorId: userId },
+      orderBy: { createdAt: "desc" },
     });
-    // const blogList = {
-    //   drafts: allBlogs.filter((blog) => blog.isDraft),
-    //   pinned: allBlogs.filter((blog) => blog.isPinned),
-    //   published: allBlogs.filter((blog) => blog.isPublished),
-    // };
 
     return sendSuccess(200, allBlogs, "Blogs fetched successfully");
   } catch (error) {

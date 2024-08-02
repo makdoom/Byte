@@ -4,7 +4,7 @@ import { create } from "zustand";
 type EditorChangeType = "title" | "subtitle" | "coverImage" | "content";
 type EditorPayloadType = {
   type: EditorChangeType;
-  payload: string;
+  data: string;
 };
 
 type BlogStore = {
@@ -35,12 +35,18 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
   },
   updateDraftBlogs: (payload) => {
     set({
-      blogList: [...get().blogList, payload],
+      blogList: [payload, ...get().blogList],
     });
   },
   setBlogs: (payload) => {
+    const draftsCount = payload.filter((blog) => blog.isDraft).length;
+    const pinnedCount = payload.filter((blog) => blog.isPinned).length;
+    const publishedCount = payload.filter((blog) => blog.isPublished).length;
     set({
       blogList: payload,
+      draftsCount,
+      pinnedCount,
+      publishedCount,
     });
   },
   deleteDraft: (id) => {
@@ -71,7 +77,16 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
       pinnedCount: blogList.filter((blog) => blog.isPinned).length,
     });
   },
-  updateEditorHandler: (type, payload) => {
-    console.log(type, payload);
+  updateEditorHandler: (id, payload) => {
+    const blogList = get().blogList;
+    const blogIdxToUpdate = blogList.findIndex((blog) => blog.id === id);
+    if (blogIdxToUpdate > -1) {
+      blogList[blogIdxToUpdate] = {
+        ...blogList[blogIdxToUpdate],
+        [payload.type]: payload.data,
+      };
+    }
+
+    set({ blogList });
   },
 }));

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Captions, Image, X } from "lucide-react";
 import {
   ChangeEvent,
+  FocusEvent,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -18,39 +19,55 @@ import { CoverImageDialog } from "@/components/CoverImageDialog";
 import { useParams } from "react-router";
 import { useBlogStore } from "@/store";
 import { BlogType } from "@makdoom/byte-common";
-// import { Block } from "@blocknote/core";
 
 export const BlockEditor = () => {
   const params = useParams();
   const { blogList, updateEditorHandler } = useBlogStore();
-
-  const [blog, setBlog] = useState<BlogType | null>(null);
-
-  const [blogTitle, setBlogTitle] = useState("");
+  const [blog, setBlog] = useState<BlogType>({} as BlogType);
   const [coverImage, setCoverImage] = useState("");
   const [openCoverImgDialog, setOpenCoverImgDialog] = useState(false);
-  // const [blocks, setBlocks] = useState<Block[]>([]);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // const blog = drafts.find((blog) => blog.id === blogId);
 
-  const editor = useCreateBlockNote({
-    initialContent: undefined,
-    uploadFile: async (file: File) => {
-      console.log("hello", file);
-      return "hello";
+  const editor = useCreateBlockNote(
+    {
+      initialContent: blog?.content?.length
+        ? JSON.parse(blog.content)
+        : undefined,
+      uploadFile: async (file: File) => {
+        console.log("hello", file);
+        return "hello";
+      },
     },
-  });
+    [blog ? blog?.id : ""]
+  );
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    if (e.target.value.length <= 100) {
-      setBlogTitle(e.target.value);
-      if (blog)
-        updateEditorHandler(blog?.id, {
-          type: "title",
-          payload: e.target.value,
-        });
+    const { value } = e.target;
+    if (value.length <= 100) {
+      setBlog((prev) => ({ ...prev, title: value }));
+      updateEditorHandler(blog?.id, {
+        type: "title",
+        data: value,
+      });
     }
+  };
+
+  const titleBlurHandler = (e: FocusEvent<HTMLTextAreaElement>) => {
+    if (e.target.value.length === 0) {
+      setBlog((prev) => ({ ...prev, title: "Untitled" }));
+      updateEditorHandler(blog?.id, {
+        type: "title",
+        data: "Untitled",
+      });
+    }
+  };
+
+  const handleEditorChange = () => {
+    updateEditorHandler(blog?.id, {
+      type: "content",
+      data: JSON.stringify(editor.document),
+    });
   };
 
   const handleRemoveCover = () => setCoverImage("");
@@ -60,14 +77,16 @@ export const BlockEditor = () => {
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
-  }, [blogTitle]);
+  }, [blog?.title]);
 
   useLayoutEffect(() => {
     if (params.blogId) {
       const currentBlog = blogList.find(
         (singleBlog) => singleBlog.id === params.blogId
       );
-      setBlog(currentBlog ? currentBlog : null);
+      if (currentBlog) {
+        setBlog(currentBlog);
+      }
     }
   }, [params, setBlog, blogList]);
 
@@ -122,6 +141,7 @@ export const BlockEditor = () => {
             ref={textareaRef}
             value={blog?.title}
             onChange={handleChange}
+            onBlur={titleBlurHandler}
             placeholder="Blog Title..."
             rows={1}
             className="w-full resize-none overflow-hidden mt-4 font-bold text-4xl outline-none placeholder:text-muted-foreground"
@@ -131,9 +151,7 @@ export const BlockEditor = () => {
             <BlockNoteView
               editor={editor}
               theme={"light"}
-              // onChange={() => {
-              //   setBlocks(editor.document);
-              // }}
+              onChange={handleEditorChange}
               className="text-primary"
             />
           </div>
