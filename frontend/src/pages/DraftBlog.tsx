@@ -8,10 +8,10 @@ import { toast } from "sonner";
 
 export const DraftBlog = () => {
   const { user } = useAuthStore();
-  const { setBlogs } = useBlogStore();
+  const { setBlogs, blogList } = useBlogStore();
 
   useLayoutEffect(() => {
-    if (user) {
+    if (user && !blogList.length) {
       (async () => {
         try {
           const response = await getRequest<AllBlogResType>(
@@ -29,7 +29,7 @@ export const DraftBlog = () => {
         }
       })();
     }
-  }, [user, setBlogs]);
+  }, [user, setBlogs, blogList]);
 
   return (
     <div className="flex w-full h-full">

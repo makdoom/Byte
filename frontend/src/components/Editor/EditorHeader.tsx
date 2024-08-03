@@ -1,13 +1,24 @@
+import { PublishDrawer } from "@/components/Editor/PublishDrawer";
 import { ProfileMenu } from "@/components/ProfileMenu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
 import { Menubar, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
 import { cn } from "@/lib/utils";
 import { useBlogStore } from "@/store";
 import { PanelLeftOpen } from "lucide-react";
+import { useNavigate, useParams } from "react-router";
 
 export const EditorHeader = () => {
-  const { isSidebarOpen, toggleSidebar } = useBlogStore();
+  const params = useParams();
+  const { isSidebarOpen, toggleSidebar, wordsCount, charCount } =
+    useBlogStore();
+
+  const navigate = useNavigate();
+
+  const previewHandler = () => {
+    navigate(`/preview/${params.blogId}`);
+  };
 
   return (
     <div className={cn("flex items-center justify-between")}>
@@ -20,19 +31,32 @@ export const EditorHeader = () => {
           <PanelLeftOpen size="18" />
         </Button>
 
-        <div>
-          <p className="text-muted-foreground text-xs">
-            <span className="font-medium">200</span> Words
-          </p>
-          <p className="text-muted-foreground text-xs">
-            <span className="font-medium">1097</span> Characters
-          </p>
-        </div>
+        {wordsCount && charCount ? (
+          <div>
+            <p className="text-muted-foreground text-xs">
+              <span className="font-medium">{wordsCount}</span> Words
+            </p>
+            <p className="text-muted-foreground text-xs">
+              <span className="font-medium">{charCount}</span> Characters
+            </p>
+          </div>
+        ) : null}
       </div>
 
       <div className="flex gap-4 items-center">
-        <Button variant="secondary">Preview</Button>
-        <Button variant="default">Publish</Button>
+        <Button variant="secondary" onClick={previewHandler}>
+          Preview
+        </Button>
+        <Drawer
+
+        // open={openCoverImgDialog}
+        // onOpenChange={setOpenCoverImgDialog}
+        >
+          <DrawerTrigger asChild>
+            <Button variant="default">Publish</Button>
+          </DrawerTrigger>
+          <PublishDrawer />
+        </Drawer>
 
         <Menubar className="border-0 bg-transparent outline-none shadow-none">
           <MenubarMenu>

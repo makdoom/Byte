@@ -6,6 +6,7 @@ import { useLayoutEffect } from "react";
 import { getRequest } from "@/config/api";
 import { GetUserResSchema, GetUserResType } from "@makdoom/byte-common";
 import { toast } from "sonner";
+import { PreviewBlog } from "@/pages/PreviewBlog";
 
 const App = () => {
   const { isLoading, setUserInfo, setLoading, setDefaultPage } = useAuthStore();
@@ -48,6 +49,7 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/draft/:blogId" element={<DraftBlog />} />
+      <Route path="/preview/:blogId" element={<PreviewBlog />} />
     </Routes>
   );
 };

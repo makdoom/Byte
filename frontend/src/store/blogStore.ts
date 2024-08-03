@@ -14,6 +14,8 @@ type BlogStore = {
   draftsCount: number;
   pinnedCount: number;
   publishedCount: number;
+  wordsCount: number;
+  charCount: number;
 
   toggleSidebar: () => void;
   setBlogs: (payload: BlogType[]) => void;
@@ -21,6 +23,7 @@ type BlogStore = {
   deleteDraft: (id: string) => void;
   addIntoPinnedBlogs: (blog: string) => void;
   updateEditorHandler: (id: string, payload: EditorPayloadType) => void;
+  updateBlogWordCharCount: (wordsCount: number, charCount: number) => void;
 };
 
 export const useBlogStore = create<BlogStore>((set, get) => ({
@@ -29,6 +32,8 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
   draftsCount: 0,
   pinnedCount: 0,
   publishedCount: 0,
+  wordsCount: 0,
+  charCount: 0,
 
   toggleSidebar: () => {
     set({ isSidebarOpen: !get().isSidebarOpen });
@@ -88,5 +93,9 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
     }
 
     set({ blogList });
+  },
+
+  updateBlogWordCharCount: (wordsCount, charCount) => {
+    set({ wordsCount, charCount });
   },
 }));

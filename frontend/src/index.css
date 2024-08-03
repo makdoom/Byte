@@ -21,9 +21,13 @@
   }
 }
 
-.yoopta-placeholder{
-  font-size: 25px;
+.yoopta-placeholder::after {
+ font-size: 18px;
   color:  var(--muted-foreground);
+}
+
+.yoopta-editor {
+  margin-bottom: 200px;
 }
 
 @layer base {

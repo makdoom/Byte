@@ -7,78 +7,44 @@ import { Captions, Image, X } from "lucide-react";
 import {
   ChangeEvent,
   FocusEvent,
-  useLayoutEffect,
+  useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
 import { useParams } from "react-router";
-import ActionMenuList, {
-  DefaultActionMenuRender,
-} from "@yoopta/action-menu-list";
-import Blockquote from "@yoopta/blockquote";
-import Callout from "@yoopta/callout";
-import Code from "@yoopta/code";
+
 import YooptaEditor, { createYooptaEditor } from "@yoopta/editor";
-import { HeadingOne, HeadingThree, HeadingTwo } from "@yoopta/headings";
-import LinkTool, { DefaultLinkToolRender } from "@yoopta/link-tool";
-import { BulletedList, NumberedList, TodoList } from "@yoopta/lists";
-import {
-  Bold,
-  CodeMark,
-  Highlight,
-  Italic,
-  Strike,
-  Underline,
-} from "@yoopta/marks";
-import Paragraph from "@yoopta/paragraph";
-import Toolbar, { DefaultToolbarRender } from "@yoopta/toolbar";
-import Embed from "@yoopta/embed";
-import Link from "@yoopta/link";
-
-const plugins = [
-  Paragraph,
-  HeadingOne,
-  HeadingTwo,
-  HeadingThree,
-  Code,
-  Blockquote,
-  Callout,
-  NumberedList,
-  BulletedList,
-  TodoList,
-  Embed,
-  Link,
-];
-
-const TOOLS = {
-  ActionMenu: {
-    render: DefaultActionMenuRender,
-    tool: ActionMenuList,
-  },
-  Toolbar: {
-    render: DefaultToolbarRender,
-    tool: Toolbar,
-  },
-  LinkTool: {
-    render: DefaultLinkToolRender,
-    tool: LinkTool,
-  },
-};
-
-const MARKS = [Bold, Italic, CodeMark, Underline, Strike, Highlight];
+import { marksStyle, plugins, tools } from "@/components/Editor/PluginsConfig";
+import { getsWordsCharCounts } from "@/utils";
 
 export const CustomYoptaEditor = () => {
   const params = useParams();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [blog, setBlog] = useState<BlogType>({} as BlogType);
   const [openCoverImgDialog, setOpenCoverImgDialog] = useState(false);
+  const [showSubtitle, setShowSubtitle] = useState(false);
 
-  const { blogList, updateEditorHandler } = useBlogStore();
+  const { blogList, updateEditorHandler, updateBlogWordCharCount } =
+    useBlogStore();
 
   const editor = useMemo(() => createYooptaEditor(), []);
 
   const handleRemoveCover = () => console.log("should remove cover image");
+
+  const toggleSubtitle = () => {
+    if (showSubtitle) {
+      setBlog((prev) => ({ ...prev, subtitle: "" }));
+      updateEditorHandler(blog?.id, {
+        type: "subtitle",
+        data: "",
+      });
+      setShowSubtitle(false);
+      textareaRef.current?.focus();
+    } else {
+      setShowSubtitle(true);
+    }
+  };
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
@@ -101,8 +67,37 @@ export const CustomYoptaEditor = () => {
     }
   };
 
-  useLayoutEffect(() => {
+  const handleSubtitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setBlog((prev) => ({ ...prev, subtitle: e.target.value }));
+    updateEditorHandler(blog?.id, {
+      type: "subtitle",
+      data: e.target.value,
+    });
+  };
+
+  useEffect(() => {
+    const handleEditorChange = (value: string) => {
+      const stringifiedValue = JSON.stringify(value);
+      setBlog((prev) => ({ ...prev, content: stringifiedValue }));
+      updateEditorHandler(blog?.id, {
+        type: "content",
+        data: stringifiedValue,
+      });
+
+      const { wordsCount, charCounts } = getsWordsCharCounts(stringifiedValue);
+      updateBlogWordCharCount(wordsCount, charCounts);
+    };
+
+    editor.on("change", handleEditorChange);
+
+    return () => {
+      editor.off("change", handleEditorChange);
+    };
+  }, [editor, blog?.id, updateEditorHandler, updateBlogWordCharCount]);
+
+  useEffect(() => {
     if (params.blogId) {
+      setShowSubtitle(false);
       const currentBlog = blogList.find(
         (singleBlog) => singleBlog.id === params.blogId
       );
@@ -110,7 +105,7 @@ export const CustomYoptaEditor = () => {
         setBlog(currentBlog);
       }
     }
-  }, [params, setBlog, blogList]);
+  }, [params?.blogId, setBlog, blogList]);
 
   return (
     <div className="">
@@ -135,10 +130,16 @@ export const CustomYoptaEditor = () => {
               </Dialog>
             )}
 
-            <Button variant="ghost" className="text-muted-foreground ">
-              <Captions size={17} />
-              <p className="ml-1">Add Subtitle</p>
-            </Button>
+            {!blog.subtitle && !showSubtitle && (
+              <Button
+                variant="ghost"
+                className="text-muted-foreground "
+                onClick={toggleSubtitle}
+              >
+                <Captions size={17} />
+                <p className="ml-1">Add Subtitle</p>
+              </Button>
+            )}
           </div>
 
           {blog.coverImage && (
@@ -169,12 +170,33 @@ export const CustomYoptaEditor = () => {
             className="leading-normal w-full resize-none overflow-hidden mt-4 font-bold text-4xl outline-none placeholder:text-muted-foreground"
           />
 
+          {(blog.subtitle || showSubtitle) && (
+            <div className="flex justify-between items-center">
+              <input
+                placeholder="Blog Subtitle"
+                onChange={handleSubtitleChange}
+                autoFocus
+                value={blog.subtitle}
+                className=" flex-1 px-1 leading-normal border-none shadow-none w-full mt-2 font-semibold text-muted-foreground text-2xl outline-none placeholder:text-muted-foreground"
+              />
+
+              <Button variant="ghost" className="px-2" onClick={toggleSubtitle}>
+                <X size={19} />
+              </Button>
+            </div>
+          )}
+
           <div className="relative mt-4">
             <YooptaEditor
+              id={blog.id}
+              key={blog.id}
               editor={editor}
               plugins={plugins}
-              tools={TOOLS}
-              marks={MARKS}
+              tools={tools}
+              marks={marksStyle}
+              value={
+                blog.content?.length ? JSON.parse(blog.content) : undefined
+              }
               placeholder="Enter text or type '/' for commands"
               style={{ width: "100%", backgroundColor: "red" }}
               autoFocus

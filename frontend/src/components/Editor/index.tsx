@@ -1,4 +1,3 @@
-// import { BlockEditor } from "@/components/BlockEditor";
 import { CustomYoptaEditor } from "@/components/Editor/CustomYoptaEditor";
 import { EditorHeader } from "@/components/Editor/EditorHeader";
 
