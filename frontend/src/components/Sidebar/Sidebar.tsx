@@ -40,6 +40,7 @@ export const Sidebar = () => {
     updateDraftBlogs,
     deleteDraft,
     addIntoPinnedBlogs,
+    publishedCount,
   } = useBlogStore();
 
   const navigate = useNavigate();
@@ -208,11 +209,27 @@ export const Sidebar = () => {
 
             <AccordionItem className="border-0" value="item-3">
               <AccordionTrigger className="text-muted-foreground hover:no-underline text-xs hover:text-primary">
-                PUBLISHED
+                PUBLISHED {publishedCount ? `(${publishedCount})` : ""}
               </AccordionTrigger>
-              <AccordionContent className="text-center text-muted-foreground text-sm font-normal">
-                You have not published anything
-              </AccordionContent>
+              {blogList.length > 0 ? (
+                <AccordionContent className="max-h-80 overflow-scroll no-scrollbar">
+                  {blogList
+                    .filter((blog) => blog.isPublished)
+                    .map((blog) => (
+                      <BlogItem
+                        key={blog.id}
+                        blog={blog}
+                        deleteBlogHandler={deleteBlogHandler}
+                        pinBlogHandler={pinBlogHandler}
+                        navigateToBlog={navigateToBlog}
+                      />
+                    ))}
+                </AccordionContent>
+              ) : (
+                <AccordionContent className="text-center text-muted-foreground text-sm font-normal">
+                  You have not published anything
+                </AccordionContent>
+              )}
             </AccordionItem>
           </Accordion>
         </div>

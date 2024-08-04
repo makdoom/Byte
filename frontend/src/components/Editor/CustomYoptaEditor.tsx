@@ -56,7 +56,6 @@ export const CustomYoptaEditor = () => {
       });
     }
   };
-
   const titleBlurHandler = (e: FocusEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length === 0) {
       setBlog((prev) => ({ ...prev, title: "Untitled" }));

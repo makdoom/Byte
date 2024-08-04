@@ -1,18 +1,18 @@
 import { Hono } from "hono";
 import { Bindings, Variables } from "../types";
-// import { getPrisma } from "../config";
 import { HTTPException } from "hono/http-exception";
 import { verify } from "hono/jwt";
 import { getTokensFromCookie } from "../utils";
 import { extendContext, ExtendedContext } from "../utils/customResponses";
 import { getPrisma } from "../config";
 import {
+  BlogResData,
+  BlogType,
   DeleteBlogPayload,
   DeleteBlogType,
   EmptyDraftSchema,
   PinBlogType,
 } from "@makdoom/byte-common";
-// import { createBlogPayload } from "@makdoom/medium-common";
 
 const blogRouter = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
@@ -191,89 +191,37 @@ blogRouter.get("/all-blogs", async (c) => {
   }
 });
 
-// // Create Post
-// blogRouter.post("/create-post", async (c) => {
-//   const body = await c.req.json();
-//   const authorId = c.get("userId");
+blogRouter.post("/publish", async (c) => {
+  const { sendSuccess, status, req } = extendContext(c) as ExtendedContext;
+  const body: BlogType = await req.json();
 
-//   const { success } = createBlogPayload.safeParse(body);
-//   if (!success) {
-//     c.status(411);
-//     return c.json({ error: "Invalid payload provided" });
-//   }
+  const { success } = BlogResData.safeParse(body);
+  if (!success) {
+    status(411);
+    throw new HTTPException(411, { message: "Invalid payload provided" });
+  }
 
-//   try {
-//     const prisma = getPrisma(c.env.DATABASE_URL);
-//     let createdPost = await prisma.post.create({
-//       data: {
-//         title: body.title,
-//         content: body.content,
-//         authorId: authorId,
-//       },
-//     });
-//     return c.json({ success: 1, data: createdPost });
-//   } catch (error) {
-//     c.status(411);
-//     return c.json({ error: "Something went wrong while creating post" });
-//   }
-// });
-
-// // Update Post
-// blogRouter.put("/update-post", async (c) => {
-//   const body = await c.req.json();
-
-//   let success = true;
-//   // const { success } = updatePostInput.safeParse(body);
-//   if (!success) {
-//     c.status(411);
-//     return c.json({ error: "Invalid payload provided" });
-//   }
-
-//   try {
-//     const prisma = getPrisma(c.env.DATABASE_URL);
-//     let updatedPost = await prisma.post.update({
-//       where: {
-//         id: body.id,
-//       },
-//       data: {
-//         title: body.title,
-//         content: body.content,
-//       },
-//     });
-//     return c.json({ success: 1, data: updatedPost });
-//   } catch (error) {
-//     c.status(411);
-//     return c.json({ error: "Something went wrong while creating post" });
-//   }
-// });
-
-// // Get All Post
-// blogRouter.get("/get-all-post", async (c) => {
-//   try {
-//     const prisma = getPrisma(c.env.DATABASE_URL);
-//     const posts = await prisma.post.findMany({});
-//     return c.json({ success: 1, data: posts });
-//   } catch (error) {
-//     c.status(411);
-//     return c.json({ error: "Something went wrong while fethcing all posts" });
-//   }
-// });
-
-// // Get Specific Post
-// blogRouter.get("/:id", async (c) => {
-//   const id = c.req.param("id");
-
-//   try {
-//     const prisma = getPrisma(c.env.DATABASE_URL);
-//     const post = await prisma.post.findFirst({
-//       where: { id },
-//     });
-
-//     return c.json({ success: 1, data: post });
-//   } catch (error) {
-//     c.status(411);
-//     return c.json({ error: "Something went wrong while fetching post" });
-//   }
-// });
+  try {
+    const prisma = getPrisma(c.env.DATABASE_URL);
+    await prisma.blogs.update({
+      where: { id: body.id },
+      data: {
+        title: body.title,
+        subtitle: body.subtitle,
+        coverImage: body.coverImage,
+        content: body.content,
+        isPublished: body.isPublished,
+        isDraft: false,
+        isPinned: false,
+      },
+    });
+    return sendSuccess(200, null, "Blog updated successfully");
+  } catch (error) {
+    status(411);
+    throw new HTTPException(411, {
+      message: "Something went wrong while updating blog",
+    });
+  }
+});
 
 export default blogRouter;

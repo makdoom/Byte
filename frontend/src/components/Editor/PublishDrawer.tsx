@@ -6,13 +6,40 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
+import { postRequest } from "@/config/api";
 import { cn } from "@/lib/utils";
+import { useBlogStore } from "@/store";
+import {
+  BlogResData,
+  BlogType,
+  PublishedBlogResSchema,
+  PublishedBlogResType,
+} from "@makdoom/byte-common";
 import { CloudUpload, X } from "lucide-react";
-import { useCallback, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { useDropzone } from "react-dropzone";
+import { useParams } from "react-router";
+import { toast } from "sonner";
 
-export const PublishDrawer = () => {
+type PublishDrawerProps = {
+  openPublishDrawer: boolean;
+  setOpenPublishDrawer: Dispatch<SetStateAction<boolean>>;
+};
+
+export const PublishDrawer = ({
+  openPublishDrawer,
+  setOpenPublishDrawer,
+}: PublishDrawerProps) => {
   const [coverImg64, setCoverImg64] = useState("");
+  const [blog, setBlog] = useState<BlogType>({} as BlogType);
+  const params = useParams();
+  const { blogList } = useBlogStore();
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -37,6 +64,46 @@ export const PublishDrawer = () => {
     },
     onDrop: onDrop,
   });
+
+  const publishBlog = async () => {
+    if (!blog) return;
+
+    try {
+      const payload: BlogType = {
+        ...blog,
+        isPublished: true,
+        isDraft: false,
+        isPinned: false,
+      };
+      const response = await postRequest<BlogType, PublishedBlogResType>(
+        "/blogs/publish",
+        payload,
+        BlogResData,
+        PublishedBlogResSchema
+      );
+      const { statusCode, message } = response;
+      if (statusCode === 200) {
+        toast.success(message);
+        setOpenPublishDrawer(false);
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error("Something went wrong while publishing blog");
+    }
+  };
+
+  useEffect(() => {
+    if (params.blogId && openPublishDrawer) {
+      console.log("from useeffect");
+      const currentBlog = blogList.find(
+        (singleBlog) => singleBlog.id === params.blogId
+      );
+      if (currentBlog) {
+        setBlog(currentBlog);
+      }
+    }
+  }, [params?.blogId, setBlog, blogList, openPublishDrawer]);
 
   return (
     <DrawerContent className="p-4 px-16">
@@ -91,8 +158,8 @@ export const PublishDrawer = () => {
             )}
           </div>
           <div>
-            <h2 className="text-2xl font-bold mt-2">Blog Title</h2>
-            <p className="text-muted-foreground mt-1">Blog Subtitle</p>
+            <h2 className="text-2xl font-bold mt-2">{blog.title}</h2>
+            <p className="text-muted-foreground mt-1">{blog.subtitle}</p>
           </div>
         </div>
 
@@ -107,10 +174,15 @@ export const PublishDrawer = () => {
         </div>
       </div>
       <div className="flex justify-end item-center gap-4">
-        <Button size={"lg"} className="py-6" variant="secondary">
+        <Button
+          size={"lg"}
+          className="py-6"
+          variant="secondary"
+          onClick={() => setOpenPublishDrawer(false)}
+        >
           Cancel
         </Button>
-        <Button size={"lg"} className="py-6">
+        <Button size={"lg"} className="py-6" onClick={publishBlog}>
           Publish Now
         </Button>
       </div>

@@ -8,8 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { postRequest } from "@/config/api";
 import { useAuthStore } from "@/store";
-// import axiosInstance from "@/config/api";
-// import { useAuthStore } from "@/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   SiginResSchema,
@@ -17,38 +15,9 @@ import {
   SigninReqSchema,
   SigninReqType,
 } from "@makdoom/byte-common";
-// import { signinPayload, SigninPayloadType } from "@makdoom/medium-common";
-// import { signinInput, SignupInputType } from "@makdoom/medium-common";
 import { Loader } from "lucide-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
-// import { toast } from "sonner";
-// import { z, ZodType } from "zod";
-
-// const ResponseCreator = <T extends ZodType<unknown>>(ResponseDataSchema: T) => {
-//   return z.object({
-//     message: z.string(),
-//     statusCode: z.number(),
-//     data: ResponseDataSchema,
-//   });
-// };
-
-// // Authentication payload / response types
-// export const SigninReqSchema = z.object({
-//   email: z.string().min(1, "Email is required").email("Email is invalid"),
-//   password: z.string().min(8, "Password must be at least 8 characters long"),
-// });
-
-// export const SiginResData = z.object({
-//   id: z.string(),
-//   name: z.string(),
-//   email: z.string(),
-//   accessToken: z.string().optional(),
-// });
-
-// export const SiginResSchema = ResponseCreator(SiginResData);
-// export type SigninReqType = z.infer<typeof SigninReqSchema>;
-// export type SiginResType = z.infer<typeof SiginResSchema>;
 
 type LoginPropTypes = {
   handleRenderComp: () => void;

@@ -121,3 +121,6 @@ export const PinBlogPayload = DeleteBlogPayload.extend({
 export const PinBlogResSchema = ResponseCreator(BlogResData);
 export type PinBlogResType = z.infer<typeof PinBlogResSchema>;
 export type PinBlogType = z.infer<typeof PinBlogPayload>;
+
+export const PublishedBlogResSchema = DeleteBlogResSchema;
+export type PublishedBlogResType = z.infer<typeof PublishedBlogResSchema>;

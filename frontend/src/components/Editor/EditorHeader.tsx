@@ -7,6 +7,7 @@ import { Menubar, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
 import { cn } from "@/lib/utils";
 import { useBlogStore } from "@/store";
 import { PanelLeftOpen } from "lucide-react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
 export const EditorHeader = () => {
@@ -14,6 +15,7 @@ export const EditorHeader = () => {
   const { isSidebarOpen, toggleSidebar, wordsCount, charCount } =
     useBlogStore();
 
+  const [openPublishDrawer, setOpenPublishDrawer] = useState(false);
   const navigate = useNavigate();
 
   const previewHandler = () => {
@@ -47,15 +49,14 @@ export const EditorHeader = () => {
         <Button variant="secondary" onClick={previewHandler}>
           Preview
         </Button>
-        <Drawer
-
-        // open={openCoverImgDialog}
-        // onOpenChange={setOpenCoverImgDialog}
-        >
-          <DrawerTrigger asChild>
+        <Drawer open={openPublishDrawer} onOpenChange={setOpenPublishDrawer}>
+          <DrawerTrigger asChild onClick={() => setOpenPublishDrawer(true)}>
             <Button variant="default">Publish</Button>
           </DrawerTrigger>
-          <PublishDrawer />
+          <PublishDrawer
+            openPublishDrawer={openPublishDrawer}
+            setOpenPublishDrawer={setOpenPublishDrawer}
+          />
         </Drawer>
 
         <Menubar className="border-0 bg-transparent outline-none shadow-none">
