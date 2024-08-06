@@ -962,10 +962,10 @@
     "@lezer/highlight" "^1.0.0"
     "@lezer/lr" "^1.4.0"
 
-"@makdoom/byte-common@^1.0.39":
-  version "1.0.39"
-  resolved "https://registry.yarnpkg.com/@makdoom/byte-common/-/byte-common-1.0.39.tgz#79223812bfdf1b08716f3fb2dee907e52faf2fdc"
-  integrity sha512-PuhFDbh8VKO8g35yzz/RDTIlnfjh6Oyv1uDlYeFLyTNd67Wk55IuNR0z81vqLUbTkcPRX+CTgL602EjV/Kc+0w==
+"@makdoom/byte-common@^1.0.43":
+  version "1.0.43"
+  resolved "https://registry.yarnpkg.com/@makdoom/byte-common/-/byte-common-1.0.43.tgz#d689021d0b5783d776831731db2d4452e8f8c352"
+  integrity sha512-YYoFVkJNV0vO9MsZphl5R6FPw3SJFfAnk/9xSj/pKS1a3jRCjFrZ86A6+ANTzObTAPoKqxu/dYqSf3CdZ7SaWA==
   dependencies:
     zod "^3.23.8"
 
@@ -3876,6 +3876,11 @@ minimatch@^9.0.4:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/minipass/-/minipass-7.1.2.tgz#93a9626ce5e5e66bd4db86849e7515e92340a707"
   integrity sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==
+
+moment@^2.30.1:
+  version "2.30.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.30.1.tgz#f8c91c07b7a786e30c59926df530b4eac96974ae"
+  integrity sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==
 
 mri@^1.1.0:
   version "1.2.0"

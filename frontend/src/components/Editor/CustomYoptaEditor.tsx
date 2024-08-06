@@ -106,6 +106,13 @@ export const CustomYoptaEditor = () => {
     }
   }, [params?.blogId, setBlog, blogList]);
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [blog?.title]);
+
   return (
     <div className="">
       <div className=" h-[calc(100vh-90px)] overflow-scroll max-w-screen-xl m-auto no-scrollbar mt-5">

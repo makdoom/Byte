@@ -45,6 +45,31 @@ blogRouter.use("/*", async (c, next) => {
   }
 });
 
+blogRouter.get("/", async (c) => {
+  const { sendSuccess, status, get } = extendContext(c) as ExtendedContext;
+  const userId = get("userId");
+
+  try {
+    const prisma = getPrisma(c.env.DATABASE_URL);
+    const allBlogs = await prisma.blogs.findMany({
+      include: {
+        author: {
+          select: { id: true, email: true, name: true, profileURL: true },
+        },
+      },
+      where: { isPublished: true },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return sendSuccess(200, allBlogs, "Blogs fetched successfully");
+  } catch (error) {
+    status(411);
+    throw new HTTPException(411, {
+      message: "Something went wrong while fetching all blogs",
+    });
+  }
+});
+
 // Create draft blog
 blogRouter.post("/create-draft", async (c) => {
   const { sendSuccess, status, req } = extendContext(c) as ExtendedContext;
@@ -171,7 +196,7 @@ blogRouter.post("/pin-blog", async (c) => {
   }
 });
 
-blogRouter.get("/all-blogs", async (c) => {
+blogRouter.get("/drafts", async (c) => {
   const { sendSuccess, status, get } = extendContext(c) as ExtendedContext;
   const userId = get("userId");
 

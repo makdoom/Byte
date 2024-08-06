@@ -1,4 +1,4 @@
-import { BlogType } from "@makdoom/byte-common";
+import { BlogType, PublishedBlogType } from "@makdoom/byte-common";
 import { create } from "zustand";
 
 type EditorChangeType = "title" | "subtitle" | "coverImage" | "content";
@@ -10,6 +10,7 @@ type EditorPayloadType = {
 type BlogStore = {
   isSidebarOpen: boolean;
   blogList: BlogType[];
+  feedsList: PublishedBlogType[];
 
   draftsCount: number;
   pinnedCount: number;
@@ -24,11 +25,14 @@ type BlogStore = {
   addIntoPinnedBlogs: (blog: string) => void;
   updateEditorHandler: (id: string, payload: EditorPayloadType) => void;
   updateBlogWordCharCount: (wordsCount: number, charCount: number) => void;
+  setFeedsList: (payload: PublishedBlogType[]) => void;
 };
 
 export const useBlogStore = create<BlogStore>((set, get) => ({
   isSidebarOpen: true,
   blogList: [],
+  feedsList: [],
+
   draftsCount: 0,
   pinnedCount: 0,
   publishedCount: 0,
@@ -97,5 +101,8 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
 
   updateBlogWordCharCount: (wordsCount, charCount) => {
     set({ wordsCount, charCount });
+  },
+  setFeedsList: (payload) => {
+    set({ feedsList: payload });
   },
 }));

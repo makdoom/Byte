@@ -15,7 +15,7 @@ export const DraftBlog = () => {
       (async () => {
         try {
           const response = await getRequest<AllBlogResType>(
-            "/blogs/all-blogs",
+            "/blogs/drafts",
             AllBlogResSchema
           );
           const { statusCode, message, data } = response;

@@ -91,16 +91,6 @@ export const EmptyDraftSchema = z.object({
 
 export type EmptyDraftType = z.infer<typeof EmptyDraftSchema>;
 
-// export const AllBlogsResData = z.object({
-//   drafts: z.array(BlogResData).optional(),
-//   pinned: z.array(BlogResData).optional(),
-//   published: z.array(BlogResData).optional(),
-// });
-
-// export const AllBlogsResData = z.object({
-//   blogList: z.array(BlogResData).optional(),
-// });
-
 export const AllBlogsResData = z.array(BlogResData).optional();
 
 export const AllBlogResSchema = ResponseCreator(AllBlogsResData);
@@ -124,3 +114,15 @@ export type PinBlogType = z.infer<typeof PinBlogPayload>;
 
 export const PublishedBlogResSchema = DeleteBlogResSchema;
 export type PublishedBlogResType = z.infer<typeof PublishedBlogResSchema>;
+
+export const Author = GetUserResData.omit({ isAuthorized: true });
+
+const PublishedBlogSchema = BlogResData.extend({
+  author: Author,
+});
+
+export const PublishedBlogResData = z.array(PublishedBlogSchema);
+
+export const AllPublishedBlogResSchema = ResponseCreator(PublishedBlogResData);
+export type AllPublishedBlogResType = z.infer<typeof AllPublishedBlogResSchema>;
+export type PublishedBlogType = z.infer<typeof PublishedBlogSchema>;
