@@ -6,10 +6,15 @@ import {
   AllPublishedBlogResType,
 } from "@makdoom/byte-common";
 import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
 export const Feeds = () => {
   const { feedsList, setFeedsList } = useBlogStore();
+
+  const navigate = useNavigate();
+
+  const navigateToBlog = (blogId: string) => navigate(`/blog/${blogId}`);
 
   useEffect(() => {
     (async () => {
@@ -35,7 +40,11 @@ export const Feeds = () => {
       <div className="md:max-w-[1200px] mx-auto flex gap-6">
         <div className="flex-[0.65]">
           {feedsList.map((blog) => (
-            <FeedCard key={blog.id} blog={blog} />
+            <FeedCard
+              key={blog.id}
+              blog={blog}
+              navigateToBlog={navigateToBlog}
+            />
           ))}
         </div>
         <div className="border flex-[0.35]">Right</div>

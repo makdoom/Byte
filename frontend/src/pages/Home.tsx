@@ -1,8 +1,9 @@
 import { Header } from "@/components/Header";
 import { cn } from "@/lib/utils";
-import { Feeds } from "@/pages/Feeds";
+// import { Feeds } from "@/pages/Feeds";
 import { Landing } from "@/pages/Landing";
 import { useAuthStore } from "@/store";
+import { Outlet } from "react-router";
 
 export const Home = () => {
   const { defaultPage } = useAuthStore();
@@ -17,7 +18,7 @@ export const Home = () => {
       <div className="flex justify-center items-center">
         <Header />
       </div>
-      {defaultPage === "feeds" ? <Feeds /> : <Landing />}
+      {defaultPage === "feeds" ? <Outlet /> : <Landing />}
     </div>
   );
 };

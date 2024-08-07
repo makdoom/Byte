@@ -7,13 +7,14 @@ import { getRequest } from "@/config/api";
 import { GetUserResSchema, GetUserResType } from "@makdoom/byte-common";
 import { toast } from "sonner";
 import { PreviewBlog } from "@/pages/PreviewBlog";
+import { Blog } from "@/pages/Blog";
+import { Feeds } from "@/pages/Feeds";
 
 const App = () => {
   const { isLoading, setUserInfo, setLoading, setDefaultPage } = useAuthStore();
 
   useLayoutEffect(() => {
     (async () => {
-      console.log("from app");
       try {
         setLoading(true);
         const response = await getRequest<GetUserResType>(
@@ -47,7 +48,11 @@ const App = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Home />}>
+        <Route path="/" index element={<Feeds />} />
+        <Route path="/blog/:blogId" element={<Blog />} />
+      </Route>
+
       <Route path="/draft/:blogId" element={<DraftBlog />} />
       <Route path="/preview/:blogId" element={<PreviewBlog />} />
     </Routes>
