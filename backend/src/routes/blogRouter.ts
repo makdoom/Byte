@@ -16,6 +16,58 @@ import {
 
 const blogRouter = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
+blogRouter.get("/", async (c) => {
+  const { sendSuccess, status } = extendContext(c) as ExtendedContext;
+
+  try {
+    const prisma = getPrisma(c.env.DATABASE_URL);
+    const allBlogs = await prisma.blogs.findMany({
+      include: {
+        author: {
+          select: { id: true, email: true, name: true, profileURL: true },
+        },
+      },
+      where: { isPublished: true },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return sendSuccess(200, allBlogs, "Blogs fetched successfully");
+  } catch (error) {
+    status(411);
+    throw new HTTPException(411, {
+      message: "Something went wrong while fetching all blogs",
+    });
+  }
+});
+
+blogRouter.get("/:blogId", async (c) => {
+  const { sendSuccess, status, req } = extendContext(c) as ExtendedContext;
+  const { blogId } = req.param();
+  if (!blogId) {
+    status(500);
+    throw new HTTPException(500, { message: "Invalid payload provided" });
+  }
+  try {
+    const prisma = getPrisma(c.env.DATABASE_URL);
+    const blog = await prisma.blogs.findFirst({
+      where: { id: blogId, isPublished: true },
+      include: {
+        author: {
+          select: { id: true, email: true, name: true, profileURL: true },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return sendSuccess(200, blog, "Blog updated successfully");
+  } catch (error) {
+    status(411);
+    throw new HTTPException(411, {
+      message: "Something went wrong while updating blog",
+    });
+  }
+});
+
 // Middlewares
 blogRouter.use("/*", async (c, next) => {
   let cookie = c.req.header("cookie");
@@ -42,31 +94,6 @@ blogRouter.use("/*", async (c, next) => {
     console.log(error);
     c.status(401);
     throw new HTTPException(401, { message: "Unauthorized user" });
-  }
-});
-
-blogRouter.get("/", async (c) => {
-  const { sendSuccess, status, get } = extendContext(c) as ExtendedContext;
-  const userId = get("userId");
-
-  try {
-    const prisma = getPrisma(c.env.DATABASE_URL);
-    const allBlogs = await prisma.blogs.findMany({
-      include: {
-        author: {
-          select: { id: true, email: true, name: true, profileURL: true },
-        },
-      },
-      where: { isPublished: true },
-      orderBy: { createdAt: "desc" },
-    });
-
-    return sendSuccess(200, allBlogs, "Blogs fetched successfully");
-  } catch (error) {
-    status(411);
-    throw new HTTPException(411, {
-      message: "Something went wrong while fetching all blogs",
-    });
   }
 });
 

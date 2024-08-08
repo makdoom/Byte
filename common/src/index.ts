@@ -121,8 +121,10 @@ const PublishedBlogSchema = BlogResData.extend({
   author: Author,
 });
 
+export const SinglePublishedBlog = ResponseCreator(PublishedBlogSchema);
 export const PublishedBlogResData = z.array(PublishedBlogSchema);
 
 export const AllPublishedBlogResSchema = ResponseCreator(PublishedBlogResData);
 export type AllPublishedBlogResType = z.infer<typeof AllPublishedBlogResSchema>;
 export type PublishedBlogType = z.infer<typeof PublishedBlogSchema>;
+export type SinglePublishedBlogType = z.infer<typeof SinglePublishedBlog>;

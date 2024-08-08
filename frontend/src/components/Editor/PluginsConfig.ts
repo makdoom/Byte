@@ -28,6 +28,8 @@ const headingsExtended = {
   },
 };
 
+const fontExtentended = "text-lg";
+
 export const plugins = [
   Paragraph,
   HeadingOne,
@@ -41,6 +43,24 @@ export const plugins = [
   TodoList,
   Embed,
   Link,
+
+  Paragraph.extend({ options: { HTMLAttributes: { className: "text-lg" } } }),
+  Code.extend({ options: { HTMLAttributes: { className: fontExtentended } } }),
+  Blockquote.extend({
+    options: { HTMLAttributes: { className: fontExtentended } },
+  }),
+  Callout.extend({
+    options: { HTMLAttributes: { className: fontExtentended } },
+  }),
+  NumberedList.extend({
+    options: { HTMLAttributes: { className: fontExtentended } },
+  }),
+  BulletedList.extend({
+    options: { HTMLAttributes: { className: fontExtentended } },
+  }),
+  TodoList.extend({
+    options: { HTMLAttributes: { className: fontExtentended } },
+  }),
 
   HeadingOne.extend(headingsExtended),
   HeadingTwo.extend(headingsExtended),
