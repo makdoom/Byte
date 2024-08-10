@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { PreviewBlog } from "@/pages/PreviewBlog";
 import { Blog } from "@/pages/Blog";
 import { Feeds } from "@/pages/Feeds";
+import { UserProfile } from "@/pages/UserProfile";
 
 const App = () => {
   const { isLoading, setUserInfo, setLoading, setDefaultPage } = useAuthStore();
@@ -42,7 +43,7 @@ const App = () => {
 
   if (isLoading) {
     return (
-      <div className="w-screen h-screen bg-[#f5f5f5] flex items-center justify-center"></div>
+      <div className="w-screen h-screen bg-secondary flex items-center justify-center"></div>
     );
   }
 
@@ -51,6 +52,7 @@ const App = () => {
       <Route path="/" element={<Home />}>
         <Route path="/" index element={<Feeds />} />
         <Route path="/blog/:blogId" element={<Blog />} />
+        <Route path="/:username" element={<UserProfile />} />
       </Route>
 
       <Route path="/draft/:blogId" element={<DraftBlog />} />

@@ -16,6 +16,11 @@ export const Feeds = () => {
 
   const navigateToBlog = (blogId: string) => navigate(`/blog/${blogId}`);
 
+  const navigateToUserProfile = (userId: string) => {
+    console.log(userId);
+    navigate(`/${userId}`);
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -44,6 +49,7 @@ export const Feeds = () => {
               key={blog.id}
               blog={blog}
               navigateToBlog={navigateToBlog}
+              navigateToUserProfile={navigateToUserProfile}
             />
           ))}
         </div>
