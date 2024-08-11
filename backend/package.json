@@ -5,7 +5,7 @@
     "deploy": "wrangler deploy --minify src/index.ts"
   },
   "dependencies": {
-    "@makdoom/byte-common": "^1.0.29",
+    "@makdoom/byte-common": "^1.0.46",
     "@prisma/client": "5.16.2",
     "@prisma/extension-accelerate": "^1.1.0",
     "bcryptjs": "^2.4.3",

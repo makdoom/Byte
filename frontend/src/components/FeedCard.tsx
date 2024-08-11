@@ -37,8 +37,7 @@ export const FeedCard = ({
             className="text-xs text-muted-foreground cursor-pointer"
             onClick={() => navigateToUserProfile(blog.author.id)}
           >
-            @{blog.author.email.split("@").at(0)} -{" "}
-            {moment(blog.createdAt).fromNow()}
+            @{blog.author.username} - {moment(blog.publishedAt).fromNow()}
           </p>
         </div>
       </div>

@@ -54,12 +54,20 @@ export const Register = ({
         setDefaultPage("feeds");
         closeAuthDialog();
       } else {
+        console.log("message");
         toast.error(
           message || "Something went wrong while registering the user"
         );
       }
     } catch (error) {
-      toast.error('"Something went wrong while resgistering the user"');
+      if (error instanceof Error) {
+        toast.error(
+          error.message || "Something went wrong while resgistering the user"
+        );
+      } else {
+        console.log(error);
+        toast.error("Something went wrong while resgistering the user");
+      }
     }
   };
 

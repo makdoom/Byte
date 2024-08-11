@@ -24,7 +24,13 @@ blogRouter.get("/", async (c) => {
     const allBlogs = await prisma.blogs.findMany({
       include: {
         author: {
-          select: { id: true, email: true, name: true, profileURL: true },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            profileURL: true,
+            username: true,
+          },
         },
       },
       where: { isPublished: true },
@@ -263,6 +269,7 @@ blogRouter.post("/publish", async (c) => {
         coverImage: body.coverImage,
         content: body.content,
         isPublished: body.isPublished,
+        publishedAt: new Date(),
         isDraft: false,
         isPinned: false,
       },

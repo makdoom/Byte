@@ -38,6 +38,7 @@ authRouter.post("/signup", async (c) => {
     throw new HTTPException(411, { message: "Please enter a valid password" });
 
   try {
+    console.log("here");
     const prisma = getPrisma(c.env.DATABASE_URL);
     let hashedPassword = await encryptPassword(body.password);
     const username = createUserName(body.email);
@@ -53,8 +54,10 @@ authRouter.post("/signup", async (c) => {
         name: true,
         email: true,
         username: true,
+        profileURL: true,
       },
     });
+    console.log("user", user);
     // Generate token
     const createTokenPayload = {
       id: user.id,
@@ -84,6 +87,7 @@ authRouter.post("/signup", async (c) => {
       name: user.name,
       email: user.email,
       username: user.username,
+      profileURL: user.profileURL,
       accessToken,
     };
     return sendSuccess(200, userResponse, "User signup successfully");

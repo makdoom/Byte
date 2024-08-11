@@ -20,6 +20,8 @@ export const SignupResData = z.object({
   id: z.string(),
   name: z.string(),
   email: z.string(),
+  profileURL: z.string(),
+  username: z.string(),
   accessToken: z.string(),
 });
 
@@ -47,6 +49,8 @@ export const GetUserResData = z.object({
   id: z.string(),
   name: z.string(),
   email: z.string(),
+  username: z.string(),
+  profileURL: z.string(),
   isAuthorized: z.boolean(),
 });
 
@@ -77,6 +81,7 @@ export const BlogResData = z.object({
   isDraft: z.boolean(),
   isPinned: z.boolean(),
   isPublished: z.boolean(),
+  publishedAt: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });

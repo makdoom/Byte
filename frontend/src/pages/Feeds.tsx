@@ -36,6 +36,7 @@ export const Feeds = () => {
           toast.error(message);
         }
       } catch (error) {
+        console.log(error);
         toast.error("Something went wrong while fetching blogs list");
       }
     })();
