@@ -14,7 +14,8 @@ export const Feeds = () => {
 
   const navigate = useNavigate();
 
-  const navigateToBlog = (blogId: string) => navigate(`/blog/${blogId}`);
+  const navigateToBlog = (blogId: string) =>
+    navigate(`/blog/makdoom/${blogId}`);
 
   const navigateToUserProfile = (userId: string) => {
     console.log(userId);

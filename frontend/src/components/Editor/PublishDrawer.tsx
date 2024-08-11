@@ -95,7 +95,6 @@ export const PublishDrawer = ({
 
   useEffect(() => {
     if (params.blogId && openPublishDrawer) {
-      console.log("from useeffect");
       const currentBlog = blogList.find(
         (singleBlog) => singleBlog.id === params.blogId
       );

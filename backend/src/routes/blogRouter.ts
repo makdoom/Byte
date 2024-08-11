@@ -40,7 +40,8 @@ blogRouter.get("/", async (c) => {
   }
 });
 
-blogRouter.get("/:blogId", async (c) => {
+blogRouter.get("/:username/:blogId", async (c) => {
+  console.log("i am here");
   const { sendSuccess, status, req } = extendContext(c) as ExtendedContext;
   const { blogId } = req.param();
   if (!blogId) {
@@ -234,6 +235,7 @@ blogRouter.get("/drafts", async (c) => {
       orderBy: { createdAt: "desc" },
     });
 
+    console.log("allBlogs", allBlogs);
     return sendSuccess(200, allBlogs, "Blogs fetched successfully");
   } catch (error) {
     status(411);

@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
 import { About } from "@/components/User/About";
 import { Badges } from "@/components/User/Badges";
 import { BlogShowcase } from "@/components/User/BlogShowcase";
+import { EditProfileDrawer } from "@/components/User/EditProfileDrawer";
 import { TechStack } from "@/components/User/TechStack";
 import { cn } from "@/lib/utils";
 import { Award, Layers3, LucideIcon, Pencil, Rss, User } from "lucide-react";
@@ -50,12 +52,13 @@ const ComponentToRender: ComponentToRenderType = {
 
 export const UserProfile = () => {
   const [selectedMenu, setSelectedMenu] = useState<MenuEnums>("about");
+  const [openEditProfileDrawer, setOpenEditProfileDrawer] = useState(false);
 
   const menuClickHandler = (menuName: MenuEnums) => setSelectedMenu(menuName);
 
   return (
     <div className="mt-16 flex-1 min-h-screen">
-      <div className="md:max-w-screen-lg mx-auto gap-6 border rounded-lg bg-card">
+      <div className="md:max-w-screen-xl mx-auto gap-6 border rounded-lg bg-card">
         <div className="h-80 rounded-tl-lg rounded-tr-lg relative">
           <img
             className="h-full w-full rounded-tl-lg rounded-tr-lg"
@@ -97,14 +100,28 @@ export const UserProfile = () => {
             </div>
           </div>
 
-          <Button size={"sm"}>
-            <Pencil size={16} className="mr-2" />
-            Edit Profile
-          </Button>
+          <Drawer
+            open={openEditProfileDrawer}
+            onOpenChange={setOpenEditProfileDrawer}
+          >
+            <DrawerTrigger
+              asChild
+              onClick={() => setOpenEditProfileDrawer(true)}
+            >
+              <Button>
+                <Pencil size={16} className="mr-2" />
+                Edit Profile
+              </Button>
+            </DrawerTrigger>
+            <EditProfileDrawer
+              isOpen={openEditProfileDrawer}
+              toggleDrawer={setOpenEditProfileDrawer}
+            />
+          </Drawer>
         </div>
 
         <div className="mt-3 flex p-4 gap-2">
-          <div className="flex-[0.2] rounded-lg p-2 bg-white">
+          <div className="flex-[0.15] rounded-lg p-2 bg-white">
             {menus.map((item) => (
               <div
                 key={item.id}
@@ -121,7 +138,7 @@ export const UserProfile = () => {
               </div>
             ))}
           </div>
-          <div className="flex-[0.8] bg-secondary p-4 rounded-lg">
+          <div className="flex-[0.85] bg-secondary p-4 rounded-lg">
             {ComponentToRender[selectedMenu]}
           </div>
         </div>

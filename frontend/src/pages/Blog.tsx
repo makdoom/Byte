@@ -25,7 +25,7 @@ export const Blog = () => {
       const fetchBlog = async () => {
         try {
           const response = await getRequest<SinglePublishedBlogType>(
-            `/blogs/${params.blogId}`,
+            `/blogs/makdom/${params.blogId}`,
             SinglePublishedBlog
           );
           const { message, statusCode, data } = response;
