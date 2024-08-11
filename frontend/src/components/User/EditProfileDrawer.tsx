@@ -27,10 +27,10 @@ export const EditProfileDrawer = ({ toggleDrawer }: EditProfileDrawerProps) => {
         <DrawerDescription className="hidden" />
       </DrawerHeader>
       <ScrollArea className="p-4 px-2 max-h-[80vh] overflow-auto no-scrollbar">
-        <div className="">
-          <div className="h-80 rounded-tl-lg rounded-tr-lg relative">
+        <div className="no-scrollbar">
+          <div className="h-72 rounded-tl-lg rounded-tr-lg relative">
             <img
-              className="h-full w-full rounded-tl-lg rounded-tr-lg"
+              className="h-full w-full rounded-tl-lg rounded-tr-lg object-cover"
               src="https://images.unsplash.com/photo-1485470733090-0aae1788d5af?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8NGslMjBkZXNrdG9wJTIwd2FsbGFwZXJ8ZW58MHx8MHx8fDA%3D"
               alt=""
             />
@@ -54,8 +54,8 @@ export const EditProfileDrawer = ({ toggleDrawer }: EditProfileDrawerProps) => {
               </div>
             </div>
 
-            <div className="absolute left-4 -bottom-24">
-              <div className="relative h-48 w-48 rounded-full overflow-hidden border-4 border-card bg-card shadow-md">
+            <div className="absolute left-4 -bottom-16">
+              <div className="relative h-32 w-32 rounded-full overflow-hidden border-4 border-card bg-card shadow-md">
                 <img
                   className="h-full w-full rounded-full object-contain"
                   src="https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?q=80&w=1856&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -71,7 +71,7 @@ export const EditProfileDrawer = ({ toggleDrawer }: EditProfileDrawerProps) => {
             </div>
           </div>
 
-          <div className="mt-28 mb-4 grid grid-cols-2 gap-8 h-full px-2">
+          <div className="mt-24 mb-4 grid grid-cols-2 gap-8 h-full px-2">
             <div>
               <h4 className="text-xl font-bold text-muted-foreground mb-4">
                 Basic Information
@@ -136,29 +136,49 @@ export const EditProfileDrawer = ({ toggleDrawer }: EditProfileDrawerProps) => {
               </div>
               <div className="mb-4">
                 <Label htmlFor="website">Portfolio</Label>
-                <Input id="website" placeholder="Email" className="h-[45px]" />
+                <Input
+                  id="website"
+                  placeholder="https://www.user.com"
+                  className="h-[45px]"
+                />
               </div>
               <div className="mb-4">
                 <Label htmlFor="gitub">Github Profile</Label>
-                <Input id="gitub" placeholder="Email" className="h-[45px]" />
+                <Input
+                  id="gitub"
+                  placeholder="https://wwww.github.com/user"
+                  className="h-[45px]"
+                />
               </div>
               <div className="mb-4">
                 <Label htmlFor="linkedin">Linkedin Profile</Label>
-                <Input id="linkedin" placeholder="Email" className="h-[45px]" />
+                <Input
+                  id="linkedin"
+                  placeholder="https://www.linkedin.com/user"
+                  className="h-[45px]"
+                />
               </div>
               <div className="mb-4">
                 <Label htmlFor="twitter">Twitter (X) Profile</Label>
-                <Input id="twitter" placeholder="Email" className="h-[45px]" />
+                <Input
+                  id="twitter"
+                  placeholder="https://www.twitter.com/user"
+                  className="h-[45px]"
+                />
               </div>
               <div className="mb-4">
                 <Label htmlFor="youtube">Youtube Channel</Label>
-                <Input id="youtube" placeholder="Email" className="h-[45px]" />
+                <Input
+                  id="youtube"
+                  placeholder="https://www.youtube.com/channel/channel-name"
+                  className="h-[45px]"
+                />
               </div>
               <div className="mb-4">
                 <Label htmlFor="instagram">Instagram Profile</Label>
                 <Input
                   id="instagram"
-                  placeholder="Email"
+                  placeholder="https://www.instagram.com/user"
                   className="h-[45px]"
                 />
               </div>

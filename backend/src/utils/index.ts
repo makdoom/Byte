@@ -68,3 +68,15 @@ export const getTokensFromCookie = (cookie: string) => {
     throw error;
   }
 };
+
+export const createUserName = (email: string) => {
+  if (email.includes("@")) {
+    return email?.split("@")?.at(0) ?? "";
+  } else {
+    return generateRandomString();
+  }
+};
+
+const generateRandomString = () => {
+  return Math.random().toString(36).slice(2, 8);
+};

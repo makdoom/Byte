@@ -10,6 +10,7 @@ import {
 } from "../utils/customResponses";
 import {
   checkIsPasswordMatched,
+  createUserName,
   encryptPassword,
   getTokens,
   getTokensFromCookie,
@@ -39,9 +40,11 @@ authRouter.post("/signup", async (c) => {
   try {
     const prisma = getPrisma(c.env.DATABASE_URL);
     let hashedPassword = await encryptPassword(body.password);
+    const username = createUserName(body.email);
     let user = await prisma.user.create({
       data: {
         email: body.email,
+        username: username,
         name: body.name ? body.name : "",
         password: hashedPassword,
       },
@@ -49,6 +52,7 @@ authRouter.post("/signup", async (c) => {
         id: true,
         name: true,
         email: true,
+        username: true,
       },
     });
     // Generate token
@@ -79,6 +83,7 @@ authRouter.post("/signup", async (c) => {
       id: user.id,
       name: user.name,
       email: user.email,
+      username: user.username,
       accessToken,
     };
     return sendSuccess(200, userResponse, "User signup successfully");
@@ -152,6 +157,8 @@ authRouter.post("/signin", async (c) => {
     id: user.id,
     name: user.name,
     email: user.email,
+    username: user.username,
+    profileURL: user.profileURL,
     accessToken,
   };
   return sendSuccess(200, userResponse, "User login successfully");
@@ -188,7 +195,13 @@ authRouter.get("/get-user", async (c) => {
       const prisma = getPrisma(c.env.DATABASE_URL);
       let user = await prisma.user.findUnique({
         where: { id },
-        select: { id: true, email: true, name: true },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          username: true,
+          profileURL: true,
+        },
       });
 
       status(200);
