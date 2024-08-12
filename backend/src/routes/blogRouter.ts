@@ -90,7 +90,6 @@ blogRouter.use("/*", async (c, next) => {
 
   const { accessToken, refreshToken } = getTokensFromCookie(cookie);
   if (!accessToken || !refreshToken) {
-    console.log("inside");
     c.status(405);
     return c.json({ error: "Unauthorized user", statusCode: 405 });
   }

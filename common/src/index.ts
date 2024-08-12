@@ -133,3 +133,33 @@ export const AllPublishedBlogResSchema = ResponseCreator(PublishedBlogResData);
 export type AllPublishedBlogResType = z.infer<typeof AllPublishedBlogResSchema>;
 export type PublishedBlogType = z.infer<typeof PublishedBlogSchema>;
 export type SinglePublishedBlogType = z.infer<typeof SinglePublishedBlog>;
+
+export const SocialLinkSchema = z.object({
+  id: z.string(),
+  authorId: z.string(),
+  portfolio: z.string(),
+  github: z.string(),
+  linkedin: z.string(),
+  instagram: z.string(),
+  youtube: z.string(),
+  twitter: z.string(),
+});
+export const UserProfileSchema = z.object({
+  id: z.string(),
+  email: z.string().email(),
+  username: z.string(),
+  name: z.string(),
+  coverImage: z.string(),
+  location: z.string(),
+  profileTagline: z.string(),
+  bio: z.string(),
+  techStack: z.string(),
+  profileURL: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  socialLinks: SocialLinkSchema,
+});
+
+export const UserProfileRes = ResponseCreator(UserProfileSchema);
+export type UserProfileType = z.infer<typeof UserProfileSchema>;
+export type UserProfileResTpe = z.infer<typeof UserProfileRes>;

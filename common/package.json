@@ -1,6 +1,6 @@
 {
   "name": "@makdoom/byte-common",
-  "version": "1.0.48",
+  "version": "1.0.49",
   "description": "Common utility modules ",
   "main": "dist/index.js",
   "author": "Makdoom Shaikh",

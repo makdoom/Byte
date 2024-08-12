@@ -5,9 +5,12 @@ import { Badges } from "@/components/User/Badges";
 import { BlogShowcase } from "@/components/User/BlogShowcase";
 import { EditProfileDrawer } from "@/components/User/EditProfileDrawer";
 import { TechStack } from "@/components/User/TechStack";
+import { getRequest } from "@/config/api";
 import { cn } from "@/lib/utils";
+import { UserProfileRes, UserProfileResTpe } from "@makdoom/byte-common";
 import { Award, Layers3, LucideIcon, Pencil, Rss, User } from "lucide-react";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 type MenuType = { id: number; label: string; name: string; Icon: LucideIcon };
 
@@ -55,6 +58,25 @@ export const UserProfile = () => {
   const [openEditProfileDrawer, setOpenEditProfileDrawer] = useState(false);
 
   const menuClickHandler = (menuName: MenuEnums) => setSelectedMenu(menuName);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await getRequest<UserProfileResTpe>(
+          "/user/get-user",
+          UserProfileRes
+        );
+        const { statusCode, message, data } = response;
+        if (statusCode === 200 && data) {
+          console.log(data);
+        } else {
+          toast.error(message);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
 
   return (
     <div className="mt-16 flex-1 min-h-screen">

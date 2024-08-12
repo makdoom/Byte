@@ -19,11 +19,11 @@ model User {
   username       String       @unique
   name           String
   password       String
-  coverImage     String?
-  location       String?
-  profileTagline String?
-  bio            String?
-  techStack      String?
+  coverImage     String?      @default("")
+  location       String?      @default("")
+  profileTagline String?      @default("")
+  bio            String?      @default("")
+  techStack      String?      @default("")
   profileURL     String       @default("")
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt

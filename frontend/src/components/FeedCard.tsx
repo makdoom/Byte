@@ -20,7 +20,7 @@ export const FeedCard = ({
       <div className="flex items-center gap-3">
         <Avatar
           className="cursor-pointer"
-          onClick={() => navigateToUserProfile(blog.author.id)}
+          onClick={() => navigateToUserProfile(blog.author.username)}
         >
           <AvatarImage src="https://github.com/shadcn.png" />
           <AvatarFallback>CN</AvatarFallback>
@@ -29,7 +29,7 @@ export const FeedCard = ({
         <div>
           <h4
             className="text-sm font-medium cursor-pointer hover:underline"
-            onClick={() => navigateToUserProfile(blog.author.id)}
+            onClick={() => navigateToUserProfile(blog.author.username)}
           >
             {blog.author.name}
           </h4>

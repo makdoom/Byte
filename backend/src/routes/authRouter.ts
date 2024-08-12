@@ -3,7 +3,6 @@ import { Bindings } from "../types";
 import { getPrisma } from "../config";
 import { HTTPException } from "hono/http-exception";
 import {
-  ApiResponse,
   ErrorResponse,
   extendContext,
   ExtendedContext,

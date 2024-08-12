@@ -962,10 +962,10 @@
     "@lezer/highlight" "^1.0.0"
     "@lezer/lr" "^1.4.0"
 
-"@makdoom/byte-common@^1.0.48":
-  version "1.0.48"
-  resolved "https://registry.yarnpkg.com/@makdoom/byte-common/-/byte-common-1.0.48.tgz#056b827b3d773b14d57b6313df91ba70bc527f24"
-  integrity sha512-tkDk+8TsTZ1ORb/3lUEee1wbMGx9k7dluza96GDbQ8lEtMOQfa0gcRz2vCz5m1YcmX0b8o5qipzpnQDJ8pCO5w==
+"@makdoom/byte-common@^1.0.49":
+  version "1.0.49"
+  resolved "https://registry.yarnpkg.com/@makdoom/byte-common/-/byte-common-1.0.49.tgz#595e07671910010f11cb5413b19ea1fc711db3e3"
+  integrity sha512-spIIEboar+2/7qeW84O4ZhII7t740zSAbdiQ+3+Jdzme8BstwzcLahqM1athm76PpHBc5dVGaRn+NEFt3wDIXA==
   dependencies:
     zod "^3.23.8"
 
@@ -2344,6 +2344,19 @@ class-variance-authority@^0.7.0:
   integrity sha512-jFI8IQw4hczaL4ALINxqLEXQbWcNjoSkloa4IaufXCJr6QawJyw7tuRysRsrE8w2p/4gGaxKIt/hX3qz/IbD1A==
   dependencies:
     clsx "2.0.0"
+
+cloudinary-core@^2.13.0, cloudinary-core@^2.13.1:
+  version "2.13.1"
+  resolved "https://registry.yarnpkg.com/cloudinary-core/-/cloudinary-core-2.13.1.tgz#7abb62bf1db41773acfe1eebb7fd40571c34495b"
+  integrity sha512-z53GPNWnvU0Zi+ns8CIVbZBfj7ps/++zDvwIyiFuq5p1MoK+KUCg0k5mBceDDHTnx1gHmHUd9aohS+gDxPNt6w==
+
+cloudinary-react@^1.8.1:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/cloudinary-react/-/cloudinary-react-1.8.1.tgz#8d017d959776be5e80717918412504aa6f35214f"
+  integrity sha512-90LHbUPfB8Uj5tKY08+ladN8ONyfak8zjnlAgVc39vlxKCx3b9G0/+I5C1QQGDwBRqHKzxyXterfugbWUrCQhA==
+  dependencies:
+    cloudinary-core "^2.13.0"
+    prop-types "^15.8.1"
 
 clsx@2.0.0:
   version "2.0.0"

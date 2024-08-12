@@ -5,10 +5,11 @@
     "deploy": "wrangler deploy --minify src/index.ts"
   },
   "dependencies": {
-    "@makdoom/byte-common": "^1.0.48",
+    "@makdoom/byte-common": "^1.0.49",
     "@prisma/client": "5.16.2",
     "@prisma/extension-accelerate": "^1.1.0",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.4.0",
     "hono": "^4.4.13",
     "prisma": "^5.16.2"
   },

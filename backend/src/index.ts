@@ -5,6 +5,7 @@ import blogRouter from "./routes/blogRouter";
 import { HTTPException } from "hono/http-exception";
 import { commonResponseHandler, ErrorResponse } from "./utils/customResponses";
 import { cors } from "hono/cors";
+import userRouter from "./routes/userRouter";
 
 const app = new Hono<{
   Bindings: Bindings;
@@ -24,6 +25,7 @@ app.use(
 // Router
 app.route("/auth", authRouter);
 app.route("/blogs", blogRouter);
+app.route("/user", userRouter);
 
 // Custom HTTP Exception handler
 app.onError((error, c) => {
