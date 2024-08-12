@@ -962,10 +962,10 @@
     "@lezer/highlight" "^1.0.0"
     "@lezer/lr" "^1.4.0"
 
-"@makdoom/byte-common@^1.0.46":
-  version "1.0.46"
-  resolved "https://registry.yarnpkg.com/@makdoom/byte-common/-/byte-common-1.0.46.tgz#8d2d5c698522341e2d1ddc2ea883cc79ff689b82"
-  integrity sha512-u8Mytmc69vj0Swx4SUg/EWOi0vhUTMNJJ+ZeMiOHoy8IlE+mXjfX+MMMxwZ5tYljhLWVN1EjQcN9YdIxiWsfOQ==
+"@makdoom/byte-common@^1.0.48":
+  version "1.0.48"
+  resolved "https://registry.yarnpkg.com/@makdoom/byte-common/-/byte-common-1.0.48.tgz#056b827b3d773b14d57b6313df91ba70bc527f24"
+  integrity sha512-tkDk+8TsTZ1ORb/3lUEee1wbMGx9k7dluza96GDbQ8lEtMOQfa0gcRz2vCz5m1YcmX0b8o5qipzpnQDJ8pCO5w==
   dependencies:
     zod "^3.23.8"
 

@@ -59,13 +59,19 @@ blogRouter.get("/:username/:blogId", async (c) => {
       where: { id: blogId, isPublished: true },
       include: {
         author: {
-          select: { id: true, email: true, name: true, profileURL: true },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            profileURL: true,
+            username: true,
+          },
         },
       },
       orderBy: { createdAt: "desc" },
     });
 
-    return sendSuccess(200, blog, "Blog updated successfully");
+    return sendSuccess(200, blog, "Blog fetched successfully");
   } catch (error) {
     status(411);
     throw new HTTPException(411, {
@@ -117,7 +123,7 @@ blogRouter.post("/create-draft", async (c) => {
   try {
     const prisma = getPrisma(c.env.DATABASE_URL);
     const draftBlogCount = await prisma.blogs.count({
-      where: { isDraft: true },
+      where: { authorId: body.userId, isDraft: true },
     });
 
     if (draftBlogCount === 0) {
@@ -162,7 +168,7 @@ blogRouter.post("/new", async (c) => {
   try {
     const prisma = getPrisma(c.env.DATABASE_URL);
     const draftBlogCount = await prisma.blogs.count({
-      where: { isDraft: true },
+      where: { authorId: body.userId, isDraft: true },
     });
 
     const draftBlog = await prisma.blogs.create({
@@ -239,6 +245,8 @@ blogRouter.get("/drafts", async (c) => {
       where: { authorId: userId },
       orderBy: { createdAt: "desc" },
     });
+
+    console.log(allBlogs);
 
     return sendSuccess(200, allBlogs, "Blogs fetched successfully");
   } catch (error) {

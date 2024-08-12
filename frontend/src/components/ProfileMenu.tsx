@@ -4,7 +4,14 @@ import {
   MenubarItem,
   MenubarSeparator,
 } from "@/components/ui/menubar";
+import { postRequest } from "@/config/api";
 import { useAuthStore } from "@/store";
+import {
+  BlogResSchema,
+  BlogResType,
+  EmptyDraftSchema,
+  EmptyDraftType,
+} from "@makdoom/byte-common";
 import {
   BadgeHelp,
   BookmarkCheck,
@@ -13,32 +20,61 @@ import {
   LogOut,
   NotebookText,
 } from "lucide-react";
+import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 type ProfileMenuProps = {
   logoutHandler: () => void;
 };
 export const ProfileMenu = ({ logoutHandler }: ProfileMenuProps) => {
   const { user } = useAuthStore();
+  console.log(user);
+
+  const navigate = useNavigate();
+
+  const createDraftHandler = async () => {
+    try {
+      const payload = { userId: user?.id ?? "" };
+      const response = await postRequest<EmptyDraftType, BlogResType>(
+        "/blogs/create-draft",
+        payload,
+        EmptyDraftSchema,
+        BlogResSchema
+      );
+      const { data, statusCode, message } = response;
+      if (statusCode === 200) {
+        navigate(`/draft/${data?.id}`);
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error("Something went wrong while creating draft");
+    }
+  };
+
   return (
     <MenubarContent align="start" className="flex flex-col gap-1 mr-4">
       <MenubarItem>
         <div className="flex gap-3 items-center">
           <Avatar className="h-12 w-12">
             <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>MS</AvatarFallback>
+            <AvatarFallback>{user?.initials}</AvatarFallback>
           </Avatar>
 
           <div>
             <h5 className="text-[14px] font-medium">{user?.name}</h5>
             <p className=" text-[12px] font-normal text-muted-foreground">
-              @{user?.email.split("@")?.at(0)}
+              @{user?.username}
             </p>
           </div>
         </div>
       </MenubarItem>
       <MenubarSeparator />
 
-      <MenubarItem className="flex item-center gap-3 cursor-pointer">
+      <MenubarItem
+        className="flex item-center gap-3 cursor-pointer"
+        onClick={createDraftHandler}
+      >
         <NotebookText size={19} />
         My Drafts
       </MenubarItem>

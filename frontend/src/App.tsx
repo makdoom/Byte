@@ -28,6 +28,7 @@ const App = () => {
             id: data?.id,
             email: data.email,
             name: data.name,
+            username: data.username,
           });
           setDefaultPage("feeds");
         } else {

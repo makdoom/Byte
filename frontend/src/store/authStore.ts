@@ -4,6 +4,8 @@ type User = {
   id: string;
   email: string;
   name: string;
+  username: string;
+  initials?: string;
 };
 
 type DefaultPage = "home" | "feeds";
@@ -33,7 +35,15 @@ export const useAuthStore = create<authStore>((set) => ({
     set({ defaultPage: page });
   },
   setUserInfo: (userPayload: User) => {
-    set({ user: userPayload, isLoggedIn: true });
+    const initials = `${userPayload?.initials
+      ?.split(" ")
+      ?.at(0)
+      ?.toUpperCase()}${userPayload?.initials
+      ?.split(" ")
+      ?.at(1)
+      ?.toUpperCase()}`;
+
+    set({ user: { ...userPayload, initials }, isLoggedIn: true });
   },
   logoutUser: () => {
     if (localStorage.getItem("accessToken")) {

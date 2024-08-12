@@ -24,7 +24,7 @@ import {
   useState,
 } from "react";
 import { useDropzone } from "react-dropzone";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 
 type PublishDrawerProps = {
@@ -40,6 +40,8 @@ export const PublishDrawer = ({
   const [blog, setBlog] = useState<BlogType>({} as BlogType);
   const params = useParams();
   const { blogList } = useBlogStore();
+
+  const navigate = useNavigate();
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -85,6 +87,7 @@ export const PublishDrawer = ({
       if (statusCode === 200) {
         toast.success(message);
         setOpenPublishDrawer(false);
+        navigate(`/`);
       } else {
         toast.error(message);
       }

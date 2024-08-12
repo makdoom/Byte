@@ -76,8 +76,9 @@ export const getRequest = async <T>(
       throw new Error(response.data.message);
     }
 
-    if (error instanceof ZodError) {
-      throw new Error(error.message);
+    if (error instanceof ZodError || (error && "issues" in error)) {
+      console.log(error.issues);
+      throw new Error("Validation error");
     } else {
       throw error;
     }
@@ -97,13 +98,16 @@ export const postRequest = async <T, D>(
     dataSchema.parse(data); // Validate request payload
     response = await axiosInstance.post(url, data, config);
     return responseSchema.parse(response.data); // Validate response data
-  } catch (error: unknown) {
+  } catch (error) {
+    console.log(error);
     if (response.data.statusCode === 400) {
       throw new Error(response.data.message);
     }
-    if (error instanceof ZodError) {
+    if (error instanceof ZodError || (error && "issues" in error)) {
+      console.log(error.issues);
       throw new Error("Validation error");
     } else {
+      console.log(error);
       throw error;
     }
   }

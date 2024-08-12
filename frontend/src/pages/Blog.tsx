@@ -31,11 +31,12 @@ export const Blog = () => {
           const { message, statusCode, data } = response;
           if (statusCode === 200 && data) {
             setBlog(data);
-            // window.scrollTo({ behavior: "smooth", top: 0 });
+            window.scrollTo({ behavior: "smooth", top: 0 });
           } else {
             toast.error(message);
           }
         } catch (error) {
+          console.log(error);
           toast.error("Something went wrong while fetching blog");
         }
       };

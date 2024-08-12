@@ -43,8 +43,16 @@ export const useBlogStore = create<BlogStore>((set, get) => ({
     set({ isSidebarOpen: !get().isSidebarOpen });
   },
   updateDraftBlogs: (payload) => {
+    const blogList = [payload, ...get().blogList];
+    const draftsCount = blogList.filter((blog) => blog.isDraft).length;
+    const pinnedCount = blogList.filter((blog) => blog.isPinned).length;
+    const publishedCount = blogList.filter((blog) => blog.isPublished).length;
+
     set({
-      blogList: [payload, ...get().blogList],
+      blogList,
+      draftsCount,
+      pinnedCount,
+      publishedCount,
     });
   },
   setBlogs: (payload) => {
