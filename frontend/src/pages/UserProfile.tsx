@@ -87,21 +87,21 @@ export const UserProfile = () => {
               </div>
             </div>
 
-            <div className="mt-2">
+            <div className="mt-4">
               <Tabs defaultValue="about" className="w-[400px]">
                 <TabsList className="w-full flex ">
-                  <TabsTrigger value="about" className="flex-1">
+                  <TabsTrigger value="about" className="flex-1 text-sm">
                     About
                   </TabsTrigger>
-                  <TabsTrigger value="tech" className="flex-1">
+                  <TabsTrigger value="tech" className="flex-1 text-sm">
                     Tech Stack
                   </TabsTrigger>
-                  <TabsTrigger value="social" className="flex-1">
+                  <TabsTrigger value="social" className="flex-1 text-sm">
                     Social
                   </TabsTrigger>
                 </TabsList>
-                <TabsContent value="about" className="mt-4 px-2">
-                  <p className="font-normal">
+                <TabsContent value="about" className="mt-6 px-2">
+                  <p className="font-normal text-muted-foreground">
                     Heya 👋 This is Makdoom Shaikh, Frontend Web Developer who
                     is passionate about the JavaScript web technologies building
                     websites and web applications. I have done my internship at
@@ -112,7 +112,13 @@ export const UserProfile = () => {
                     React and Redux ( State Management ).
                   </p>
                 </TabsContent>
-                <TabsContent value="tech">Techstack</TabsContent>
+                <TabsContent value="tech">
+                  <div className="mt-6">
+                    <span className="p-2 bg-secondary rounded-md text-sm px-3">
+                      Javascript
+                    </span>
+                  </div>
+                </TabsContent>
                 <TabsContent value="social">
                   <div className="mt-6 grid grid-cols-2 gap-4 px-4">
                     <Button
@@ -157,13 +163,6 @@ export const UserProfile = () => {
                   </div>
                 </TabsContent>
               </Tabs>
-              {/* <p className="font-medium text-sm  mb-1">About me</p>
-              <span className="text-sm  text-muted-foreground">
-                Heya 👋 This is Makdoom Shaikh, Frontend Web Developer who is
-                passionate about the JavaScript web technologies building
-                websites and web applications. I have done my internship at
-                Digital Solution Media as Frontend Developer.
-              </span> */}
             </div>
           </div>
         </div>
