@@ -81,7 +81,7 @@ export const BlogResData = z.object({
   isDraft: z.boolean(),
   isPinned: z.boolean(),
   isPublished: z.boolean(),
-  publishedAt: z.nullable(z.string()),
+  publishedAt: z.nullable(z.string().date()),
   createdAt: z.string(),
   updatedAt: z.string(),
 });

@@ -97,10 +97,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@makdoom/byte-common@^1.0.49":
-  version "1.0.49"
-  resolved "https://registry.yarnpkg.com/@makdoom/byte-common/-/byte-common-1.0.49.tgz#595e07671910010f11cb5413b19ea1fc711db3e3"
-  integrity sha512-spIIEboar+2/7qeW84O4ZhII7t740zSAbdiQ+3+Jdzme8BstwzcLahqM1athm76PpHBc5dVGaRn+NEFt3wDIXA==
+"@makdoom/byte-common@^1.0.50":
+  version "1.0.50"
+  resolved "https://registry.yarnpkg.com/@makdoom/byte-common/-/byte-common-1.0.50.tgz#bbb1f0fcc6ee577ce455df89c98d03bfec7fda55"
+  integrity sha512-tOA/0c7N80qWa5LD17W7eTlpvarSmsbIVrwztAHoKqtu+vQ7VPLDlYI66bo1L/uqt9LE0TJ4/YeHMtt4L9iVeA==
   dependencies:
     zod "^3.23.8"
 

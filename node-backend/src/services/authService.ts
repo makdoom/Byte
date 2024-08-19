@@ -69,3 +69,18 @@ export const signinUserService = async (data: SignupReqType) => {
     throw new ValidationError(error);
   }
 };
+
+export const getUserService = async (id: string) => {
+  try {
+    const prisma = getPrisma(process.env.POOL_URL);
+
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: { socialLinks: true, posts: { where: { isPublished: true } } },
+    });
+
+    return user;
+  } catch (error) {
+    throw new ValidationError(error);
+  }
+};

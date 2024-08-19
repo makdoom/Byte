@@ -2,7 +2,11 @@ import { CookieOptions, NextFunction, Request, Response } from "express";
 import { sendSuccessResponse } from "../utils/ApiResponse";
 import { SigninReqSchema, SignupReqSchema } from "@makdoom/byte-common";
 import { ValidationError } from "../utils/ApiError";
-import { signinUserService, signupService } from "../services/authService";
+import {
+  getUserService,
+  signinUserService,
+  signupService,
+} from "../services/authService";
 import { CustomRequest, generateTokens } from "../utils";
 import { ONE_DAY_COOKIE, SEVEN_DAYS_COOKIE } from "../constant";
 
@@ -90,10 +94,11 @@ export const getUser = async (
   next: NextFunction,
 ) => {
   try {
+    const user = await getUserService(req.user.id);
     return sendSuccessResponse(
       res,
-      { ...req.user, isAuthorized: true },
-      "user",
+      { ...user, isAuthorized: true },
+      "User fetched successfully",
     );
   } catch (error) {
     next(error);
