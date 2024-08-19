@@ -1,6 +1,8 @@
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { EditProfileDialog } from "@/components/User/EditProfileDialog";
 import { useAuthStore } from "@/store";
 import {
   ExternalLink,
@@ -11,14 +13,18 @@ import {
   Twitter,
   Youtube,
 } from "lucide-react";
+import { useState } from "react";
 
 export const UserProfile = () => {
   const { user } = useAuthStore((state) => state);
+
+  const [openDialog, setOpenDialog] = useState(false);
+
   console.log(user);
 
   return (
     <div className="pt-16 pb-4 flex-1 min-h-screen w-full px-8 flex gap-3">
-      <div className="flex-[0.3] bg-card rounded-md">
+      <div className="flex-[0.33] bg-card rounded-md">
         <div>
           <div className="relative">
             <div className="relative rounded-tl-md rounded-tr-md overflow-hidden h-40">
@@ -35,18 +41,20 @@ export const UserProfile = () => {
                   src="https://plus.unsplash.com/premium_photo-1671656349218-5218444643d8?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 />
               </Avatar>
-              {/* <img
-                src="https://plus.unsplash.com/premium_photo-1671656349218-5218444643d8?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt=""
-              /> */}
             </div>
           </div>
 
           <div className="flex justify-end p-2 px-4">
-            <Button size={"sm"}>
-              <Pencil size={12} className="mr-2" />
-              Edit
-            </Button>
+            <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+              <DialogTrigger asChild>
+                <Button size={"sm"}>
+                  <Pencil size={12} className="mr-2" />
+                  Edit
+                </Button>
+              </DialogTrigger>
+
+              <EditProfileDialog />
+            </Dialog>
           </div>
 
           <div className="px-4 mt-2 flex flex-col gap-4">
@@ -92,7 +100,7 @@ export const UserProfile = () => {
             </div>
 
             <div className="mt-4">
-              <Tabs defaultValue="about" className="w-[400px]">
+              <Tabs defaultValue="about" className="w-full">
                 <TabsList className="w-full flex ">
                   <TabsTrigger value="about" className="flex-1 text-sm">
                     About
@@ -105,7 +113,7 @@ export const UserProfile = () => {
                   </TabsTrigger>
                 </TabsList>
                 <TabsContent value="about" className="mt-6 px-2">
-                  <p className="font-normal text-base text-muted-foreground">
+                  <p className="text-base/7 text-secondary-foreground">
                     Heya 👋 This is Makdoom Shaikh, Frontend Web Developer who
                     is passionate about the JavaScript web technologies building
                     websites and web applications. I have done my internship at
@@ -171,7 +179,7 @@ export const UserProfile = () => {
           </div>
         </div>
       </div>
-      <div className="flex-[0.7] bg-card rounded-md">right</div>
+      <div className="flex-[0.67] bg-card rounded-md">right</div>
     </div>
   );
 };
