@@ -51,7 +51,7 @@ axiosInstance.interceptors.response.use(
 
         return axiosInstance(originalRequest);
       } catch (e) {
-        console.error("Refresh token invalid", e);
+        // console.error("Refresh token invalid", e);
         // Optionally handle token refresh failure (e.g., redirect to login)
         return Promise.reject(e);
       }

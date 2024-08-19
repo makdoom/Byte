@@ -90,7 +90,11 @@ export const getUser = async (
   next: NextFunction,
 ) => {
   try {
-    return sendSuccessResponse(res, req.user, "user");
+    return sendSuccessResponse(
+      res,
+      { ...req.user, isAuthorized: true },
+      "user",
+    );
   } catch (error) {
     next(error);
   }
@@ -111,6 +115,43 @@ export const logoutUser = async (
     res.clearCookie("refreshToken", httpCookieOptions);
 
     return sendSuccessResponse(res, null, "User logout successfully");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const generateToken = async (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  console.log(req.user?.id);
+  try {
+    // Generate both new access and refresh token
+    const { accessToken, refreshToken } = generateTokens(req.user?.id);
+
+    const httpCookieOptions: CookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+    };
+    res.clearCookie("accessToken", httpCookieOptions);
+    res.clearCookie("refreshToken", httpCookieOptions);
+
+    res.cookie("accessToken", accessToken, {
+      ...httpCookieOptions,
+      maxAge: ONE_DAY_COOKIE,
+    });
+    res.cookie("refreshToken", refreshToken, {
+      ...httpCookieOptions,
+      maxAge: SEVEN_DAYS_COOKIE,
+    });
+
+    return sendSuccessResponse(
+      res,
+      { newAccessToken: accessToken },
+      "Token generated successfully",
+    );
   } catch (error) {
     next(error);
   }
