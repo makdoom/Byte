@@ -4,13 +4,13 @@ import {
   DialogContent,
   DialogFooter,
   DialogTitle,
-  //   DialogDescription,
-  //   DialogHeader,
-  //   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { About } from "@/components/User/About";
+import { PersonalDetails } from "@/components/User/PersonalDetails";
+import { SocialLinks } from "@/components/User/SocialLinks";
+import { TechStack } from "@/components/User/TechStack";
+import { Pencil, X } from "lucide-react";
 
 export const EditProfileDialog = () => {
   return (
@@ -18,21 +18,45 @@ export const EditProfileDialog = () => {
       <DialogTitle>Edit Information</DialogTitle>
       <div className="relative w-full">
         <div className="relative">
-          <div className="rounded-sm overflow-hidden h-52">
+          <div className="relative rounded-sm overflow-hidden h-52">
             <img
               className="w-full h-full object-cover"
               src="https://images.unsplash.com/photo-1485470733090-0aae1788d5af?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8NGslMjBkZXNrdG9wJTIwd2FsbGFwZXJ8ZW58MHx8MHx8fDA%3D"
               alt=""
             />
+
+            <div className="absolute right-2 top-2 flex gap-2">
+              <Button
+                variant="secondary"
+                className="rounded-full h-8 w-8 p-0 shadow-md"
+              >
+                <Pencil size={14} />
+              </Button>
+
+              <Button
+                variant="destructive"
+                className="rounded-full h-8 w-8 p-0 shadow-md"
+              >
+                <X size={14} />
+              </Button>
+            </div>
           </div>
 
           <div className="absolute top-[100%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <Avatar className="h-28 w-28 shadow-lg border-4 border-card">
-              <AvatarImage
-                className="object-cover"
-                src="https://plus.unsplash.com/premium_photo-1671656349218-5218444643d8?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              />
-            </Avatar>
+            <div className="relative">
+              <Avatar className="h-32 w-32 shadow-lg border-4 border-card">
+                <AvatarImage
+                  className="object-cover"
+                  src="https://plus.unsplash.com/premium_photo-1671656349218-5218444643d8?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                />
+              </Avatar>
+
+              <div className="absolute right-1 bottom-2">
+                <Button className="rounded-full h-8 w-8 p-0 shadow-md">
+                  <Pencil size={14} />
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -56,60 +80,17 @@ export const EditProfileDialog = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="personal-details" className="mt-4">
-              <div className="max-h-[400px] overflow-scroll grid grid-cols-2 p-1 gap-4">
-                <div>
-                  <Label htmlFor="fullname" className="text-xs mb-1">
-                    Full Name
-                  </Label>
-                  <Input
-                    id="fullname"
-                    placeholder="Enter full name"
-                    className="h-[40px]"
-                    autoFocus
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="tagline" className="text-xs mb-1">
-                    Tagline
-                  </Label>
-                  <Input
-                    id="tagline"
-                    placeholder="Software Engineer @"
-                    className="h-[40px]"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email" className="text-xs mb-1">
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    placeholder="makshaikh99@gmail.com"
-                    className="h-[40px]"
-                    disabled
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="location" className="text-xs mb-1">
-                    Location
-                  </Label>
-                  <Input
-                    id="location"
-                    placeholder="Location"
-                    className="h-[40px]"
-                  />
-                </div>
-              </div>
+              <PersonalDetails />
             </TabsContent>
-            <TabsContent value="about">
-              <div className="mt-6">
-                <span className="p-2 bg-secondary rounded-md text-sm px-3">
-                  Javascript
-                </span>
-              </div>
+            <TabsContent value="about" className="mt-4">
+              <About />
             </TabsContent>
-            <TabsContent value="tech"></TabsContent>
-            <TabsContent value="social"></TabsContent>
+            <TabsContent value="tech" className="mt-4">
+              <TechStack />
+            </TabsContent>
+            <TabsContent value="social" className="mt-4">
+              <SocialLinks />
+            </TabsContent>
           </Tabs>
         </div>
       </div>

@@ -1,30 +1,24 @@
-const techStack: { id: number; name: string }[] = [
-  {
-    id: 1,
-    name: "Javascript",
-  },
-  {
-    id: 2,
-    name: "React",
-  },
-  {
-    id: 3,
-    name: "Typescript",
-  },
-  {
-    id: 4,
-    name: "MongoDB",
-  },
-];
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export const TechStack = () => {
   return (
-    <div className="flex gap-2">
-      {techStack.map((tech) => (
-        <p key={tech.id} className="p-2 bg-card text-sm rounded-md px-3">
-          {tech.name}
-        </p>
-      ))}
+    <div className="max-h-[400px] overflow-scroll p-1">
+      <div>
+        <Label htmlFor="techstack" className="text-sm inline-block mb-2">
+          Tech Stack
+        </Label>
+        <Input
+          id="techstack"
+          placeholder="Technologies, Topics more..."
+          className="h-[44px]"
+          autoFocus
+        />
+
+        <span className="text-muted-foreground text-xs mt-2">
+          Add technologies, topics comma (,) separated
+        </span>
+      </div>
     </div>
   );
 };
