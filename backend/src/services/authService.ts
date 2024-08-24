@@ -76,8 +76,10 @@ export const getUserService = async (id: string) => {
 
     const user = await prisma.user.findUnique({
       where: { id },
-      include: { socialLinks: true, posts: { where: { isPublished: true } } },
+      include: { socialLinks: true, blogs: { where: { isPublished: true } } },
     });
+
+    delete user["password"];
 
     return user;
   } catch (error) {

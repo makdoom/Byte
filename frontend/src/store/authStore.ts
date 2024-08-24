@@ -34,16 +34,8 @@ export const useAuthStore = create<authStore>((set) => ({
   setDefaultPage: (page: DefaultPage) => {
     set({ defaultPage: page });
   },
-  setUserInfo: (userPayload: User) => {
-    const initials = `${userPayload?.initials
-      ?.split(" ")
-      ?.at(0)
-      ?.toUpperCase()}${userPayload?.initials
-      ?.split(" ")
-      ?.at(1)
-      ?.toUpperCase()}`;
-
-    set({ user: { ...userPayload, initials }, isLoggedIn: true });
+  setUserInfo: (userPayload) => {
+    set({ user: { ...userPayload }, isLoggedIn: true });
   },
   logoutUser: () => {
     if (localStorage.getItem("accessToken")) {

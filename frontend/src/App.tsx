@@ -24,12 +24,8 @@ const App = () => {
         );
         const { data, statusCode, message } = response;
         if (statusCode === 200 && data) {
-          setUserInfo({
-            id: data?.id,
-            email: data.email,
-            name: data.name,
-            username: data.username,
-          });
+          console.log(data);
+          setUserInfo(data);
           setDefaultPage("feeds");
         } else {
           toast.error(message);

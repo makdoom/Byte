@@ -28,7 +28,6 @@ type ProfileMenuProps = {
 };
 export const ProfileMenu = ({ logoutHandler }: ProfileMenuProps) => {
   const { user } = useAuthStore();
-  console.log(user);
 
   const navigate = useNavigate();
 
@@ -58,7 +57,7 @@ export const ProfileMenu = ({ logoutHandler }: ProfileMenuProps) => {
         <div className="flex gap-3 items-center">
           <Avatar className="h-12 w-12">
             <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>{user?.initials}</AvatarFallback>
+            <AvatarFallback>{user?.email[0].toUpperCase()}</AvatarFallback>
           </Avatar>
 
           <div>

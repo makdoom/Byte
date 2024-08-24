@@ -3,7 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EditProfileDialog } from "@/components/User/EditProfileDialog";
-import { useAuthStore } from "@/store";
+import { postRequest } from "@/config/api";
+import {
+  AuthorProfileRes,
+  AuthorProfileResType,
+  AuthorProfileType,
+  UserProfilePayload,
+  UserProfilePayloadType,
+  UserProfileType,
+} from "@makdoom/byte-common";
 import {
   ExternalLink,
   Github,
@@ -13,14 +21,49 @@ import {
   Twitter,
   Youtube,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
+import { toast } from "sonner";
 
 export const UserProfile = () => {
-  const { user } = useAuthStore((state) => state);
-
+  // TODO: Need to handle loading skelton state
+  const location = useLocation();
+  const { id, username } = location.state;
+  const [userProfile, setUserProfile] = useState<AuthorProfileType>(
+    {} as UserProfileType
+  );
   const [openDialog, setOpenDialog] = useState(false);
 
-  console.log(user);
+  useEffect(() => {
+    if (id && username) {
+      (async () => {
+        try {
+          const payload = {
+            userId: id,
+            username,
+          };
+          const response = await postRequest<
+            UserProfilePayloadType,
+            AuthorProfileResType
+          >(
+            "/user/getUserProfile",
+            payload,
+            UserProfilePayload,
+            AuthorProfileRes
+          );
+
+          const { statusCode, message, data } = response;
+          if (statusCode === 200 && data) {
+            setUserProfile(data);
+          } else {
+            toast.error(message);
+          }
+        } catch (error) {
+          toast.error("Error while fetching user information");
+        }
+      })();
+    }
+  }, [id, username]);
 
   return (
     <div className="pt-16 pb-4 flex-1 min-h-screen w-full px-8 flex gap-3">
@@ -60,11 +103,13 @@ export const UserProfile = () => {
           <div className="px-4 mt-2 flex flex-col gap-4">
             <div>
               <div className="flex gap-2 items-center">
-                <p className="font-semibold">Makdoom Shaikh</p>
-                <span className="text-xs text-muted-foreground">@makdoom</span>
+                <p className="font-semibold">{userProfile?.name}</p>
+                <span className="text-xs text-muted-foreground">
+                  @{userProfile?.username}
+                </span>
               </div>
               <p className="mt-1 text-sm text-muted-foreground">
-                Coding the future, one project at a time
+                {userProfile?.profileTagline}
               </p>
               <div className="flex items-center justify-between my-2">
                 <span className="text-sm text-muted-foreground">
@@ -77,7 +122,7 @@ export const UserProfile = () => {
                   variant="link"
                   className="text-blue-700 hover:no-underline"
                 >
-                  Portfolio{" "}
+                  Portfolio
                   <ExternalLink size="15" className="ml-2 underline" />
                 </Button>
               </div>

@@ -51,7 +51,14 @@ export const GetUserResData = z.object({
   email: z.string(),
   username: z.string(),
   profileURL: z.string(),
-  isAuthorized: z.boolean(),
+  isAuthorized: z.boolean().optional(),
+  coverImage: z.string(),
+  location: z.string(),
+  profileTagline: z.string(),
+  bio: z.string(),
+  techStack: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
 });
 
 export const LogoutUserResSchema = z.object({
@@ -81,7 +88,7 @@ export const BlogResData = z.object({
   isDraft: z.boolean(),
   isPinned: z.boolean(),
   isPublished: z.boolean(),
-  publishedAt: z.nullable(z.string().date()),
+  publishedAt: z.string().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
@@ -120,7 +127,18 @@ export type PinBlogType = z.infer<typeof PinBlogPayload>;
 export const PublishedBlogResSchema = DeleteBlogResSchema;
 export type PublishedBlogResType = z.infer<typeof PublishedBlogResSchema>;
 
-export const Author = GetUserResData.omit({ isAuthorized: true });
+export const AuthorProfile = GetUserResData.omit({ isAuthorized: true });
+export const AuthorProfileRes = ResponseCreator(AuthorProfile);
+export type AuthorProfileResType = z.infer<typeof AuthorProfileRes>;
+export type AuthorProfileType = z.infer<typeof AuthorProfile>;
+
+export const Author = GetUserResData.pick({
+  id: true,
+  name: true,
+  email: true,
+  profileURL: true,
+  username: true,
+});
 
 const PublishedBlogSchema = BlogResData.extend({
   author: Author,
@@ -144,6 +162,12 @@ export const SocialLinkSchema = z.object({
   youtube: z.string(),
   twitter: z.string(),
 });
+
+export const UserProfilePayload = z.object({
+  userId: z.string(),
+  username: z.string(),
+});
+
 export const UserProfileSchema = z.object({
   id: z.string(),
   email: z.string().email(),
@@ -157,9 +181,12 @@ export const UserProfileSchema = z.object({
   profileURL: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
-  socialLinks: SocialLinkSchema,
+  isAuthorized: z.boolean(),
+  blogs: z.array(BlogResData),
+  socialLinks: SocialLinkSchema.nullable(),
 });
 
 export const UserProfileRes = ResponseCreator(UserProfileSchema);
 export type UserProfileType = z.infer<typeof UserProfileSchema>;
 export type UserProfileResTpe = z.infer<typeof UserProfileRes>;
+export type UserProfilePayloadType = z.infer<typeof UserProfilePayload>;

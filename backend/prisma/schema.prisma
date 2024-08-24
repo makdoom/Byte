@@ -27,7 +27,7 @@ model User {
   profileURL     String       @default("")
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
-  posts          Blogs[]
+  blogs          Blogs[]
   socialLinks    SocialLinks?
 }
 

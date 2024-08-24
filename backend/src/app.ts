@@ -7,6 +7,7 @@ import { errorHandler } from "./utils/ApiError";
 import { sendSuccessResponse } from "./utils/ApiResponse";
 import authRouter from "./routes/authRoutes";
 import blogRouter from "./routes/blogRoutes";
+import userRouter from "./routes/userRoutes";
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.get("/", async (_, res, next) => {
 // Routers
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/blogs", blogRouter);
+app.use("/api/v1/user", userRouter);
 
 app.use(errorHandler);
 

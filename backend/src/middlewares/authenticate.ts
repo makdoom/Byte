@@ -13,10 +13,9 @@ export const authenticateUser = async (req, _, next) => {
       process.env.ACCESS_TOKEN_SECRET,
     ) as JwtPayload;
 
-    const prisma = await getPrisma(process.env.POOL_URL);
+    const prisma = getPrisma(process.env.POOL_URL);
     const user = await prisma.user.findUnique({
       where: { id: decodedToken?.id },
-      include: { socialLinks: true },
     });
     if (!user) throw new ValidationError("User not found, Access denied");
 

@@ -58,20 +58,6 @@ export const Login = ({
     } catch (error) {
       toast.error('"Something went wrong while signin user"');
     }
-    // try {
-    //   const response = await axiosInstance.post("/auth/signin", data);
-    //   const { statusCode, message, accessToken = "" } = response.data;
-    //   if (statusCode !== 200) return toast.error(message);
-
-    //   // If user created successfully
-    //   localStorage.setItem("accessToken", accessToken);
-    //   const { name, email, id } = response.data.data;
-    //   setUserInfo({ name, email, id });
-    //   closeAuthDialog();
-    // } catch (error) {
-    //   console.log(error);
-    //   toast.error("Something went wrong while resgistering user");
-    // }
   };
   return (
     <DialogHeader>

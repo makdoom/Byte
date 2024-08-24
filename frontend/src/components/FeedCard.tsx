@@ -7,7 +7,7 @@ import moment from "moment";
 type FeedCardPropsType = {
   blog: PublishedBlogType;
   navigateToBlog: (blogId: string) => void;
-  navigateToUserProfile: (userId: string) => void;
+  navigateToUserProfile: (userId: string, id: string) => void;
 };
 
 export const FeedCard = ({
@@ -20,7 +20,9 @@ export const FeedCard = ({
       <div className="flex items-center gap-3">
         <Avatar
           className="cursor-pointer"
-          onClick={() => navigateToUserProfile(blog.author.username)}
+          onClick={() =>
+            navigateToUserProfile(blog.author.username, blog.author.id)
+          }
         >
           <AvatarImage src="https://github.com/shadcn.png" />
           <AvatarFallback>CN</AvatarFallback>
@@ -29,13 +31,17 @@ export const FeedCard = ({
         <div>
           <h4
             className="text-sm font-medium cursor-pointer hover:underline"
-            onClick={() => navigateToUserProfile(blog.author.username)}
+            onClick={() =>
+              navigateToUserProfile(blog.author.username, blog.author.id)
+            }
           >
             {blog.author.name}
           </h4>
           <p
             className="text-xs text-muted-foreground cursor-pointer"
-            onClick={() => navigateToUserProfile(blog.author.id)}
+            onClick={() =>
+              navigateToUserProfile(blog.author.username, blog.author.id)
+            }
           >
             @{blog.author.username} - {moment(blog.publishedAt).fromNow()}
           </p>
