@@ -1,7 +1,14 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { UserToEditType } from "@/utils/types";
+import { ChangeEvent } from "react";
 
-export const TechStack = () => {
+type TechstackPropsType = {
+  user: UserToEditType | null;
+  userChangeHandler: (event: ChangeEvent<HTMLInputElement>) => void;
+};
+
+export const TechStack = ({ user, userChangeHandler }: TechstackPropsType) => {
   return (
     <div className="max-h-[400px] overflow-scroll p-1">
       <div>
@@ -10,8 +17,11 @@ export const TechStack = () => {
         </Label>
         <Input
           id="techstack"
+          name="techStack"
           placeholder="Technologies, Topics more..."
           className="h-[44px]"
+          value={user?.techStack}
+          onChange={userChangeHandler}
           autoFocus
         />
 

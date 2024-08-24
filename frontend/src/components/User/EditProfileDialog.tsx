@@ -1,7 +1,8 @@
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -10,20 +11,122 @@ import { About } from "@/components/User/About";
 import { PersonalDetails } from "@/components/User/PersonalDetails";
 import { SocialLinks } from "@/components/User/SocialLinks";
 import { TechStack } from "@/components/User/TechStack";
-import { Pencil, X } from "lucide-react";
+import { postRequest } from "@/config/api";
+import { UserToEditSchema, UserToEditType } from "@/utils/types";
+import {
+  UserProfileRes,
+  UserProfileResTpe,
+  UserProfileType,
+} from "@makdoom/byte-common";
+import { Loader, Pencil, X } from "lucide-react";
+import { ChangeEvent, useEffect, useState } from "react";
+import { toast } from "sonner";
 
-export const EditProfileDialog = () => {
+type EditProfileDialogPropsType = {
+  user: UserProfileType | null;
+  updateUser: (updatedUserObj: UserProfileType) => void;
+};
+
+export const EditProfileDialog = ({
+  user,
+  updateUser,
+}: EditProfileDialogPropsType) => {
+  const [updateProfileLoading, setUpdateProfileLoading] = useState(false);
+  const [userToEdit, setUserToEdit] = useState<UserToEditType>(
+    {} as UserToEditType
+  );
+
+  const userChangeHandler = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    isSocialLink: boolean = false
+  ) => {
+    const { name, value } = event.target;
+    if (isSocialLink) {
+      setUserToEdit((prev) => ({
+        ...prev,
+        socialLinks: {
+          ...prev.socialLinks,
+          [name]: value,
+        },
+      }));
+    } else {
+      setUserToEdit((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
+  const updateHandler = async () => {
+    try {
+      setUpdateProfileLoading(true);
+      const response = await postRequest<UserToEditType, UserProfileResTpe>(
+        "/user/updateUserProfile",
+        userToEdit,
+        UserToEditSchema,
+        UserProfileRes
+      );
+      setUpdateProfileLoading(false);
+
+      const { statusCode, data, message } = response;
+      if (statusCode == 200 && data) {
+        updateUser(data);
+        toast.success("Profile updated successfully");
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {
+      setUpdateProfileLoading(false);
+
+      toast.error("Error while updating user information");
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      setUserToEdit({
+        name: user.name,
+        bio: user.bio,
+        email: user.email,
+        coverImage: user.coverImage,
+        profileTagline: user.profileTagline,
+        profileURL: user.profileURL,
+        techStack: user.techStack,
+        location: user.location,
+        socialLinks: {
+          portfolio: user.socialLinks?.portfolio
+            ? user.socialLinks?.portfolio
+            : "",
+          github: user.socialLinks?.github ? user.socialLinks?.github : "",
+          linkedin: user.socialLinks?.linkedin
+            ? user.socialLinks?.linkedin
+            : "",
+          twitter: user.socialLinks?.twitter ? user.socialLinks?.twitter : "",
+          instagram: user.socialLinks?.instagram
+            ? user.socialLinks?.instagram
+            : "",
+          youtube: user.socialLinks?.youtube ? user.socialLinks?.youtube : "",
+        },
+      });
+    }
+  }, [user]);
+
   return (
     <DialogContent className="sm:max-w-screen-sm">
       <DialogTitle>Edit Information</DialogTitle>
+      <DialogDescription className="hidden" />
       <div className="relative w-full">
         <div className="relative">
           <div className="relative rounded-sm overflow-hidden h-52">
-            <img
-              className="w-full h-full object-cover"
-              src="https://images.unsplash.com/photo-1485470733090-0aae1788d5af?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8NGslMjBkZXNrdG9wJTIwd2FsbGFwZXJ8ZW58MHx8MHx8fDA%3D"
-              alt=""
-            />
+            {userToEdit?.coverImage ? (
+              <img
+                className="w-full h-full object-cover"
+                src="https://images.unsplash.com/photo-1485470733090-0aae1788d5af?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8NGslMjBkZXNrdG9wJTIwd2FsbGFwZXJ8ZW58MHx8MHx8fDA%3D"
+                alt=""
+              />
+            ) : (
+              <div className="bg-gradient-to-r from-indigo-400 to-cyan-400 h-full w-full"></div>
+            )}
 
             <div className="absolute right-2 top-2 flex gap-2">
               <Button
@@ -33,22 +136,24 @@ export const EditProfileDialog = () => {
                 <Pencil size={14} />
               </Button>
 
-              <Button
-                variant="destructive"
-                className="rounded-full h-8 w-8 p-0 shadow-md"
-              >
-                <X size={14} />
-              </Button>
+              {userToEdit?.coverImage && (
+                <Button
+                  variant="destructive"
+                  className="rounded-full h-8 w-8 p-0 shadow-md"
+                >
+                  <X size={14} />
+                </Button>
+              )}
             </div>
           </div>
 
           <div className="absolute top-[100%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <div className="relative">
-              <Avatar className="h-32 w-32 shadow-lg border-4 border-card">
-                <AvatarImage
-                  className="object-cover"
-                  src="https://plus.unsplash.com/premium_photo-1671656349218-5218444643d8?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                />
+              <Avatar className="h-32 w-32 shadow-lg border-4 border-card bg-card">
+                <AvatarImage className="object-cover" src="" />
+                <AvatarFallback className="text-5xl font-semibold">
+                  {userToEdit?.name?.[0]?.toUpperCase()}
+                </AvatarFallback>
               </Avatar>
 
               <div className="absolute right-1 bottom-2">
@@ -80,23 +185,37 @@ export const EditProfileDialog = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="personal-details" className="mt-4">
-              <PersonalDetails />
+              <PersonalDetails
+                user={userToEdit}
+                userChangeHandler={userChangeHandler}
+              />
             </TabsContent>
             <TabsContent value="about" className="mt-4">
-              <About />
+              <About user={userToEdit} userChangeHandler={userChangeHandler} />
             </TabsContent>
             <TabsContent value="tech" className="mt-4">
-              <TechStack />
+              <TechStack
+                user={userToEdit}
+                userChangeHandler={userChangeHandler}
+              />
             </TabsContent>
             <TabsContent value="social" className="mt-4">
-              <SocialLinks />
+              <SocialLinks
+                user={userToEdit}
+                userChangeHandler={userChangeHandler}
+              />
             </TabsContent>
           </Tabs>
         </div>
       </div>
       <DialogFooter className="mt-4">
         <Button variant="secondary">Cancel</Button>
-        <Button>Update</Button>
+        <Button onClick={updateHandler}>
+          {updateProfileLoading && (
+            <Loader size={16} className="animate-spin mr-2" />
+          )}
+          Update
+        </Button>
       </DialogFooter>
     </DialogContent>
   );

@@ -1,7 +1,19 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { UserToEditType } from "@/utils/types";
+import { ChangeEvent } from "react";
 
-export const SocialLinks = () => {
+type SocialLinkPropsType = {
+  user: UserToEditType | null;
+  userChangeHandler: (
+    event: ChangeEvent<HTMLInputElement>,
+    isSocialLink: boolean
+  ) => void;
+};
+export const SocialLinks = ({
+  user,
+  userChangeHandler,
+}: SocialLinkPropsType) => {
   return (
     <div className="max-h-[400px] overflow-scroll grid grid-cols-2 p-1 gap-4">
       <div>
@@ -9,9 +21,12 @@ export const SocialLinks = () => {
           Portfolio URL
         </Label>
         <Input
+          name="portfolio"
           id="website"
           placeholder="https://www.johndoe.com"
           className="h-[44px]"
+          value={user?.socialLinks?.portfolio}
+          onChange={(event) => userChangeHandler(event, true)}
           autoFocus
         />
       </div>
@@ -20,9 +35,12 @@ export const SocialLinks = () => {
           Github Profile
         </Label>
         <Input
+          name="github"
           id="github"
           placeholder="https://www.github.com/byte"
           className="h-[44px]"
+          value={user?.socialLinks?.github}
+          onChange={(event) => userChangeHandler(event, true)}
         />
       </div>
       <div>
@@ -31,8 +49,11 @@ export const SocialLinks = () => {
         </Label>
         <Input
           id="linkedin"
+          name="linkedin"
           placeholder="https://www.linkedin.com/in/johndoe"
           className="h-[44px]"
+          value={user?.socialLinks.linkedin}
+          onChange={(event) => userChangeHandler(event, true)}
         />
       </div>
       <div>
@@ -41,8 +62,11 @@ export const SocialLinks = () => {
         </Label>
         <Input
           id="twitter"
+          name="twitter"
           placeholder="https://www.twitter.com/johndoe"
           className="h-[44px]"
+          value={user?.socialLinks.linkedin}
+          onChange={(event) => userChangeHandler(event, true)}
         />
       </div>
       <div>
@@ -51,8 +75,11 @@ export const SocialLinks = () => {
         </Label>
         <Input
           id="instagram"
+          name="instagram"
           placeholder="https://www.instagram.com/johndoe"
           className="h-[44px]"
+          value={user?.socialLinks.instagram}
+          onChange={(event) => userChangeHandler(event, true)}
         />
       </div>
       <div>
@@ -61,8 +88,11 @@ export const SocialLinks = () => {
         </Label>
         <Input
           id="youtube"
+          name="youtube"
           placeholder="https://www.youtube.com/@johndoe"
           className="h-[44px]"
+          value={user?.socialLinks.youtube}
+          onChange={(event) => userChangeHandler(event, true)}
         />
       </div>
     </div>

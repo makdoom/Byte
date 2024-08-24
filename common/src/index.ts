@@ -153,14 +153,14 @@ export type PublishedBlogType = z.infer<typeof PublishedBlogSchema>;
 export type SinglePublishedBlogType = z.infer<typeof SinglePublishedBlog>;
 
 export const SocialLinkSchema = z.object({
-  id: z.string(),
-  authorId: z.string(),
-  portfolio: z.string(),
-  github: z.string(),
-  linkedin: z.string(),
-  instagram: z.string(),
-  youtube: z.string(),
-  twitter: z.string(),
+  id: z.string().optional(),
+  authorId: z.string().optional(),
+  portfolio: z.string().optional(),
+  github: z.string().optional(),
+  linkedin: z.string().optional(),
+  instagram: z.string().optional(),
+  youtube: z.string().optional(),
+  twitter: z.string().optional(),
 });
 
 export const UserProfilePayload = z.object({
@@ -183,6 +183,7 @@ export const UserProfileSchema = z.object({
   updatedAt: z.string(),
   isAuthorized: z.boolean(),
   blogs: z.array(BlogResData),
+  // socialLinks: SocialLinkSchema,
   socialLinks: SocialLinkSchema.nullable(),
 });
 
@@ -190,3 +191,10 @@ export const UserProfileRes = ResponseCreator(UserProfileSchema);
 export type UserProfileType = z.infer<typeof UserProfileSchema>;
 export type UserProfileResTpe = z.infer<typeof UserProfileRes>;
 export type UserProfilePayloadType = z.infer<typeof UserProfilePayload>;
+
+export const UserToEditSchema = UserProfileSchema.partial();
+
+export const UserToEditRes = ResponseCreator(UserToEditSchema);
+export type UserToEditType = z.infer<typeof UserToEditSchema>;
+export type UserToEditResType = z.infer<typeof UserToEditRes>;
+// export type UserProfilePayloadType = z.infer<typeof UserProfilePayload>;
