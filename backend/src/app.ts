@@ -8,6 +8,8 @@ import { sendSuccessResponse } from "./utils/ApiResponse";
 import authRouter from "./routes/authRoutes";
 import blogRouter from "./routes/blogRoutes";
 import userRouter from "./routes/userRoutes";
+import { uploadWithMulter } from "./middlewares/multer";
+import miscRouter from "./routes/miscRoutes";
 
 const app = express();
 
@@ -33,6 +35,26 @@ app.get("/", async (_, res, next) => {
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/blogs", blogRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/misc", miscRouter);
+
+app.post("/upload", uploadWithMulter.single("image"), (req, res) => {
+  try {
+    // After the file is uploaded to Cloudinary, the file information will be available in req.file
+    if (!req.file) {
+      return res.status(400).send("No file uploaded.");
+    }
+
+    res.status(200).json({
+      message: "File uploaded successfully!",
+      file: req.file, // This contains the Cloudinary file details, like the URL
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: 1,
+      error,
+    });
+  }
+});
 
 app.use(errorHandler);
 

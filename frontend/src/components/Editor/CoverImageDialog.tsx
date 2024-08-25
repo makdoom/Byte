@@ -5,10 +5,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { postRequest } from "@/config/api";
 import { cn } from "@/lib/utils";
-import { CloudUpload, X } from "lucide-react";
+import { createFormData } from "@/utils";
+import {
+  UploadSingleFileRes,
+  UploadSingleImageResType,
+  UploadSingleImageSchema,
+  UploadSingleImageType,
+} from "@makdoom/byte-common";
+import { CloudUpload, Loader, X } from "lucide-react";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { toast } from "sonner";
 
 type coverImageDialog = {
   setCoverImage: (base64: string) => void;
@@ -19,24 +28,23 @@ export const CoverImageDialog = ({
   setCoverImage,
   setOpenCoverImgDialog,
 }: coverImageDialog) => {
-  const [coverImg64, setCoverImg64] = useState("");
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [previewImageURL, setPreviewImageURL] = useState("");
+  const [isImageUploading, setIsImageUploading] = useState(false);
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      // Do something with the files
-      const file = acceptedFiles[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          if (reader.result) {
-            setCoverImg64(reader.result?.toString());
-          }
-        };
-        reader.readAsDataURL(file);
-      }
-    },
-    [setCoverImg64]
-  );
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    setCoverImageFile(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (reader.result) {
+          setPreviewImageURL(reader.result?.toString());
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
@@ -45,9 +53,36 @@ export const CoverImageDialog = ({
     onDrop: onDrop,
   });
 
-  const uploadHandler = () => {
-    setOpenCoverImgDialog(false);
-    setCoverImage(coverImg64);
+  const uploadHandler = async () => {
+    try {
+      if (!coverImageFile) return;
+
+      setIsImageUploading(true);
+      const formData = createFormData({
+        image: coverImageFile,
+        data: { publicId: "hello" },
+      });
+
+      const response = await postRequest<
+        UploadSingleImageType,
+        UploadSingleImageResType
+      >(
+        "/misc/uploadImage",
+        formData,
+        UploadSingleImageSchema,
+        UploadSingleFileRes
+      );
+      setIsImageUploading(false);
+      const { data, statusCode, message } = response;
+      if (statusCode === 200 && data) {
+        setOpenCoverImgDialog(false);
+        setCoverImage(data.fileURL);
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {
+      toast.error("Error while uploading image");
+    }
   };
 
   const cancelHandler = () => {
@@ -67,10 +102,10 @@ export const CoverImageDialog = ({
         {...getRootProps()}
         className={cn(
           "cursor-pointer flex flex-col items-center justify-center gap-4 border border-dashed",
-          !coverImg64 && "py-8"
+          !previewImageURL && "py-8"
         )}
       >
-        {coverImg64 ? (
+        {previewImageURL ? (
           <div className="h-72 overflow-hidden relative">
             <Button
               variant="destructive"
@@ -79,7 +114,7 @@ export const CoverImageDialog = ({
             >
               <X size={16} />
             </Button>
-            <img src={coverImg64} alt="cover" className="object-cover" />
+            <img src={previewImageURL} alt="cover" className="object-cover" />
           </div>
         ) : (
           <>
@@ -105,7 +140,12 @@ export const CoverImageDialog = ({
         <Button variant="secondary" onClick={cancelHandler}>
           Cancel
         </Button>
-        <Button onClick={uploadHandler}>Upload</Button>
+        <Button onClick={uploadHandler}>
+          {isImageUploading && (
+            <Loader size={16} className="animate-spin mr-2" />
+          )}
+          Upload
+        </Button>
       </div>
     </DialogContent>
   );

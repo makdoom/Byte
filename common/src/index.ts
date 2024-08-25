@@ -197,4 +197,19 @@ export const UserToEditSchema = UserProfileSchema.partial();
 export const UserToEditRes = ResponseCreator(UserToEditSchema);
 export type UserToEditType = z.infer<typeof UserToEditSchema>;
 export type UserToEditResType = z.infer<typeof UserToEditRes>;
-// export type UserProfilePayloadType = z.infer<typeof UserProfilePayload>;
+
+export const UploadSingleImageSchema = z.object({
+  data: z.object({
+    publicId: z.string().nullable(),
+  }),
+});
+
+export const UploadSingleImageResSchema = z.object({
+  fileURL: z.string(),
+  orgFileName: z.string(),
+  size: z.number(),
+});
+
+export const UploadSingleFileRes = ResponseCreator(UploadSingleImageResSchema);
+export type UploadSingleImageType = z.infer<typeof UploadSingleImageSchema>;
+export type UploadSingleImageResType = z.infer<typeof UploadSingleFileRes>;

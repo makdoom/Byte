@@ -62,10 +62,14 @@ export const FeedCard = ({
             </p>
           )}
         </div>
-        <div className="w-44 rounded-md">
+        <div className="w-44 h-24 rounded-md">
           <img
             className="w-full h-full rounded-md"
-            src="https://pbs.twimg.com/media/GUTXmQxb0AAvccD?format=jpg&name=4096x4096"
+            src={
+              blog.coverImage
+                ? blog.coverImage
+                : "https://pbs.twimg.com/media/GUTXmQxb0AAvccD?format=jpg&name=4096x4096"
+            }
             alt="thumbnail"
           />
         </div>

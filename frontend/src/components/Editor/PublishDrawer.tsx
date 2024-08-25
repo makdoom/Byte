@@ -119,46 +119,57 @@ export const PublishDrawer = ({
             Upload an image to show when your blog appears online or on social
             media. If there’s no image, the cover image will be used instead.
           </p>
-          <div
-            {...getRootProps()}
-            className={cn(
-              " hover:bg-secondary rounded-md cursor-pointer flex flex-col items-center justify-center gap-4 border border-dashed border-muted-foreground group",
-              !coverImg64 && "py-8"
-            )}
-          >
-            {coverImg64 ? (
-              <div className="h-64 overflow-hidden relative">
-                <Button
-                  variant="destructive"
-                  className="rounded-full h-7 w-7 p-0 absolute top-2 right-2"
-                  //   onClick={handleRemoveCover}
-                >
-                  <X size={16} />
-                </Button>
-                <img src={coverImg64} alt="cover" className="object-cover" />
-              </div>
-            ) : (
-              <div className="h-48 flex justify-center items-center flex-col">
-                <input className="hidden" {...getInputProps()} />
-                <div className="flex flex-col items-center justify-center">
-                  <CloudUpload size={35} />
-                  <h5 className="mt-2 font-medium">
-                    Choose a file or drag and drop it here
-                  </h5>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    JPG, JPEG, PNG and GIF formats upto 5MB
-                  </p>
-                </div>
 
-                <Button
-                  variant="secondary"
-                  className="mt-3 group-hover:bg-white"
-                >
-                  Browse Files
-                </Button>
-              </div>
-            )}
-          </div>
+          {blog.coverImage ? (
+            <div className="h-64 overflow-hidden rounded-md">
+              <img
+                src={blog.coverImage}
+                alt="cover"
+                className="w-full h-full"
+              />
+            </div>
+          ) : (
+            <div
+              {...getRootProps()}
+              className={cn(
+                "hover:bg-secondary rounded-md cursor-pointer flex flex-col items-center justify-center gap-4 border border-dashed border-muted-foreground group",
+                !coverImg64 && "py-8"
+              )}
+            >
+              {coverImg64 ? (
+                <div className="h-64 overflow-hidden relative">
+                  <Button
+                    variant="destructive"
+                    className="rounded-full h-7 w-7 p-0 absolute top-2 right-2"
+                    //   onClick={handleRemoveCover}
+                  >
+                    <X size={16} />
+                  </Button>
+                  <img src={coverImg64} alt="cover" className="object-cover" />
+                </div>
+              ) : (
+                <div className="h-48 flex justify-center items-center flex-col">
+                  <input className="hidden" {...getInputProps()} />
+                  <div className="flex flex-col items-center justify-center">
+                    <CloudUpload size={35} />
+                    <h5 className="mt-2 font-medium">
+                      Choose a file or drag and drop it here
+                    </h5>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      JPG, JPEG, PNG and GIF formats upto 5MB
+                    </p>
+                  </div>
+
+                  <Button
+                    variant="secondary"
+                    className="mt-3 group-hover:bg-white"
+                  >
+                    Browse Files
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
           <div>
             <h2 className="text-2xl font-bold mt-2">{blog.title}</h2>
             <p className="text-muted-foreground mt-1">{blog.subtitle}</p>

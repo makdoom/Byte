@@ -17,3 +17,20 @@ export const getsWordsCharCounts = (value: string) => {
 
   return { wordsCount, charCounts };
 };
+
+type FormDataPayload = {
+  image: File;
+  data: {
+    publicId: string;
+  };
+};
+export const createFormData = (payload: FormDataPayload): FormData => {
+  const formData = new FormData();
+  formData.append("data", JSON.stringify(payload?.data));
+  formData.append("image", payload.image);
+
+  for (const pair of formData.entries()) {
+    console.log(pair[0] + ", " + pair[1]);
+  }
+  return formData;
+};

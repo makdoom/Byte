@@ -88,14 +88,14 @@ export const getRequest = async <T>(
 // Generic post request with zod validation
 export const postRequest = async <T, D>(
   url: string,
-  data: T,
+  data: T | FormData,
   dataSchema: z.ZodSchema<T>,
   responseSchema: z.ZodSchema<D>,
   config?: AxiosRequestConfig
 ): Promise<D> => {
   let response: AxiosResponse<unknown>;
   try {
-    dataSchema.parse(data); // Validate request payload
+    // dataSchema.parse(data); // Validate request payload
     response = await axiosInstance.post(url, data, config);
     return responseSchema.parse(response.data); // Validate response data
   } catch (error) {

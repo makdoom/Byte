@@ -38,8 +38,25 @@ export const PreviewBlog = () => {
           <p className="ml-2 text-sm">Back</p>
         </Button>
       </div>
-      <div className="max-w-screen-md m-auto">
-        <div className="my-20">
+      <div className="max-w-[900px] m-auto">
+        <div className="my-10">
+          <div className="max-h-[500px] rounded-md overflow-hidden">
+            <img
+              src={blog.coverImage}
+              alt="cover"
+              className="w-full rounded-md"
+            />
+          </div>
+
+          <div className="my-6 text-center">
+            <h2 className="text-3xl font-semibold">{blog.title}</h2>
+            {blog.subtitle && (
+              <p className="text-xl text-muted-foreground font-semibold mt-3">
+                {blog.subtitle}
+              </p>
+            )}
+          </div>
+
           <YooptaEditor
             key={blog?.id}
             editor={editor}

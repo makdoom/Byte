@@ -30,7 +30,21 @@ export const CustomYoptaEditor = () => {
 
   const editor = useMemo(() => createYooptaEditor(), []);
 
-  const handleRemoveCover = () => console.log("should remove cover image");
+  const handleRemoveCover = () => {
+    setBlog((prev) => ({ ...prev, coverImage: "" }));
+    updateEditorHandler(blog?.id, {
+      type: "coverImage",
+      data: "",
+    });
+  };
+
+  const updateCoverImage = (url: string) => {
+    setBlog((prev) => ({ ...prev, coverImage: url }));
+    updateEditorHandler(blog?.id, {
+      type: "coverImage",
+      data: url,
+    });
+  };
 
   const toggleSubtitle = () => {
     if (showSubtitle) {
@@ -130,7 +144,7 @@ export const CustomYoptaEditor = () => {
                   </Button>
                 </DialogTrigger>
                 <CoverImageDialog
-                  setCoverImage={(url) => console.log(url)}
+                  setCoverImage={updateCoverImage}
                   setOpenCoverImgDialog={setOpenCoverImgDialog}
                 />
               </Dialog>
@@ -161,7 +175,7 @@ export const CustomYoptaEditor = () => {
               <img
                 src={blog.coverImage}
                 alt="cover"
-                className="w-full h-80 rounded-md"
+                className="object-cover w-full max-h-[450px] rounded-md"
               />
             </div>
           )}
