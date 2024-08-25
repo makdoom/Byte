@@ -19,6 +19,16 @@ import ActionMenuList, {
 import Blockquote from "@yoopta/blockquote";
 import Callout from "@yoopta/callout";
 import Code from "@yoopta/code";
+import Image from "@yoopta/Image";
+import { createFormData } from "@/utils";
+import { postRequest } from "@/config/api";
+import {
+  UploadSingleFileRes,
+  UploadSingleImageResType,
+  UploadSingleImageSchema,
+  UploadSingleImageType,
+} from "@makdoom/byte-common";
+import { toast } from "sonner";
 
 const headingsExtended = {
   options: {
@@ -43,6 +53,47 @@ export const plugins = [
   TodoList,
   Embed,
   Link,
+  Image.extend({
+    options: {
+      async onUpload(file) {
+        const formData = createFormData({
+          image: file,
+          data: { publicId: "" },
+        });
+
+        const response = await postRequest<
+          UploadSingleImageType,
+          UploadSingleImageResType
+        >(
+          "/misc/uploadImage",
+          formData,
+          UploadSingleImageSchema,
+          UploadSingleFileRes
+        );
+        const { data, statusCode, message } = response;
+        if (statusCode === 200 && data) {
+          return {
+            src: data.fileURL,
+            alt: data.orgFileName,
+            sizes: {
+              width: 400,
+              height: 250,
+            },
+          };
+        } else {
+          toast.error(message);
+          return {
+            src: "",
+            alt: "cloudinary",
+            sizes: {
+              width: 0,
+              height: 0,
+            },
+          };
+        }
+      },
+    },
+  }),
 
   Paragraph.extend({ options: { HTMLAttributes: { className: "text-lg" } } }),
   Code.extend({ options: { HTMLAttributes: { className: fontExtentended } } }),
