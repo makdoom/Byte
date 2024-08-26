@@ -14,11 +14,10 @@ export const Feeds = () => {
 
   const navigate = useNavigate();
 
-  const navigateToBlog = (blogId: string) =>
-    navigate(`/blog/makdoom/${blogId}`);
+  const navigateToBlog = (username: string, blogId: string) =>
+    navigate(`/blog/${username}/${blogId}`);
 
   const navigateToUserProfile = (username: string, id: string) => {
-    console.log(username);
     navigate(`/${username}`, { state: { username, id } });
   };
 
@@ -41,6 +40,8 @@ export const Feeds = () => {
       }
     })();
   }, [setFeedsList]);
+
+  console.log();
 
   return (
     <div className="mt-20 flex-1 min-h-screen">

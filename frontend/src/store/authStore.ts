@@ -6,6 +6,7 @@ type User = {
   name: string;
   username: string;
   initials?: string;
+  profileURL: string;
 };
 
 type DefaultPage = "home" | "feeds";

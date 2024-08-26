@@ -12,6 +12,7 @@ import { PersonalDetails } from "@/components/User/PersonalDetails";
 import { SocialLinks } from "@/components/User/SocialLinks";
 import { TechStack } from "@/components/User/TechStack";
 import { postRequest } from "@/config/api";
+import { useAuthStore } from "@/store";
 import { createFormData } from "@/utils";
 import { UserToEditSchema, UserToEditType } from "@/utils/types";
 import {
@@ -23,7 +24,7 @@ import {
   UserProfileResTpe,
   UserProfileType,
 } from "@makdoom/byte-common";
-import { Loader, Pencil, X } from "lucide-react";
+import { Loader, Pencil } from "lucide-react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -36,6 +37,7 @@ export const EditProfileDialog = ({
   user,
   updateUser,
 }: EditProfileDialogPropsType) => {
+  const { user: loggedInUser, setUserInfo } = useAuthStore();
   const [updateProfileLoading, setUpdateProfileLoading] = useState(false);
   const [userToEdit, setUserToEdit] = useState<UserToEditType>(
     {} as UserToEditType
@@ -129,6 +131,9 @@ export const EditProfileDialog = ({
       const { statusCode, data, message } = response;
       if (statusCode == 200 && data) {
         updateUser(data);
+        if (loggedInUser) {
+          setUserInfo({ ...loggedInUser, profileURL: data.profileURL });
+        }
         toast.success("Profile updated successfully");
       } else {
         toast.error(message);
@@ -169,7 +174,6 @@ export const EditProfileDialog = ({
     }
   }, [user]);
 
-  console.log(userToEdit);
   return (
     <DialogContent className="sm:max-w-screen-sm">
       <DialogTitle>Edit Information</DialogTitle>
@@ -205,14 +209,14 @@ export const EditProfileDialog = ({
                 )}
               </Button>
 
-              {userToEdit?.coverImage && (
+              {/* {userToEdit?.coverImage && (
                 <Button
                   variant="destructive"
                   className="rounded-full h-8 w-8 p-0 shadow-md"
                 >
                   <X size={14} />
                 </Button>
-              )}
+              )} */}
             </div>
           </div>
 

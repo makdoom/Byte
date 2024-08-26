@@ -1,6 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EditProfileDialog } from "@/components/User/EditProfileDialog";
 import { postRequest } from "@/config/api";
@@ -27,6 +34,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { toast } from "sonner";
+import DefaultCoverImage from "@/assets/images/defaultCoverImage.png";
 
 export const UserProfile = () => {
   // TODO: Need to handle loading skelton state
@@ -189,83 +197,98 @@ export const UserProfile = () => {
                 </TabsList>
                 <TabsContent value="about" className="mt-6 px-2">
                   <p className="text-base/7">
-                    Heya 👋 This is Makdoom Shaikh, Frontend Web Developer who
+                    {userProfile?.bio}
+                    {/* Heya 👋 This is Makdoom Shaikh, Frontend Web Developer who
                     is passionate about the JavaScript web technologies building
                     websites and web applications. I have done my internship at
                     Digital Solution Media as Frontend Developer. I love to
                     build beautiful and responsive websites using modern HTML5,
                     CSS3, JavaScript and React. I can develop Responsive Web
                     Apps (React). I have also hands-on experience in JavaScript,
-                    React and Redux ( State Management ).
+                    React and Redux ( State Management ). */}
                   </p>
                 </TabsContent>
                 <TabsContent value="tech">
-                  <div className="mt-6">
-                    {userProfile?.techStack.split(",").map((item, index) => (
-                      <span
-                        key={index}
-                        className="p-2 bg-secondary rounded-md text-sm px-3 mx-2"
-                      >
-                        {item}
-                      </span>
-                    ))}
-                  </div>
+                  {userProfile?.techStack && (
+                    <div className="mt-6">
+                      {userProfile?.techStack.split(",").map((item, index) => (
+                        <span
+                          key={index}
+                          className="p-2 bg-secondary rounded-md text-sm px-3 mx-2"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </TabsContent>
                 <TabsContent value="social">
                   <div className="mt-6 grid grid-cols-2 gap-4 px-4 items-center">
-                    <a
-                      href={userProfile?.socialLinks?.portfolio}
-                      target="_blank"
-                      className="flex items-center gap-3 cursor-pointer "
-                    >
-                      <Globe size="17" className="" />
-                      <span className="text-sm">Portfolio</span>
-                    </a>
+                    {userProfile?.socialLinks?.portfolio && (
+                      <a
+                        href={userProfile?.socialLinks?.portfolio}
+                        target="_blank"
+                        className="flex items-center gap-3 cursor-pointer "
+                      >
+                        <Globe size="17" className="" />
+                        <span className="text-sm">Portfolio</span>
+                      </a>
+                    )}
 
-                    <a
-                      href={userProfile?.socialLinks?.github}
-                      target="_blank"
-                      className="flex items-center gap-3 cursor-pointer "
-                    >
-                      <Github size={20} className="" />
-                      <span className="text-sm">Github</span>
-                    </a>
+                    {userProfile?.socialLinks?.github && (
+                      <a
+                        href={userProfile?.socialLinks?.github}
+                        target="_blank"
+                        className="flex items-center gap-3 cursor-pointer "
+                      >
+                        <Github size={20} className="" />
+                        <span className="text-sm">Github</span>
+                      </a>
+                    )}
 
-                    <a
-                      href={userProfile?.socialLinks?.linkedin}
-                      target="_blank"
-                      className="flex items-center gap-3 cursor-pointer "
-                    >
-                      <Linkedin size={20} className="" />
-                      <span className="text-sm">Linkedin</span>
-                    </a>
+                    {userProfile?.socialLinks?.linkedin && (
+                      <a
+                        href={userProfile?.socialLinks?.linkedin}
+                        target="_blank"
+                        className="flex items-center gap-3 cursor-pointer "
+                      >
+                        <Linkedin size={20} className="" />
+                        <span className="text-sm">Linkedin</span>
+                      </a>
+                    )}
 
-                    <a
-                      href={userProfile?.socialLinks?.twitter}
-                      target="_blank"
-                      className="flex items-center gap-3 cursor-pointer "
-                    >
-                      <Twitter size={18} className="" />
-                      <span className="text-sm">Twitter</span>
-                    </a>
+                    {userProfile?.socialLinks?.twitter && (
+                      <a
+                        href={userProfile?.socialLinks?.twitter}
+                        target="_blank"
+                        className="flex items-center gap-3 cursor-pointer "
+                      >
+                        <Twitter size={18} className="" />
+                        <span className="text-sm">Twitter</span>
+                      </a>
+                    )}
 
-                    <a
-                      href={userProfile?.socialLinks?.youtube}
-                      target="_blank"
-                      className="flex items-center gap-3 cursor-pointer "
-                    >
-                      <Youtube size="17" className="" />
-                      <span className="text-sm">Youtube</span>
-                    </a>
+                    {userProfile?.socialLinks?.youtube && (
+                      <a
+                        href={userProfile?.socialLinks?.youtube}
+                        target="_blank"
+                        className="flex items-center gap-3 cursor-pointer "
+                      >
+                        <Youtube size="17" className="" />
+                        <span className="text-sm">Youtube</span>
+                      </a>
+                    )}
 
-                    <a
-                      href={userProfile?.socialLinks?.instagram}
-                      target="_blank"
-                      className="flex items-center gap-3 cursor-pointer "
-                    >
-                      <Instagram size="17" className="" />
-                      <span className="text-sm">Instagram</span>
-                    </a>
+                    {userProfile?.socialLinks?.instagram && (
+                      <a
+                        href={userProfile?.socialLinks?.instagram}
+                        target="_blank"
+                        className="flex items-center gap-3 cursor-pointer "
+                      >
+                        <Instagram size="17" className="" />
+                        <span className="text-sm">Instagram</span>
+                      </a>
+                    )}
                   </div>
                 </TabsContent>
               </Tabs>
@@ -273,7 +296,47 @@ export const UserProfile = () => {
           </div>
         </div>
       </div>
-      <div className="flex-[0.67] bg-card rounded-md border">right</div>
+      <div className="flex-[0.67] bg-card rounded-md borderflex">
+        <div className="flex justify-between items-center p-4">
+          <h4 className="text-lg font-semibold">All Blogs</h4>
+          <Input
+            id="search"
+            type="search"
+            placeholder="Search Blog"
+            className="h-[40px] w-[250px]"
+            autoFocus
+          />
+        </div>
+
+        <div className="h-[calc(100vh-155px)] grid grid-cols-3 px-4 overflow-auto gap-8">
+          {userProfile?.blogs.map((singleBlog) => (
+            <Card key={singleBlog.id} className="">
+              <CardHeader className="p-4">
+                <div className="h-56 w-full rounded-xl overflow-hidden">
+                  <img
+                    className="h-full w-full rounded-xl object-cover"
+                    src={
+                      singleBlog.coverImage
+                        ? singleBlog.coverImage
+                        : DefaultCoverImage
+                    }
+                    alt={singleBlog.title}
+                  />
+                </div>
+                <CardTitle className="mt-3 line-clamp-1	">
+                  {singleBlog.title}
+                  {/* {singleBlog.title.length > 30
+                    ? `${singleBlog.title.slice(0, 30)}...`
+                    : singleBlog.title}{" "} */}
+                </CardTitle>
+                <CardDescription className="line-clamp-2 mt-1">
+                  {singleBlog.subtitle}
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

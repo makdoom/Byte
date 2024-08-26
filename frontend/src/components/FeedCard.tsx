@@ -6,7 +6,7 @@ import moment from "moment";
 
 type FeedCardPropsType = {
   blog: PublishedBlogType;
-  navigateToBlog: (blogId: string) => void;
+  navigateToBlog: (username: string, blogId: string) => void;
   navigateToUserProfile: (userId: string, id: string) => void;
 };
 
@@ -50,7 +50,7 @@ export const FeedCard = ({
 
       <div
         className="flex mt-4 justify-between cursor-pointer"
-        onClick={() => navigateToBlog(blog.id)}
+        onClick={() => navigateToBlog(blog.author.username, blog.id)}
       >
         <div className="max-w-lg">
           <h3 className="font-semibold text-xl ">{blog.title}</h3>

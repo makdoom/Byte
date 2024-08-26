@@ -48,8 +48,8 @@ export const Login = ({
       const { data, statusCode, message } = response;
       if (statusCode === 200 && data) {
         localStorage.setItem("accessToken", data.accessToken);
-        const { name, email, id, username } = data;
-        setUserInfo({ name, email, id, username });
+        const { name, email, id, username, profileURL } = data;
+        setUserInfo({ name, email, id, username, profileURL });
         setDefaultPage("feeds");
         closeAuthDialog();
       } else {

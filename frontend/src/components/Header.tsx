@@ -109,8 +109,10 @@ export const Header = () => {
             <MenubarMenu>
               <MenubarTrigger className="cursor-pointer p-0">
                 <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarImage src={user?.profileURL} />
+                  <AvatarFallback>
+                    {user?.name?.[0].toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
               </MenubarTrigger>
               <ProfileMenu logoutHandler={logoutHandler} />

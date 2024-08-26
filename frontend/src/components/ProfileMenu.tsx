@@ -16,7 +16,7 @@ import {
   BadgeHelp,
   BookmarkCheck,
   CircleHelp,
-  CircleUserRound,
+  // CircleUserRound,
   LogOut,
   NotebookText,
 } from "lucide-react";
@@ -28,7 +28,6 @@ type ProfileMenuProps = {
 };
 export const ProfileMenu = ({ logoutHandler }: ProfileMenuProps) => {
   const { user } = useAuthStore();
-
   const navigate = useNavigate();
 
   const createDraftHandler = async () => {
@@ -51,12 +50,20 @@ export const ProfileMenu = ({ logoutHandler }: ProfileMenuProps) => {
     }
   };
 
+  const navigateToUserProfile = () => {
+    if (user) {
+      navigate(`/${user.username}`, {
+        state: { username: user.username, id: user.id },
+      });
+    }
+  };
+
   return (
     <MenubarContent align="start" className="flex flex-col gap-1 mr-4">
-      <MenubarItem>
+      <MenubarItem onClick={navigateToUserProfile} className="cursor-pointer">
         <div className="flex gap-3 items-center">
           <Avatar className="h-12 w-12">
-            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarImage src={user?.profileURL} />
             <AvatarFallback>{user?.email[0].toUpperCase()}</AvatarFallback>
           </Avatar>
 
@@ -81,11 +88,11 @@ export const ProfileMenu = ({ logoutHandler }: ProfileMenuProps) => {
         <BookmarkCheck size={19} />
         Bookmarks
       </MenubarItem>
-      <MenubarItem className="flex item-center gap-3 cursor-pointer">
+      {/* <MenubarItem className="flex item-center gap-3 cursor-pointer">
         <CircleUserRound size={19} />
         Account Settings
       </MenubarItem>
-      <MenubarSeparator />
+      <MenubarSeparator /> */}
 
       <MenubarItem className="flex item-center gap-3 cursor-pointer">
         <CircleHelp size={19} />
