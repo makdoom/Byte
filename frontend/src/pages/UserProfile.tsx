@@ -74,15 +74,15 @@ export const UserProfile = () => {
 
   return (
     <div className="pt-16 pb-4 flex-1 min-h-screen w-full px-8 flex gap-3">
-      <div className="flex-[0.33] bg-card rounded-md">
+      <div className="flex-[0.33] bg-card rounded-md border">
         <div>
           <div className="relative">
             <div className="relative rounded-tl-md rounded-tr-md overflow-hidden h-40">
               {userProfile?.coverImage ? (
                 <img
                   className="w-full h-full object-cover"
-                  src="https://images.unsplash.com/photo-1485470733090-0aae1788d5af?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8NGslMjBkZXNrdG9wJTIwd2FsbGFwZXJ8ZW58MHx8MHx8fDA%3D"
-                  alt=""
+                  src={userProfile.coverImage}
+                  alt="cover"
                 />
               ) : (
                 <div className="bg-gradient-to-r from-indigo-400 to-cyan-400 h-full w-full"></div>
@@ -188,7 +188,7 @@ export const UserProfile = () => {
                   </TabsTrigger>
                 </TabsList>
                 <TabsContent value="about" className="mt-6 px-2">
-                  <p className="text-sm/6">
+                  <p className="text-base/7">
                     Heya 👋 This is Makdoom Shaikh, Frontend Web Developer who
                     is passionate about the JavaScript web technologies building
                     websites and web applications. I have done my internship at
@@ -273,7 +273,7 @@ export const UserProfile = () => {
           </div>
         </div>
       </div>
-      <div className="flex-[0.67] bg-card rounded-md">right</div>
+      <div className="flex-[0.67] bg-card rounded-md border">right</div>
     </div>
   );
 };

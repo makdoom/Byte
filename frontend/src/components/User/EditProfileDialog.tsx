@@ -12,14 +12,19 @@ import { PersonalDetails } from "@/components/User/PersonalDetails";
 import { SocialLinks } from "@/components/User/SocialLinks";
 import { TechStack } from "@/components/User/TechStack";
 import { postRequest } from "@/config/api";
+import { createFormData } from "@/utils";
 import { UserToEditSchema, UserToEditType } from "@/utils/types";
 import {
+  UploadSingleFileRes,
+  UploadSingleImageResType,
+  UploadSingleImageSchema,
+  UploadSingleImageType,
   UserProfileRes,
   UserProfileResTpe,
   UserProfileType,
 } from "@makdoom/byte-common";
 import { Loader, Pencil, X } from "lucide-react";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 type EditProfileDialogPropsType = {
@@ -35,6 +40,59 @@ export const EditProfileDialog = ({
   const [userToEdit, setUserToEdit] = useState<UserToEditType>(
     {} as UserToEditType
   );
+  const coverImageRef = useRef<HTMLInputElement>(null);
+  const avatarImageRef = useRef<HTMLInputElement>(null);
+  const [showSpinner, setShowSpinner] = useState({ show: false, openFor: "" });
+
+  const handleImageChange = async (
+    event: ChangeEvent<HTMLInputElement>,
+    type: "profileURL" | "coverImage"
+  ) => {
+    const imageFile = event.target.files?.[0];
+    if (!imageFile) return;
+
+    let publicId: string = "";
+    if (type === "profileURL") {
+      if (typeof userToEdit.profileURL === "string" && userToEdit.profileURL) {
+        publicId = userToEdit.profileURL.includes("/")
+          ? userToEdit.profileURL.split("/").pop() || ""
+          : "";
+      }
+    } else {
+      if (typeof userToEdit.coverImage === "string" && userToEdit.coverImage) {
+        publicId = userToEdit.coverImage.includes("/")
+          ? userToEdit.coverImage.split("/").pop() || ""
+          : "";
+      }
+    }
+    try {
+      setShowSpinner({ show: true, openFor: type });
+      const formData = createFormData({
+        image: imageFile,
+        data: { publicId: publicId },
+      });
+
+      const response = await postRequest<
+        UploadSingleImageType,
+        UploadSingleImageResType
+      >(
+        "/misc/uploadImage",
+        formData,
+        UploadSingleImageSchema,
+        UploadSingleFileRes
+      );
+      setShowSpinner({ show: false, openFor: "" });
+      const { data, statusCode, message } = response;
+      if (statusCode === 200 && data) {
+        setUserToEdit((prev) => ({ ...prev, [type]: data.fileURL }));
+      } else {
+        toast.error(message);
+      }
+    } catch (error) {
+      setShowSpinner({ show: false, openFor: "" });
+      toast.error("something went wrong while updating user cover image");
+    }
+  };
 
   const userChangeHandler = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -111,6 +169,7 @@ export const EditProfileDialog = ({
     }
   }, [user]);
 
+  console.log(userToEdit);
   return (
     <DialogContent className="sm:max-w-screen-sm">
       <DialogTitle>Edit Information</DialogTitle>
@@ -121,8 +180,8 @@ export const EditProfileDialog = ({
             {userToEdit?.coverImage ? (
               <img
                 className="w-full h-full object-cover"
-                src="https://images.unsplash.com/photo-1485470733090-0aae1788d5af?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8NGslMjBkZXNrdG9wJTIwd2FsbGFwZXJ8ZW58MHx8MHx8fDA%3D"
-                alt=""
+                src={userToEdit?.coverImage}
+                alt="cover"
               />
             ) : (
               <div className="bg-gradient-to-r from-indigo-400 to-cyan-400 h-full w-full"></div>
@@ -130,10 +189,20 @@ export const EditProfileDialog = ({
 
             <div className="absolute right-2 top-2 flex gap-2">
               <Button
-                variant="secondary"
-                className="rounded-full h-8 w-8 p-0 shadow-md"
+                className="rounded-full h-8 w-8 p-0 shadow-lg"
+                onClick={() => coverImageRef.current?.click()}
               >
-                <Pencil size={14} />
+                <input
+                  type="file"
+                  className="hidden"
+                  ref={coverImageRef}
+                  onChange={(event) => handleImageChange(event, "coverImage")}
+                />
+                {showSpinner.show && showSpinner.openFor === "coverImage" ? (
+                  <Loader className="animate-spin" size={14} />
+                ) : (
+                  <Pencil size={14} />
+                )}
               </Button>
 
               {userToEdit?.coverImage && (
@@ -149,16 +218,32 @@ export const EditProfileDialog = ({
 
           <div className="absolute top-[100%] left-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <div className="relative">
-              <Avatar className="h-32 w-32 shadow-lg border-4 border-card bg-card">
-                <AvatarImage className="object-cover" src="" />
+              <Avatar className="h-32 w-32 shadow-lg border-4 border-card">
+                <AvatarImage
+                  className="object-cover"
+                  src={userToEdit.profileURL}
+                />
                 <AvatarFallback className="text-5xl font-semibold">
                   {userToEdit?.name?.[0]?.toUpperCase()}
                 </AvatarFallback>
               </Avatar>
 
               <div className="absolute right-1 bottom-2">
-                <Button className="rounded-full h-8 w-8 p-0 shadow-md">
-                  <Pencil size={14} />
+                <Button
+                  className="rounded-full h-8 w-8 p-0 shadow-md"
+                  onClick={() => avatarImageRef.current?.click()}
+                >
+                  <input
+                    type="file"
+                    className="hidden"
+                    ref={avatarImageRef}
+                    onChange={(event) => handleImageChange(event, "profileURL")}
+                  />
+                  {showSpinner.show && showSpinner.openFor === "profileURL" ? (
+                    <Loader className="animate-spin" size={14} />
+                  ) : (
+                    <Pencil size={14} />
+                  )}
                 </Button>
               </div>
             </div>

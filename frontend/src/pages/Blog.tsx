@@ -52,11 +52,7 @@ export const Blog = () => {
           <div className="w-full h-[400px] rounded-md overflow-hidden">
             <img
               className="w-full h-full rounded-md object-cover"
-              src={
-                blog.coverImage
-                  ? blog.coverImage
-                  : "https://pbs.twimg.com/media/GUTXmQxb0AAvccD?format=jpg&name=4096x4096"
-              }
+              src={blog.coverImage}
               alt="thumbnail"
             />
           </div>
@@ -87,7 +83,7 @@ export const Blog = () => {
         </div>
 
         {blog.content && (
-          <div className="mt-4">
+          <div className="mt-8">
             <YooptaEditor
               key={blog.id}
               id={blog.id}

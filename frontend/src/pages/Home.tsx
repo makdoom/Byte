@@ -11,7 +11,7 @@ export const Home = () => {
   return (
     <div
       className={cn(
-        "bg-[#f5f5f5] w-screen flex flex-col",
+        "bg-[#f9fafb] w-screen flex flex-col",
         defaultPage === "home" && "h-screen"
       )}
     >
